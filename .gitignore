@@ -1,0 +1,36 @@
+# Node.js dependencies
+/node_modules/
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Dependency directory for some package managers
+/pnpm-lock.yaml
+/package-lock.json
+/yarn.lock
+
+# Build directories
+/dist
+/build
+
+# Environment files
+# .env
+# .env.local
+# .env.*.local
+
+# Testing directories and files
+/coverage
+/test-results
+
+# IDE specific files
+.idea/
+.vscode/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# npm package distribution files
+*.tgz
