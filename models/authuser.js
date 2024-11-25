@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       created_by: DataTypes.INTEGER,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
-      auth_id: {  // Foreign key to the Auth model
+      auth_id: {  
         type: DataTypes.INTEGER,
         allowNull: false,
       },
