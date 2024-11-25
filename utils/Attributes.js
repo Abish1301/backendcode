@@ -20,4 +20,12 @@ const authUserAttributes = [
     ['status', 'ROLE_STATUS'],
   ];
 
-  module.exports = { roleAttributes, authUserAttributes, authAttributes };
+  const unitAttributes = [
+    ['name', 'UNIT_NAME'],
+    ['code', 'UNIT_CODE'],
+    ['status', 'UNIT_STATUS'],
+  ];
+
+
+  
+  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes };

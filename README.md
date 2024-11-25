@@ -31,7 +31,7 @@ npx sequelize-cli db:migrate
 # For Creating Seeder For all
 
 npx sequelize-cli db:seed:all --config config/config.js
-npx sequelize-cli db:seed --seed 20241120113621-create-role.js --config config/config.js
+npx sequelize-cli db:seed --seed 20241120105347-demo-authroles --config config/config.js
 
 
 # For Creating Seeder For Each table
