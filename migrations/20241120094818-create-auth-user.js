@@ -10,42 +10,42 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       code: {
-        type: Sequelize.STRING,
-        allowNull: true,  // Adjust based on your requirements
+        type: Sequelize.STRING(100),
+        allowNull: true, 
       },
       name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: false,
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: true,  // Adjust based on your requirements
+        allowNull: true,  
       },
       profile_image: {
         type: Sequelize.STRING,
-        allowNull: true,  // Adjust based on your requirements
+        allowNull: true,  
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: true,  // Adjust based on your requirements
-        unique: true,  // Assuming unique email for each user
+        allowNull: true,  
+        unique: true, 
       },
       mobile: {
-        type: Sequelize.STRING,
-        allowNull: true,  // Adjust based on your requirements
+        type: Sequelize.STRING(20),
+        allowNull: true, 
       },
       address: {
         type: Sequelize.TEXT,
-        allowNull: true,  // Adjust based on your requirements
+        allowNull: true, 
       },
       role_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,  // This will be set to null for 'Admin' or 'Incharge' types
+        allowNull: true,
         references: {
-          model: 'AuthRole',  // Assuming there's a 'Roles' table in your database
+          model: 'AuthRole',  
           key: 'id',
         },
-        onDelete: 'SET NULL',  // When a Role is deleted, set the role_id to null
+        onDelete: 'SET NULL',  
       },
       type: {
         type: Sequelize.ENUM('Admin', 'User', 'Incharge'),
@@ -53,7 +53,7 @@ module.exports = {
       },
       created_by: {
         type: Sequelize.INTEGER,
-        allowNull: true,  // Adjust based on your requirements
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -69,10 +69,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Auth',  // Assuming there's an 'Auth' table in your database
+          model: 'Auth', 
           key: 'id',
         },
-        onDelete: 'CASCADE',  // When an Auth record is deleted, cascade delete the associated AuthUser
+        onDelete: 'CASCADE', 
       },
     });
   },

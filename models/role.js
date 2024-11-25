@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING,
       description: DataTypes.TEXT,
       status: DataTypes.BOOLEAN,
+      created_by: DataTypes.INTEGER,
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -10,21 +10,25 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING,
-        allowNull: false,  // Ensure this is required
+        type: Sequelize.STRING(100),
+        allowNull: false,  
       },
       code: {
-        type: Sequelize.STRING,
-        allowNull: true,  // Adjust based on your requirements
+        type: Sequelize.STRING(100),
+        allowNull: true,  
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: true,  // Adjust based on your requirements
+        allowNull: true,  
       },
       status: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,  // Status field should not be null
-        defaultValue: true,  // Default status is true (active)
+        allowNull: false,  
+        defaultValue: true,  
+      },
+      created_by: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -38,24 +42,21 @@ module.exports = {
       },
     });
 
-    // Add a foreign key to the AuthUser table (if it's not already added)
     await queryInterface.addConstraint('AuthUser', {
       fields: ['role_id'],
       type: 'foreign key',
       name: 'fk_role_id',
       references: {
-        table: 'AuthRole', // Reference the 'AuthRole' table
+        table: 'AuthRole', 
         field: 'id',
       },
-      onDelete: 'SET NULL',  // When the associated role is deleted, set role_id to NULL
+      onDelete: 'SET NULL',  
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Remove foreign key constraint before dropping the table
     await queryInterface.removeConstraint('AuthUser', 'fk_role_id');
     
-    // Drop the AuthRole table
     await queryInterface.dropTable('AuthRole');
   },
 };
