@@ -1,7 +1,6 @@
 const { Op } = require('sequelize');
-const { responseHandler, aliasResponseData } = require('../utils');
+const { responseHandler, aliasResponseData, FindDuplicate } = require('../utils');
 const { aliasResponseObjectData } = require('../utils/OtherExports');
-const FindDuplicate = require('../utils/checkDuplicate');
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
@@ -90,11 +89,8 @@ const deleteRecord = Model => async (req, res) => {
 
 // get all by user=user & user=null  except d=1 rows
 const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
-  console.log(searchFields);
 
   const { page=1, limit=10, search } = req.query;
-  console.log(search);
-
   const { user } = req.body
 
   try {
@@ -146,10 +142,6 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       results: aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
 
     };
-    console.log(rows.map(row => row.dataValues));
-
-
-
     console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
     // res.json(response);
     return responseHandler(res, {
@@ -213,14 +205,12 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
   }
 };
 
-
 // update entire row or a field of a particular row by id
 const updateByID = (Model, Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
     const record = await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
-    console.log(record);
     if (record[0] == 1) {
       const updatedRecord = await Model.findByPk(id);
 
