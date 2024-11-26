@@ -4,7 +4,7 @@ const { Unit } = require('../models');
 const crudController = require('../controllers/crudController');
 const { unitAttributes } = require('../utils');
 
-const searchableFields = ['name'];
+const searchableFields = ['name','code'];
 const field = 'code';
 
 router.route('/')

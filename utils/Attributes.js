@@ -25,7 +25,14 @@ const authUserAttributes = [
     ['code', 'UNIT_CODE'],
     ['status', 'UNIT_STATUS'],
   ];
-
+  const taxAttributes = [
+    ['name', 'TAX_NAME'],
+    ['description', 'TAX_DESCRIPTION'],
+    ['status', 'TAX_STATUS'],
+    ['start_date', 'TAX_START_DATE'],
+    ['end_date', 'TAX_END_DATE'],
+    ['percentage', 'TAX_PERCENTAGE'],
+  ];
 
   
-  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes };
+  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes };

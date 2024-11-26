@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { responseHandler, aliasResponseData } = require('../utils');
 const { aliasResponseObjectData } = require('../utils/OtherExports');
+const FindDuplicate = require('../utils/checkDuplicate');
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
@@ -68,10 +69,22 @@ const deleteRecord = Model => async (req, res) => {
     const { id } = req.body;
     await Model.destroy({ where: { id } });
     console.log(`Deleted record with ID ${id} from ${Model.name}`);
-    res.json({ message: 'Record deleted' });
+    return responseHandler(res, {
+      data: response,
+      status: 'success',
+      message: 'Data deleted successfully',
+      statusCode: 200,
+      error: null,
+    });
   } catch (error) {
     console.error(`Error deleting record in ${Model.name}: ${error.message}`);
-    res.status(500).json({ error: error.message });
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
   }
 };
 
@@ -79,7 +92,7 @@ const deleteRecord = Model => async (req, res) => {
 const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   console.log(searchFields);
 
-  const { page = 1, limit = 10, search } = req.query;
+  const { page, limit, search } = req.query;
   console.log(search);
 
   const { user } = req.body
@@ -107,7 +120,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
         },
       ],
     };
-
+    
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,
@@ -115,6 +128,14 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       offset: parseInt(offset, 10),
       include: includeModels,
     });
+    if (count === 0) {
+      return responseHandler(res, {
+        data: {},
+        status: 'error',
+        message: 'No data found',
+        statusCode: 500,
+      });
+    }
 
     const totalPages = Math.ceil(count / limit);
 
@@ -151,30 +172,13 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
   }
 };
 
-// create a row without duplicate (check the code field on table by user and then insert the row)
+// create a row without duplicate 
 const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
   try {
-    const { user, code, ...otherData } = req.body;
+    const { user, ...otherData } = req.body;
 
-    // Validate required fields
-    if (!user || !code || !field) {
-      return responseHandler(res, {
-        data: null,
-        status: 'error',
-        message: 'Missing required fields: user, code, or field',
-        statusCode: 400,
-        error: 'Validation error',
-      });
-    }
-
-    // Check for duplicates
-    const { count } = await Model.findAndCountAll({
-      where: {
-        [field]: code,
-        user: user,
-      },
-    });
-
+    // Validate duplicates
+    const count = await FindDuplicate(Model, field, req.body); // Await the result
     if (count > 0) {
       return responseHandler(res, {
         data: null,
@@ -186,7 +190,7 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     }
 
     // Create a new record
-    const record = await Model.create({ user, [field]: code, ...otherData });
+    const record = await Model.create(req.body);
     console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
 
     return responseHandler(res, {
@@ -208,6 +212,7 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     });
   }
 };
+
 
 // update entire row or a field of a particular row by id
 const updateByID = (Model, Attributes) => async (req, res) => {
