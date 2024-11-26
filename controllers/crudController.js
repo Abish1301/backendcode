@@ -92,7 +92,7 @@ const deleteRecord = Model => async (req, res) => {
 const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   console.log(searchFields);
 
-  const { page, limit, search } = req.query;
+  const { page=1, limit=10, search } = req.query;
   console.log(search);
 
   const { user } = req.body

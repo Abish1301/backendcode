@@ -33,6 +33,10 @@ const authUserAttributes = [
     ['end_date', 'TAX_END_DATE'],
     ['percentage', 'TAX_PERCENTAGE'],
   ];
-
+  const materialCategoryAttributes = [
+    ['name', 'MaterialCategory_NAME'],
+    ['code', 'MaterialCategory_CODE'],
+    ['status', 'MaterialCategory_STATUS'],
+  ];
   
-  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes };
+  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes };
