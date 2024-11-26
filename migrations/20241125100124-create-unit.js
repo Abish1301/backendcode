@@ -9,10 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(50),
       },
       code: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(50),
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -25,9 +25,6 @@ module.exports = {
       user: {
         type: Sequelize.INTEGER,
         allowNull: true,
-      },
-      created_by: {
-        type: Sequelize.INTEGER,
       },
       created_at: {
         type: Sequelize.DATE,
