@@ -4,11 +4,14 @@ const { Unit } = require('../models');
 const crudController = require('../controllers/crudController');
 const { unitAttributes } = require('../utils');
 
-const searchableFields = ['name']; 
+const searchableFields = ['name'];
+const field = 'code';
+
 router.route('/')
-  .post(crudController.getAllByCondition(Unit, searchableFields,unitAttributes))
-  .post(crudController.create(Unit))
-  .put(crudController.update(Unit))
+  .post(crudController.getAllByCondition(Unit, searchableFields, unitAttributes))
+  .put(crudController.updateByID(Unit, unitAttributes))
   .delete(crudController.deleteRecord(Unit));
+
+router.post("/createUnit", crudController.createWODuplicates(Unit, field, unitAttributes));
 
 module.exports = router;

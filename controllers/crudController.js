@@ -10,10 +10,10 @@ const getAll = (Model, searchFields = [], includeModels = []) => async (req, res
 
     const whereCondition = search
       ? {
-          [Op.or]: searchFields.map(field => ({
-            [field]: { [Op.like]: `%${search}%` },
-          })),
-        }
+        [Op.or]: searchFields.map(field => ({
+          [field]: { [Op.like]: `%${search}%` },
+        })),
+      }
       : {};
 
     const { count, rows } = await Model.findAndCountAll({
@@ -51,7 +51,7 @@ const create = Model => async (req, res) => {
   }
 };
 
-const update = Model => async (req, res) => {
+const update = (Model, Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
     await Model.update(data, { where: { id } });
@@ -74,14 +74,16 @@ const deleteRecord = Model => async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-const getAllByCondition = (Model, searchFields = [],Attributes, includeModels = []) => async (req, res) => {
+
+// get all by user=user & user=null  except d=1 rows
+const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   console.log(searchFields);
-  
+
   const { page = 1, limit = 10, search } = req.query;
   console.log(search);
 
-  const {user}=req.body
-  
+  const { user } = req.body
+
   try {
     const offset = (page - 1) * limit;
 
@@ -89,10 +91,10 @@ const getAllByCondition = (Model, searchFields = [],Attributes, includeModels = 
       ...(
         search
           ? {
-              [Op.or]: searchFields.map(field => ({
-                [field]: { [Op.like]: `%${search}%` },
-              })),
-            }
+            [Op.or]: searchFields.map(field => ({
+              [field]: { [Op.like]: `%${search}%` },
+            })),
+          }
           : {}
       ),
       d: 0,
@@ -105,7 +107,7 @@ const getAllByCondition = (Model, searchFields = [],Attributes, includeModels = 
         },
       ],
     };
-    
+
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,
@@ -120,12 +122,12 @@ const getAllByCondition = (Model, searchFields = [],Attributes, includeModels = 
       count,
       totalPages,
       currentPage: parseInt(page, 10),
-      results:aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
-      
+      results: aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
+
     };
     console.log(rows.map(row => row.dataValues));
-        
-    
+
+
 
     console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
     // res.json(response);
@@ -148,10 +150,110 @@ const getAllByCondition = (Model, searchFields = [],Attributes, includeModels = 
     });
   }
 };
+
+// create a row without duplicate (check the code field on table by user and then insert the row)
+const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
+  try {
+    const { user, code, ...otherData } = req.body;
+
+    // Validate required fields
+    if (!user || !code || !field) {
+      return responseHandler(res, {
+        data: null,
+        status: 'error',
+        message: 'Missing required fields: user, code, or field',
+        statusCode: 400,
+        error: 'Validation error',
+      });
+    }
+
+    // Check for duplicates
+    const { count } = await Model.findAndCountAll({
+      where: {
+        [field]: code,
+        user: user,
+      },
+    });
+
+    if (count > 0) {
+      return responseHandler(res, {
+        data: null,
+        status: 'conflict',
+        message: 'Duplicate record found',
+        statusCode: 409,
+        error: 'Duplicate record exists',
+      });
+    }
+
+    // Create a new record
+    const record = await Model.create({ user, [field]: code, ...otherData });
+    console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
+
+    return responseHandler(res, {
+      data: aliasResponseData(record, Attributes),
+      status: 'success',
+      message: 'Record created successfully',
+      statusCode: 200,
+      error: null,
+    });
+
+  } catch (error) {
+    console.error(`Error creating record in ${Model.name}: ${error.message}`);
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
+
+// update entire row or a field of a particular row by id
+const updateByID = (Model, Attributes) => async (req, res) => {
+  try {
+    const { id, ...data } = req.body;
+    const record = await Model.update(data, { where: { id } });
+    console.log(`Updated record with ID ${id} in ${Model.name}`);
+    console.log(record);
+    if (record[0] == 1) {
+      const updatedRecord = await Model.findByPk(id);
+
+      return responseHandler(res, {
+        data: aliasResponseData(updatedRecord, Attributes),
+        status: 'success',
+        message: 'Record Updated successfully',
+        statusCode: 200,
+        error: null,
+      });
+    }
+    return responseHandler(res, {
+      data: {},
+      status: 'success',
+      message: 'Record Updated successfully',
+      statusCode: 200,
+      error: null,
+    });
+
+  } catch (error) {
+    console.error(`Error updating record in ${Model.name}: ${error.message}`);
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   getAll,
   create,
   update,
   deleteRecord,
-  getAllByCondition
+  getAllByCondition,
+  createWODuplicates,
+  updateByID
 };
