@@ -20,6 +20,7 @@ npm install winston
 # For Creating a Model
 npx sequelize-cli model:generate --name Product --attributes name:string,price:float,categoryId:integer
 npx sequelize-cli model:generate --name Category --attributes name:string
+ npx sequelize-cli db:migrate --name 20241120111414-create-role.js --config config/config.js 
 
 
 
