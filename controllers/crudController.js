@@ -169,16 +169,17 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
   try {
     const { user, ...otherData } = req.body;
 
-    // Validate duplicates
-    const count = await FindDuplicate(Model, field, req.body); // Await the result
-    if (count > 0) {
-      return responseHandler(res, {
-        data: null,
-        status: 'conflict',
-        message: 'Duplicate record found',
-        statusCode: 409,
-        error: 'Duplicate record exists',
-      });
+    if (field) {
+      const count = await FindDuplicate(Model, field, req.body); 
+      if (count > 0) {
+        return responseHandler(res, {
+          data: null,
+          status: 'conflict',
+          message: 'Duplicate record found',
+          statusCode: 409,
+          error: 'Duplicate record exists',
+        });
+      }
     }
 
     // Create a new record

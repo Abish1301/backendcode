@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Tax extends Model {
+  class Site extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,22 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Tax.init({
+  Site.init({
     name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    start_date: DataTypes.STRING,
-    end_date: DataTypes.STRING,
-    percentage: DataTypes.DECIMAL,
     status: DataTypes.BOOLEAN,
-    d: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false, 
-    },
-    user: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
+    d: DataTypes.BOOLEAN,
+    user: DataTypes.INTEGER,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -39,14 +28,23 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    start_date: DataTypes.STRING,
+    end_date: DataTypes.STRING,
+    description: DataTypes.STRING,
+    site_profile_image: DataTypes.STRING,
+    location_name: DataTypes.STRING,
+    location_description: DataTypes.STRING,
+    geo_location: DataTypes.STRING,
+    site_incharge: DataTypes.STRING,
+    estimation_amount: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Tax',
-    tableName: 'TaxMaster', 
+    modelName: 'Site',
+    tableName: 'SiteMaster', 
     freezeTableName: true,   
     timestamps: false,      
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   });
-  return Tax;
+  return Site;
 };

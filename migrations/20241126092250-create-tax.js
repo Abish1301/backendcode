@@ -16,10 +16,10 @@ module.exports = {
         type: Sequelize.STRING(50)
       },
       start_date: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING(10)
       },
       end_date: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING(10)
       },
       percentage: {
         type: Sequelize.DECIMAL(5, 2),
@@ -28,7 +28,8 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       user: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       d: {
         type: Sequelize.BOOLEAN,

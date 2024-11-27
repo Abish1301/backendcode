@@ -38,5 +38,21 @@ const authUserAttributes = [
     ['code', 'MaterialCategory_CODE'],
     ['status', 'MaterialCategory_STATUS'],
   ];
+  const siteMasterAttributes = [
+    ['name', 'SITE_NAME'],
+    ['description', 'SITE_DESCRIPTION'],
+    ['site_profile_image', 'SITE_PROFILE_IMAGE'],
+    ['location_name', 'SITE_LOCATION_NAME'],
+    ['location_description', 'SITE_LOCATION_DESCRIPTION'],
+    ['geo_location', 'SITE_GEO_LOCATION'],
+    ['start_date', 'SITE_START_DATE'],
+    ['site_incharge', 'SITE_INCHARGE'],
+    ['estimation_amount', 'SITE_ESTIMATION_AMOUNT'],
+    ['end_date', 'SITE_END_DATE'],
+    ['status', 'SITE_STATUS'],
+
+  ];
   
-  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes };
+
+  
+  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes, siteMasterAttributes };

@@ -7,8 +7,8 @@ module.exports = {
       {
         name: 'Tax 1',
         description: 'Description for Tax1',
-        start_date:'2023-01-01',
-        end_date:'2024-01-01',
+        start_date:'01-01-2023',
+        end_date:'01-01-2024',
         status:true,
         percentage:18,
         created_at: new Date(),
@@ -17,8 +17,8 @@ module.exports = {
       {
         name: 'Tax 2',
         description: 'Description for Tax2',
-        start_date:'2024-01-01',
-        end_date:'2025-01-01',
+        start_date:'01-01-2024',
+        end_date:'01-01-2025',
         status:true,
         percentage:18.5,
         created_at: new Date(),
@@ -27,8 +27,8 @@ module.exports = {
       {
         name: 'Tax 3',
         description: 'Description for Tax3',
-        start_date:'2025-01-01',
-        end_date:'2026-01-01',
+        start_date:'01-01-2025',
+        end_date:'01-01-2026',
         status:true,
         percentage:18.75,
         created_at: new Date(),
