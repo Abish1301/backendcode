@@ -35,9 +35,9 @@ const authUserAttributes = [
     ['percentage', 'TAX_PERCENTAGE'],
   ];
   const materialCategoryAttributes = [
-    ['name', 'MaterialCategory_NAME'],
-    ['code', 'MaterialCategory_CODE'],
-    ['status', 'MaterialCategory_STATUS'],
+    ['name', 'MATERIALCATEGORY_NAME'],
+    ['code', 'MATERIALCATEGORY_CODE'],
+    ['status', 'MATERIALCATEGORY_STATUS'],
   ];
   const siteMasterAttributes = [
     ['name', 'SITE_NAME'],
@@ -53,7 +53,19 @@ const authUserAttributes = [
     ['status', 'SITE_STATUS'],
 
   ];
+  const expenseMasterAttributes=[
+    ['name', 'EXPENSE_NAME'],
+    ['type', 'EXPENSE_TYPE'],
+    ['site', 'EXPENSE_SITE'],
+    ['date', 'EXPENSE_DATE'],
+    ['attachement', 'EXPENSE_ATTACHEMENT'],
+    ['amount', 'EXPENSE_AMOUNT'],
+    ['remark', 'EXPENSE_REMARK']
+  ]
   
-
+  const expenseHeadAttributes = [
+    ['name', 'EXPENSE_NAME'],
+    ['status', 'EXPENSE_STATUS'],
+  ];
   
-  module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes, siteMasterAttributes };
+  module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes };
