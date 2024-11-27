@@ -20,6 +20,10 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
         allowNull: true,  
+      }, 
+      screens: {
+        type: Sequelize.JSON,
+        allowNull: true,  
       },
       status: {
         type: Sequelize.BOOLEAN,
@@ -39,6 +43,15 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW,
+      },
+      d: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, // Default value for `d`
+      },
+      user: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
     });
 

@@ -9,7 +9,7 @@ const field = 'code';
 
 router.route('/')
   .post(crudController.getAllByCondition(MaterialCategory, searchableFields, materialCategoryAttributes))
-  .put(crudController.updateByID(MaterialCategory, materialCategoryAttributes))
+  .put(crudController.updateByID(MaterialCategory,field, materialCategoryAttributes))
   .delete(crudController.deleteRecord(MaterialCategory));
 
 router.post("/createMaterialCategory", crudController.createWODuplicates(MaterialCategory, field, materialCategoryAttributes));

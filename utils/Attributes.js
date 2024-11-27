@@ -13,11 +13,12 @@ const authUserAttributes = [
     ['type', 'USER_TYPE'],
   ];
 
-  const roleAttributes = [
+  const roleMaterAttributes = [
     ['name', 'ROLE_NAME'],
     ['code', 'ROLE_CODE'],
     ['description', 'ROLE_DESCRIPTION'],
     ['status', 'ROLE_STATUS'],
+    ['screens','ROLE_SCREENS']
   ];
 
   const unitAttributes = [
@@ -55,4 +56,4 @@ const authUserAttributes = [
   
 
   
-  module.exports = { roleAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes, siteMasterAttributes };
+  module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes,taxAttributes, materialCategoryAttributes, siteMasterAttributes };

@@ -207,9 +207,21 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 };
 
 // update entire row or a field of a particular row by id
-const updateByID = (Model, Attributes) => async (req, res) => {
+const updateByID = (Model, field,Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
+    if (req.body.name||req.body.code) {      
+      const count = await FindDuplicate(Model, field, req.body); 
+      if (count > 0) {
+        return responseHandler(res, {
+          data: null,
+          status: 'conflict',
+          message: 'Duplicate record found',
+          statusCode: 409,
+          error: 'Duplicate record exists',
+        });
+      }
+    }
     const record = await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
     if (record[0] == 1) {
