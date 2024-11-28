@@ -121,4 +121,18 @@ const materialMainInventoryAttributes = [
       ['attachement' ,'TASK_ATTACHEMENT'],
     ]
 
-module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes };
+    const taskTimelineAttributes = [
+      ['site', 'TASK_TIMELINE_SITE'],
+      ['task', 'TASK_TIMELINE_TASK'],
+      ['entry_date', 'TASK_TIMELINE_ENTRY_DATE'],
+      ['percentage', 'TASK_TIMELINE_PERCENTAGE'],
+      ['total_work_done', 'TASK_TIMELINE_WORK_DONE'],
+      ['skilled_worker', 'TASK_TIMELINE_SKILLED_WORKER'],
+      ['unskilled_worker', 'TASK_TIMELINE_UNSKILLED_WORKER'],
+      ['total_working_hours', 'TASK_TIMELINE_TOTAL_WORKING_HOURS'],
+      ['remarks', 'TASK_TIMELINE_REMARKS'],
+      ['attachement1', 'TASK_TIMELINE_ATTACHEMENT1'],
+      ['attachement2', 'TASK_TIMELINE_ATTACHEMENT2']
+    ]
+
+module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes };
