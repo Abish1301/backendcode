@@ -108,4 +108,17 @@ const materialMainInventoryAttributes = [
     ['status', ' MAIN_INVENTORY_EQUIPMENT_STATUS'],
     ['i_stock', '  MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
 
-module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes };
+    const taskMasterAttributes = [
+      ['name' ,'TASK_NAME'],
+      ['description' ,'TASK_DESCRIPTION'],
+      ['status' ,'TASK_STATUS'],
+      ['site' ,'TASK_SITE'],
+      ['search_tags' ,'TASK_SEARCH_TAGS'],
+      ['work_category' ,'TASK_WORK_CATEGORY'],
+      ['priority' ,'TASK_PRIORITY'],
+      ['start_date' ,'TASK_START_DATE'],
+      ['end_date' ,'TASK_END_DATE'],
+      ['attachement' ,'TASK_ATTACHEMENT'],
+    ]
+
+module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes };
