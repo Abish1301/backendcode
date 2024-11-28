@@ -1,23 +1,25 @@
-'use strict';
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
+  class MaterialCategory extends Model {
     static associate(models) {
-      this.hasMany(models.AuthUser, { foreignKey: 'role_id', as: 'authuser' });
+      // define association here
     }
   }
-
-  Role.init(
+  MaterialCategory.init(
     {
       name: DataTypes.STRING,
       code: DataTypes.STRING,
-      description: DataTypes.TEXT,
       status: DataTypes.BOOLEAN,
-      screens: DataTypes.JSON,
-      created_by: DataTypes.INTEGER,
-      d: DataTypes.BOOLEAN,
-      user: DataTypes.INTEGER,
+      d: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, 
+      },
+      user: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -31,15 +33,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Role',
-      tableName: 'AuthRole',
-      freezeTableName: true,
-      timestamps: false,
+      modelName: 'MaterialCategory',
+      tableName: 'MaterialCategoryMaster', 
+      freezeTableName: true,   
+      timestamps: false,      
       createdAt: 'created_at',
       updatedAt: 'updated_at',
-
     }
   );
-
-  return Role;
+  return MaterialCategory;
 };
