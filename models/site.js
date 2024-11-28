@@ -31,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     start_date: DataTypes.STRING,
     end_date: DataTypes.STRING,
     description: DataTypes.STRING,
-    site_profile_image: DataTypes.STRING,
+    profile_image: DataTypes.STRING,
     location_name: DataTypes.STRING,
     location_description: DataTypes.STRING,
     geo_location: DataTypes.STRING,
-    site_incharge: DataTypes.STRING,
+    incharge: DataTypes.STRING,
     estimation_amount: DataTypes.STRING
   }, {
     sequelize,

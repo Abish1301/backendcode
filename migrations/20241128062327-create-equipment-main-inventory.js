@@ -24,7 +24,7 @@ module.exports = {
       category: {
         type: Sequelize.INTEGER
       },
-      equipment_image: {
+      image: {
         type: Sequelize.STRING,
         allowNull: true,
 

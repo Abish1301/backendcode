@@ -45,7 +45,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING(100)
       },
-      site_profile_image: {
+      profile_image: {
         type: Sequelize.STRING
       },
       location_name: {
@@ -57,7 +57,7 @@ module.exports = {
       geo_location: {
         type: Sequelize.STRING(100)
       },
-      site_incharge: {
+      incharge: {
         type: Sequelize.STRING(50)
       },
       estimation_amount: {

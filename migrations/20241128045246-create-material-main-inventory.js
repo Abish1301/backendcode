@@ -29,7 +29,7 @@ module.exports = {
       category: {
         type: Sequelize.INTEGER
       },
-      material_image: {
+      image: {
         type: Sequelize.STRING,
         allowNull: true,
 

@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     unit: DataTypes.INTEGER,
     category: DataTypes.INTEGER,
-    equipment_image: {
+    image: {
       type: DataTypes.STRING,
       allowNull: true
     },
