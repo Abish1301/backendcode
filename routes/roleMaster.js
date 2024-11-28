@@ -12,6 +12,6 @@ router.route('/')
   .put(crudController.updateByID(Role, field,roleMaterAttributes))
   .delete(crudController.deleteRecord(Role));
 
-router.post("/createRole", crudController.createWODuplicates(Role, field, roleMaterAttributes));
+router.post("/create", crudController.createWODuplicates(Role, field, roleMaterAttributes));
 
 module.exports = router;

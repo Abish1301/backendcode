@@ -12,6 +12,6 @@ router.route('/')
   .put(crudController.updateByID(MaterialCategory,field, materialCategoryAttributes))
   .delete(crudController.deleteRecord(MaterialCategory));
 
-router.post("/createMaterialCategory", crudController.createWODuplicates(MaterialCategory, field, materialCategoryAttributes));
+router.post("/create", crudController.createWODuplicates(MaterialCategory, field, materialCategoryAttributes));
 
 module.exports = router;

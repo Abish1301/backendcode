@@ -12,6 +12,6 @@ router.route('/')
   .put(crudController.updateByID(Unit,field, unitAttributes))
   .delete(crudController.deleteRecord(Unit));
 
-router.post("/createUnit", crudController.createWODuplicates(Unit, field, unitAttributes));
+router.post("/create", crudController.createWODuplicates(Unit, field, unitAttributes));
 
 module.exports = router;

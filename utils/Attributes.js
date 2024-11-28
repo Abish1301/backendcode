@@ -91,4 +91,21 @@ const materialMainInventoryAttributes = [
   ['status', ' MAIN_INVENTORY_MATERIAL_STATUS'],
   ['i_stock', '  MAIN_INVENTORY_MATERIAL_IN_STOCK']]
 
-module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes };
+
+  const equipmentMainInventoryAttributes = [
+    ['name', ' MAIN_INVENTORY_EQUIPMENT_NAME'],
+    ['code', ' MAIN_INVENTORY_EQUIPMENT_CODE'],
+    ['description', '  MAIN_INVENTORY_EQUIPMENT_DESCRIPTION'],
+    ['unit', ' MAIN_INVENTORY_EQUIPMENT_UNIT'],
+    ['category', ' MAIN_INVENTORY_EQUIPMENT_CATEGORY'],
+    ['material_image', ' MAIN_INVENTORY_EQUIPMENT_IMAGE'],
+    ['alert_min_stock', '  MAIN_INVENTORY_EQUIPMENT_ALEART_MIN_STOCK'],
+    ['unit_rent_price', '  MAIN_INVENTORY_EQUIPMENT_UNIT_RENT_PRICE'],
+    ['brand_name', ' MAIN_INVENTORY_EQUIPMENT_BRAND_NAME'],
+    ['dimensions', ' MAIN_INVENTORY_EQUIPMENT_DIMENSIONS'],
+    ['weight', ' MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
+    ['color', '  MAIN_INVENTORY_EQUIPMENT_COLOR'],
+    ['status', ' MAIN_INVENTORY_EQUIPMENT_STATUS'],
+    ['i_stock', '  MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
+
+module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes };

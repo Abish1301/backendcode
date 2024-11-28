@@ -12,6 +12,6 @@ router.route('/')
   .put(crudController.updateByID(MaterialMainInventory,field, materialMainInventoryAttributes))
   .delete(crudController.deleteRecord(MaterialMainInventory));
 
-router.post("/createMaterialMainInventory", crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
+router.post("/create", crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
 
 module.exports = router;
