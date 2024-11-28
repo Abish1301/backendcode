@@ -74,5 +74,21 @@ const issueMasterAttributes = [
   ['site_type', '  ISSUE_SITE_TYPE'],
   ['remarks', '  ISSUE_REMARK']
 ]
+const materialMainInventoryAttributes = [
+  ['name', ' MAIN_INVENTORY_MATERIAL_NAME'],
+  ['code', ' MAIN_INVENTORY_MATERIAL_CODE'],
+  ['hsn_code', ' MAIN_INVENTORY_MATERIAL_HSN'],
+  ['description', '  MAIN_INVENTORY_MATERIAL_DESCRIPTION'],
+  ['unit', ' MAIN_INVENTORY_MATERIAL_UNIT'],
+  ['category', ' MAIN_INVENTORY_MATERIAL_CATEGORY'],
+  ['material_image', ' MAIN_INVENTORY_MATERIAL_IMAGE'],
+  ['alert_min_stock', '  MAIN_INVENTORY_MATERIAL_ALEART_MIN_STOCK'],
+  ['unit_rent_price', '  MAIN_INVENTORY_MATERIAL_UNIT_RENT_PRICE'],
+  ['brand_name', ' MAIN_INVENTORY_MATERIAL_BRAND_NAME'],
+  ['dimensions', ' MAIN_INVENTORY_MATERIAL_DIMENSIONS'],
+  ['weight', ' MAIN_INVENTORY_MATERIAL_WEIGHT'],
+  ['color', '  MAIN_INVENTORY_MATERIAL_COLOR'],
+  ['status', ' MAIN_INVENTORY_MATERIAL_STATUS'],
+  ['i_stock', '  MAIN_INVENTORY_MATERIAL_IN_STOCK']]
 
-module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes };
+module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes };
