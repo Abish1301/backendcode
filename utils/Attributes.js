@@ -92,47 +92,53 @@ const materialMainInventoryAttributes = [
   ['i_stock', '  MAIN_INVENTORY_MATERIAL_IN_STOCK']]
 
 
-  const equipmentMainInventoryAttributes = [
-    ['name', ' MAIN_INVENTORY_EQUIPMENT_NAME'],
-    ['code', ' MAIN_INVENTORY_EQUIPMENT_CODE'],
-    ['description', '  MAIN_INVENTORY_EQUIPMENT_DESCRIPTION'],
-    ['unit', ' MAIN_INVENTORY_EQUIPMENT_UNIT'],
-    ['category', ' MAIN_INVENTORY_EQUIPMENT_CATEGORY'],
-    ['material_image', ' MAIN_INVENTORY_EQUIPMENT_IMAGE'],
-    ['alert_min_stock', '  MAIN_INVENTORY_EQUIPMENT_ALEART_MIN_STOCK'],
-    ['unit_rent_price', '  MAIN_INVENTORY_EQUIPMENT_UNIT_RENT_PRICE'],
-    ['brand_name', ' MAIN_INVENTORY_EQUIPMENT_BRAND_NAME'],
-    ['dimensions', ' MAIN_INVENTORY_EQUIPMENT_DIMENSIONS'],
-    ['weight', ' MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
-    ['color', '  MAIN_INVENTORY_EQUIPMENT_COLOR'],
-    ['status', ' MAIN_INVENTORY_EQUIPMENT_STATUS'],
-    ['i_stock', '  MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
+const equipmentMainInventoryAttributes = [
+  ['name', ' MAIN_INVENTORY_EQUIPMENT_NAME'],
+  ['code', ' MAIN_INVENTORY_EQUIPMENT_CODE'],
+  ['description', '  MAIN_INVENTORY_EQUIPMENT_DESCRIPTION'],
+  ['unit', ' MAIN_INVENTORY_EQUIPMENT_UNIT'],
+  ['category', ' MAIN_INVENTORY_EQUIPMENT_CATEGORY'],
+  ['material_image', ' MAIN_INVENTORY_EQUIPMENT_IMAGE'],
+  ['alert_min_stock', '  MAIN_INVENTORY_EQUIPMENT_ALEART_MIN_STOCK'],
+  ['unit_rent_price', '  MAIN_INVENTORY_EQUIPMENT_UNIT_RENT_PRICE'],
+  ['brand_name', ' MAIN_INVENTORY_EQUIPMENT_BRAND_NAME'],
+  ['dimensions', ' MAIN_INVENTORY_EQUIPMENT_DIMENSIONS'],
+  ['weight', ' MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
+  ['color', '  MAIN_INVENTORY_EQUIPMENT_COLOR'],
+  ['status', ' MAIN_INVENTORY_EQUIPMENT_STATUS'],
+  ['i_stock', '  MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
 
-    const taskMasterAttributes = [
-      ['name' ,'TASK_NAME'],
-      ['description' ,'TASK_DESCRIPTION'],
-      ['status' ,'TASK_STATUS'],
-      ['site' ,'TASK_SITE'],
-      ['search_tags' ,'TASK_SEARCH_TAGS'],
-      ['work_category' ,'TASK_WORK_CATEGORY'],
-      ['priority' ,'TASK_PRIORITY'],
-      ['start_date' ,'TASK_START_DATE'],
-      ['end_date' ,'TASK_END_DATE'],
-      ['attachement' ,'TASK_ATTACHEMENT'],
-    ]
+const taskMasterAttributes = [
+  ['name', 'TASK_NAME'],
+  ['description', 'TASK_DESCRIPTION'],
+  ['status', 'TASK_STATUS'],
+  ['site', 'TASK_SITE'],
+  ['search_tags', 'TASK_SEARCH_TAGS'],
+  ['work_category', 'TASK_WORK_CATEGORY'],
+  ['priority', 'TASK_PRIORITY'],
+  ['start_date', 'TASK_START_DATE'],
+  ['end_date', 'TASK_END_DATE'],
+  ['attachement', 'TASK_ATTACHEMENT'],
+]
 
-    const taskTimelineAttributes = [
-      ['site', 'TASK_TIMELINE_SITE'],
-      ['task', 'TASK_TIMELINE_TASK'],
-      ['entry_date', 'TASK_TIMELINE_ENTRY_DATE'],
-      ['percentage', 'TASK_TIMELINE_PERCENTAGE'],
-      ['total_work_done', 'TASK_TIMELINE_WORK_DONE'],
-      ['skilled_worker', 'TASK_TIMELINE_SKILLED_WORKER'],
-      ['unskilled_worker', 'TASK_TIMELINE_UNSKILLED_WORKER'],
-      ['total_working_hours', 'TASK_TIMELINE_TOTAL_WORKING_HOURS'],
-      ['remarks', 'TASK_TIMELINE_REMARKS'],
-      ['attachement1', 'TASK_TIMELINE_ATTACHEMENT1'],
-      ['attachement2', 'TASK_TIMELINE_ATTACHEMENT2']
-    ]
+const taskTimelineAttributes = [
+  ['site', 'TASK_TIMELINE_SITE'],
+  ['task', 'TASK_TIMELINE_TASK'],
+  ['entry_date', 'TASK_TIMELINE_ENTRY_DATE'],
+  ['percentage', 'TASK_TIMELINE_PERCENTAGE'],
+  ['total_work_done', 'TASK_TIMELINE_WORK_DONE'],
+  ['skilled_worker', 'TASK_TIMELINE_SKILLED_WORKER'],
+  ['unskilled_worker', 'TASK_TIMELINE_UNSKILLED_WORKER'],
+  ['total_working_hours', 'TASK_TIMELINE_TOTAL_WORKING_HOURS'],
+  ['remarks', 'TASK_TIMELINE_REMARKS'],
+  ['attachement1', 'TASK_TIMELINE_ATTACHEMENT1'],
+  ['attachement2', 'TASK_TIMELINE_ATTACHEMENT2']
+]
 
-module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes };
+const workCategoryAttributes = [
+  ['name', 'WORK_CATEGORY_NAME'],
+  ['description', 'WORK_CATEGORY_DESCRIPTION'],
+  ['status', 'WORK_CATEGORY_STATUS'],
+];
+
+module.exports = { roleMaterAttributes, authUserAttributes, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes };
