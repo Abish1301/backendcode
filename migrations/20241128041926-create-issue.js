@@ -27,6 +27,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      profile: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

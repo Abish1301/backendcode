@@ -40,5 +40,5 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Endpoint not found' });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => log(`Hi, this is the backend for the construction app, calling from port ${PORT}`));

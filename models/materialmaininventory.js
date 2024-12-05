@@ -4,13 +4,12 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class MaterialMainInventory extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      this.hasMany(models.MaterialMainInventory, { foreignKey: 'material', as: 'material_request' });
+    }
+    static associate(models) {
+     
+      
     }
   }
   MaterialMainInventory.init({

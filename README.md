@@ -28,7 +28,7 @@ npx sequelize-cli db:migrate --name 20241120111414-create-role.js --config confi
 npx sequelize-cli migration:generate --name
 npx sequelize-cli db:migrate --config config/config.js
 npx sequelize-cli db:migrate
-npx sequelize-cli db:migrate --name 20241120114440-create-role --config config/config.js
+npx sequelize-cli db:migrate --name 20241204070735-create-material-request --config config/config.js
 
 # For Creating Seeder For all
 

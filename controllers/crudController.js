@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const { responseHandler, aliasResponseData, FindDuplicate } = require('../utils');
-const { aliasResponseObjectData } = require('../utils/OtherExports');
+const { aliasResponseObjectData, aliasResponseObjectDatainclude } = require('../utils/OtherExports');
 
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
@@ -108,11 +108,11 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
           : {}
       ),
       d: 0,
-      [Op.and]: [  // Combine everything using Op.and
+      [Op.and]: [
         {
           [Op.or]: [
-            { user: user || null },  // Either user from the query or null
-            { user: null },  // Also include rows where user is null
+            { user: user || null },
+            { user: null },
           ],
         },
       ],
@@ -256,6 +256,85 @@ const updateByID = (Model, field,Attributes) => async (req, res) => {
   }
 };
 
+const getAllByConditionwithincludeModels = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+
+  const { page = 1, limit = 10, search } = req.query;
+  const { user } = req.body;
+
+  try {
+    const offset = (page - 1) * limit;
+
+    const whereCondition = {
+      ...(
+        search
+          ? {
+            [Op.or]: searchFields.map(field => ({
+              [field]: { [Op.like]: `%${search}%` },
+            })),
+          }
+          : {}
+      ),
+      d: 0,
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { user: user || null },
+            { user: null },
+          ],
+        },
+      ],
+    };
+
+    const { count, rows } = await Model.findAndCountAll({
+      where: whereCondition,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      include: includeModels,
+    });
+
+    if (count === 0) {
+      return responseHandler(res, {
+        data: {},
+        status: 'error',
+        message: 'No data found',
+        statusCode: 500,
+      });
+    }
+
+    const totalPages = Math.ceil(count / limit);
+
+    const response = {
+      count,
+      totalPages,
+      currentPage: parseInt(page, 10),
+      results: aliasResponseObjectDatainclude(
+        rows.map(row => row.dataValues),
+        Attributes,
+        includeModels // Pass the includeModels to aliasResponseObjectData
+      ),
+    };
+
+    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
+    
+    return responseHandler(res, {
+      data: response,
+      status: 'success',
+      message: 'Data fetched successfully',
+      statusCode: 200,
+      error: null,
+    });
+  } catch (error) {
+    console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+    res.status(500).json({ error: error.message });
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   getAll,
@@ -264,5 +343,6 @@ module.exports = {
   deleteRecord,
   getAllByCondition,
   createWODuplicates,
-  updateByID
+  updateByID,
+  getAllByConditionwithincludeModels
 };
