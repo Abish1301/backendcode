@@ -44,6 +44,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      type: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       d: {
         type: Sequelize.INTEGER,
         allowNull: false,
