@@ -106,7 +106,7 @@ const equipmentMainInventoryAttributes = [
   ['weight', 'MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
   ['color', 'MAIN_INVENTORY_EQUIPMENT_COLOR'],
   ['status', 'MAIN_INVENTORY_EQUIPMENT_STATUS'],
-  ['i_stock', 'MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
+  ['in_stock', 'MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
 
 const taskMasterAttributes = [
   ['name', 'TASK_NAME'],
@@ -170,4 +170,20 @@ const materialMainInventoryAttributesformaterialrequest = [
   ['status', 'MAIN_INVENTORY_MATERIAL_STATUS'],
   ['in_stock', 'MAIN_INVENTORY_MATERIAL_IN_STOCK']]
 
-module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest,authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes,materialRequestAttributes };
+
+  const equipmentRequestAttributes = [
+    ['name', 'NAME'],
+    ['description', 'DESCRIPTION'],
+    ['status', 'STATUS'],
+    ['code', 'CODE'],
+    ['task', 'TASK'],
+    ['e_status', 'E_STATUS'],
+    ['equipment', 'EQUIPMENT'],
+    ['qty', 'QTY'],
+    ['transfer', 'TRANSFER'],
+    ['site', 'SITE'],
+    ['created_at', 'DATE'],
+  ];
+
+
+module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest,authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes,materialRequestAttributes, equipmentRequestAttributes };
