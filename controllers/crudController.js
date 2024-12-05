@@ -91,7 +91,7 @@ const deleteRecord = Model => async (req, res) => {
 // get all by user=user & user=null  except d=1 rows
 const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
 
-  const { page=1, limit=10, search } = req.query;
+  const { page = 1, limit = 10, search } = req.query;
   const { user } = req.body
 
   try {
@@ -117,7 +117,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
         },
       ],
     };
-    
+
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,
@@ -140,7 +140,11 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       count,
       totalPages,
       currentPage: parseInt(page, 10),
-      results: aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
+      results: includeModels.length > 0 ? aliasResponseObjectDatainclude(
+        rows.map(row => row.dataValues),
+        Attributes,
+        includeModels // Pass the includeModels to aliasResponseObjectData
+      ) : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
 
     };
     console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
@@ -171,7 +175,7 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     const { user, ...otherData } = req.body;
 
     if (field) {
-      const count = await FindDuplicate(Model, field, req.body); 
+      const count = await FindDuplicate(Model, field, req.body);
       if (count > 0) {
         return responseHandler(res, {
           data: null,
@@ -208,11 +212,11 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 };
 
 // update entire row or a field of a particular row by id
-const updateByID = (Model, field,Attributes) => async (req, res) => {
+const updateByID = (Model, field, Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
-    if (req.body.name||req.body.code) {      
-      const count = await FindDuplicate(Model, field, req.body); 
+    if (req.body.name || req.body.code) {
+      const count = await FindDuplicate(Model, field, req.body);
       if (count > 0) {
         return responseHandler(res, {
           data: null,
@@ -315,7 +319,7 @@ const getAllByConditionwithincludeModels = (Model, searchFields = [], Attributes
     };
 
     console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
-    
+
     return responseHandler(res, {
       data: response,
       status: 'success',
