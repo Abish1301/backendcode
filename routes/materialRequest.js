@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 const { responseHandler, aliasResponseObjectData, materialRequestAttributes, materialMainInventoryAttributes, materialMainInventoryAttributesformaterialrequest } = require('../utils');
 const crudController = require('../controllers/crudController'); 
 
-const searchableFields = ['m_status', 'qty']; 
+const searchableFields = ['m_status', 'qty','type']; 
 const includeModels = [
   {
     model: MaterialMainInventory,

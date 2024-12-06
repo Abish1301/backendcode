@@ -314,7 +314,6 @@ const getAllByConditionwithincludeModels = (Model, searchFields = [], Attributes
       ),
     };
 
-    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
     
     return responseHandler(res, {
       data: response,
