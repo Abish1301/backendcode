@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
-const { responseHandler, aliasResponseData, FindDuplicate } = require('../utils');
+const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser} = require('../utils');
 const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude} = require('../utils/OtherExports');
 
 
@@ -213,21 +213,25 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 };
 
 // update entire row or a field of a particular row by id
-const updateByID = (Model, field, Attributes) => async (req, res) => {
+const updateByID = (Model, field=[], Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
-    if (req.body.name || req.body.code) {
-      const count = await FindDuplicate(Model, field, req.body);
-      if (count > 0) {
-        return responseHandler(res, {
-          data: null,
-          status: 'conflict',
-          message: 'Duplicate record found',
-          statusCode: 409,
-          error: 'Duplicate record exists',
-        });
+    if (Array.isArray(field) && field.length > 0) {
+      const isFieldPresent = field.some(f => req.body[f]);
+      
+      if (isFieldPresent) {
+        const count = await FindDuplicate(Model, field, req.body);
+        if (count > 0) {
+          return responseHandler(res, {
+            data: null,
+            status: 'conflict',
+            message: 'Duplicate record found',
+            statusCode: 409,
+            error: 'Duplicate record exists',
+          });
+        }
       }
-    }
+    } 
     const record = await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
     if (record[0] == 1) {
@@ -303,9 +307,24 @@ const updateByID = (Model, field, Attributes) => async (req, res) => {
 //     });
 //   }
 // };
-const createUsers = (Model, Attributes, includeModels, AuthInfo) => async (req, res) => {
+const createUsers = (Model, Attributes, includeModels, AuthInfo,field=[]) => async (req, res) => {
+  console.log(field,'field');
+  
   try {
     // Create a new record in the main model (Auth model)
+       if (Array.isArray(field) && field.length > 0){
+      const count = await FindDuplicateforUser(Model, field, req.body);
+        if (count > 0) {
+          return responseHandler(res, {
+            data: null,
+            status: 'conflict',
+            message: 'Duplicate record found',
+            statusCode: 409,
+            error: 'Duplicate record exists',
+          });
+        }
+      
+    }
     const record = await Model.create({ email: req.body.username, password: await bcrypt.hash(req.body.password, 10) });
     console.log(`Created a new record in ${Model.name}`);
 

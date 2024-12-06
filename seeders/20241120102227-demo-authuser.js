@@ -14,6 +14,7 @@ module.exports = {
         address: '123 Admin St, Admin City',
         role_id: null, 
         type: 'Admin', 
+        status:true,
         created_by: null, 
         created_at: new Date(),
         updated_at: new Date(),
@@ -32,6 +33,7 @@ module.exports = {
         created_by: 1, 
         created_at: new Date(),
         updated_at: new Date(),
+        status:true
       },
       {
         auth_id: 3, 
@@ -47,6 +49,7 @@ module.exports = {
         created_by: 1, // Created by admin
         created_at: new Date(),
         updated_at: new Date(),
+        status:true
       },
     ]);
   },

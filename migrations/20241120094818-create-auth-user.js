@@ -65,6 +65,16 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
+      status: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,  
+        defaultValue: true,  
+      },
+      d: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, // Default value for `d`
+      },
       auth_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
