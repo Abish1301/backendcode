@@ -131,7 +131,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
         data: {},
         status: 'error',
         message: 'No data found',
-        statusCode: 500,
+        statusCode: 200,
       });
     }
 

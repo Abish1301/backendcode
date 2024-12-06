@@ -16,8 +16,8 @@ const includeModels = [
 const AuthInfo={roel_id:null, type:'incharge'}
 router.route('/')
   .post(crudController.getAllByCondition(Auth, searchableFields, authAttributes,includeModels))
-  .put(crudController.updateByID(Auth,field, authAttributes))
-  .delete(crudController.deleteRecord(Auth));
+  .put(crudController.updateByID(AuthUser, authAttributes))
+  .delete(crudController.deleteRecord(AuthUser));
 
 router.post("/create", crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo));
 
