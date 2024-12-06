@@ -7,15 +7,21 @@ const { authAttributes, authUserAttributes } = require('../utils');
 const searchableFields = ['name','code'];
 const field = [];
 const includeModels = [
-    {
-      model: AuthUser,
-      as: 'AuthUser',
-      attributes: authUserAttributes,
-    },
-  ];
+  {
+    model: AuthUser,
+    as: 'AuthUser',
+    attributes: authUserAttributes,
+  },
+];const includeModel = [
+  {
+    model: Auth,
+    as: 'auth',
+    attributes: authAttributes,
+  },
+];
 const AuthInfo={roel_id:null, type:'incharge'}
 router.route('/')
-  .post(crudController.getAllByCondition(Auth, searchableFields, authAttributes,includeModels))
+  .post(crudController.getAllByCondition(AuthUser, searchableFields, authUserAttributes,includeModel))
   .put(crudController.updateByID(AuthUser,field, authUserAttributes))
   .delete(crudController.deleteRecord(AuthUser));
 

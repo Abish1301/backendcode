@@ -15,7 +15,6 @@ module.exports = {
         role_id: null, 
         type: 'Admin', 
         status:true,
-        created_by: null, 
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -30,7 +29,6 @@ module.exports = {
         address: '456 User St, User City',
         role_id: 2, 
         type: 'User', 
-        created_by: 1, 
         created_at: new Date(),
         updated_at: new Date(),
         status:true
@@ -46,7 +44,6 @@ module.exports = {
         address: '789 Incharge St, Incharge City',
         role_id: null, // Incharge should not have a role
         type: 'Incharge', // Incharge type
-        created_by: 1, // Created by admin
         created_at: new Date(),
         updated_at: new Date(),
         status:true

@@ -51,7 +51,7 @@ module.exports = {
         type: Sequelize.ENUM('Admin', 'User', 'Incharge'),
         allowNull: false,
       },
-      created_by: {
+      user: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
