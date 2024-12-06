@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
+const bcrypt = require("bcryptjs");
 const { responseHandler, aliasResponseData, FindDuplicate } = require('../utils');
-const { aliasResponseObjectData, aliasResponseObjectDatainclude } = require('../utils/OtherExports');
+const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude} = require('../utils/OtherExports');
 
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
@@ -260,76 +261,88 @@ const updateByID = (Model, field, Attributes) => async (req, res) => {
   }
 };
 
-const getAllByConditionwithincludeModels = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+// const createUsers = (Model, Attributes, includeModels, AuthInfo) => async (req, res) => {
+//   try {
+//     // Create a new record in the main model
+//     const record = await Model.create({email:req.body.username, password:await bcrypt.hash(req.body.password, 10)});
+//     console.log(`Created a new record in ${Model.name}`);
 
-  const { page = 1, limit = 10, search } = req.query;
-  const { user } = req.body;
+//     for (const include of includeModels) {
+//       const { model, as } = include;
 
+//       // Ensure the related model and alias exist
+//       if (model && as) {
+//         const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo });
+//         const returnData = { ...authUserData, record }; // Combine both records
+//         console.log(`Created a related record in ${model.name} with alias ${as}`);
+//         console.log('returnData',returnData);
+        
+//         // Respond with success
+//         return responseHandler(res, {
+//           data: aliasResponseObjectDatainclude(
+//             returnData,
+//             Attributes,
+//             includeModels // Pass the includeModels to aliasResponseObjectData
+//           ),
+//           status: 'success',
+//           message: 'Record created successfully',
+//           statusCode: 200,
+//           error: null,
+//         });
+//       }
+//     }
+
+//   } catch (error) {
+//     console.error(`Error creating record in ${Model.name}: ${error.message}`);
+//     return responseHandler(res, {
+//       data: null,
+//       status: 'error',
+//       message: 'Internal server error',
+//       statusCode: 500,
+//       error: error.message,
+//     });
+//   }
+// };
+const createUsers = (Model, Attributes, includeModels, AuthInfo) => async (req, res) => {
   try {
-    const offset = (page - 1) * limit;
+    // Create a new record in the main model (Auth model)
+    const record = await Model.create({ email: req.body.username, password: await bcrypt.hash(req.body.password, 10) });
+    console.log(`Created a new record in ${Model.name}`);
 
-    const whereCondition = {
-      ...(
-        search
-          ? {
-            [Op.or]: searchFields.map(field => ({
-              [field]: { [Op.like]: `%${search}%` },
-            })),
-          }
-          : {}
-      ),
-      d: 0,
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { user: user || null },
-            { user: null },
-          ],
-        },
-      ],
-    };
+    const includeData = {};  // Object to hold the data for included models
 
-    const { count, rows } = await Model.findAndCountAll({
-      where: whereCondition,
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
-      include: includeModels,
-    });
+    // Loop through the includeModels to create associated records
+    for (const include of includeModels) {
+      const { model, as } = include;
 
-    if (count === 0) {
-      return responseHandler(res, {
-        data: {},
-        status: 'error',
-        message: 'No data found',
-        statusCode: 500,
-      });
+      // Ensure the related model and alias exist
+      if (model && as) {
+        const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo });
+        includeData[as] = authUserData; // Store related model data by alias
+        console.log(`Created a related record in ${model.name} with alias ${as}`);
+      }
     }
 
-    const totalPages = Math.ceil(count / limit);
-
-    const response = {
-      count,
-      totalPages,
-      currentPage: parseInt(page, 10),
-      results: aliasResponseObjectDatainclude(
-        rows.map(row => row.dataValues),
-        Attributes,
-        includeModels // Pass the includeModels to aliasResponseObjectData
-      ),
+    // Combine both records (auth data and included models data)
+    const returnData = {
+      ...record.dataValues,  // Data from the main model
+      ...includeData,  // Data from included models
     };
 
-    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
+    // Log the final return data
+    console.log('returnData', returnData);
 
+    // Respond with success
     return responseHandler(res, {
-      data: response,
+      data: aliasResponseDatainclude(returnData, Attributes, includeModels), // Pass the full combined data
       status: 'success',
-      message: 'Data fetched successfully',
+      message: 'Record created successfully',
       statusCode: 200,
       error: null,
     });
+
   } catch (error) {
-    console.error(`Error fetching records from ${Model.name}: ${error.message}`);
-    res.status(500).json({ error: error.message });
+    console.error(`Error creating record in ${Model.name}: ${error.message}`);
     return responseHandler(res, {
       data: null,
       status: 'error',
@@ -340,6 +353,8 @@ const getAllByConditionwithincludeModels = (Model, searchFields = [], Attributes
   }
 };
 
+
+
 module.exports = {
   getAll,
   create,
@@ -348,5 +363,5 @@ module.exports = {
   getAllByCondition,
   createWODuplicates,
   updateByID,
-  getAllByConditionwithincludeModels
+  createUsers
 };
