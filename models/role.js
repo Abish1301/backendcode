@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       status: DataTypes.BOOLEAN,
       screens: DataTypes.JSON,
-      created_by: DataTypes.INTEGER,
       d: DataTypes.BOOLEAN,
       user: DataTypes.INTEGER,
       created_at: {

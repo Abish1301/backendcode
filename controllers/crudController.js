@@ -90,7 +90,7 @@ const deleteRecord = Model => async (req, res) => {
 };
 
 // get all by user=user & user=null  except d=1 rows
-const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = [],  filter = {}) => async (req, res) => {
 
   const { page = 1, limit = 10, search } = req.query;
   const { user } = req.body
@@ -117,6 +117,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
           ],
         },
       ],
+      ...(Object.keys(filter).length > 0 ? filter : {}),
     };
 
 
