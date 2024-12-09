@@ -121,6 +121,7 @@ const taskMasterAttributes = [
   ['start_date', 'TASK_START_DATE'],
   ['end_date', 'TASK_END_DATE'],
   ['attachement', 'TASK_ATTACHEMENT'],
+  ['unit', 'TASK_UNIT'],
 ]
 
 const taskTimelineAttributes = [

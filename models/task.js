@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     site: DataTypes.INTEGER,
     search_tags: DataTypes.STRING,
+    unit: DataTypes.INTEGER,
     work_category: DataTypes.INTEGER,
     priority: 
     {
