@@ -27,12 +27,12 @@ npx sequelize-cli model:generate --name Category --attributes name:string
 npx sequelize-cli migration:generate --name
 npx sequelize-cli db:migrate --config config/config.js
 npx sequelize-cli db:migrate
-npx sequelize-cli db:migrate --name 20241204070735-create-material-request --config config/config.js
+npx sequelize-cli db:migrate --name 20241120114440-create-role --config config/config.js
 
 # For Creating Seeder For all
 
 npx sequelize-cli db:seed:all --config config/config.js
-npx sequelize-cli db:seed --seed 20241204071354-material-request --config config/config.js
+npx sequelize-cli db:seed --seed 20241120105347-demo-authroles --config config/config.js
 
 
 # For Creating Seeder For Each table

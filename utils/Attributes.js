@@ -22,9 +22,10 @@ const roleMaterAttributes = [
 ];
 
 const unitAttributes = [
-  ['name', 'UNIT_NAME'],
-  ['code', 'UNIT_CODE'],
-  ['status', 'UNIT_STATUS'],
+  ['id', 'id'],
+  ['name', 'name'],
+  ['code', 'code'],
+  ['status', 'status'],
 ];
 const taxAttributes = [
   ['name', 'TAX_NAME'],
@@ -70,43 +71,43 @@ const expenseHeadAttributes = [
 
 
 const issueMasterAttributes = [
-  ['name', '  ISSUE_NAME'],
-  ['site_type', '  ISSUE_SITE_TYPE'],
-  ['remarks', '  ISSUE_REMARK']
+  ['name', 'ISSUE_NAME'],
+  ['site_type', 'ISSUE_SITE_TYPE'],
+  ['remarks', 'ISSUE_REMARK']
 ]
 const materialMainInventoryAttributes = [
-  ['name', ' MAIN_INVENTORY_MATERIAL_NAME'],
-  ['code', ' MAIN_INVENTORY_MATERIAL_CODE'],
-  ['hsn_code', ' MAIN_INVENTORY_MATERIAL_HSN'],
-  ['description', '  MAIN_INVENTORY_MATERIAL_DESCRIPTION'],
-  ['unit', ' MAIN_INVENTORY_MATERIAL_UNIT'],
-  ['category', ' MAIN_INVENTORY_MATERIAL_CATEGORY'],
-  ['image', ' MAIN_INVENTORY_MATERIAL_IMAGE'],
-  ['alert_min_stock', '  MAIN_INVENTORY_MATERIAL_ALEART_MIN_STOCK'],
-  ['unit_rent_price', '  MAIN_INVENTORY_MATERIAL_UNIT_RENT_PRICE'],
-  ['brand_name', ' MAIN_INVENTORY_MATERIAL_BRAND_NAME'],
-  ['dimensions', ' MAIN_INVENTORY_MATERIAL_DIMENSIONS'],
-  ['weight', ' MAIN_INVENTORY_MATERIAL_WEIGHT'],
-  ['color', '  MAIN_INVENTORY_MATERIAL_COLOR'],
-  ['status', ' MAIN_INVENTORY_MATERIAL_STATUS'],
-  ['in_stock', '  MAIN_INVENTORY_MATERIAL_IN_STOCK']]
+  ['name', 'MAIN_INVENTORY_MATERIAL_NAME'],
+  ['code', 'MAIN_INVENTORY_MATERIAL_CODE'],
+  ['hsn_code', 'MAIN_INVENTORY_MATERIAL_HSN'],
+  ['description', 'MAIN_INVENTORY_MATERIAL_DESCRIPTION'],
+  ['unit', 'MAIN_INVENTORY_MATERIAL_UNIT'],
+  ['category', 'MAIN_INVENTORY_MATERIAL_CATEGORY'],
+  ['image', 'MAIN_INVENTORY_MATERIAL_IMAGE'],
+  ['alert_min_stock', 'MAIN_INVENTORY_MATERIAL_ALEART_MIN_STOCK'],
+  ['unit_rent_price', 'MAIN_INVENTORY_MATERIAL_UNIT_RENT_PRICE'],
+  ['brand_name', 'MAIN_INVENTORY_MATERIAL_BRAND_NAME'],
+  ['dimensions', 'MAIN_INVENTORY_MATERIAL_DIMENSIONS'],
+  ['weight', 'MAIN_INVENTORY_MATERIAL_WEIGHT'],
+  ['color', 'MAIN_INVENTORY_MATERIAL_COLOR'],
+  ['status', 'MAIN_INVENTORY_MATERIAL_STATUS'],
+  ['in_stock', 'MAIN_INVENTORY_MATERIAL_IN_STOCK']]
 
 
 const equipmentMainInventoryAttributes = [
-  ['name', ' MAIN_INVENTORY_EQUIPMENT_NAME'],
-  ['code', ' MAIN_INVENTORY_EQUIPMENT_CODE'],
-  ['description', '  MAIN_INVENTORY_EQUIPMENT_DESCRIPTION'],
-  ['unit', ' MAIN_INVENTORY_EQUIPMENT_UNIT'],
-  ['category', ' MAIN_INVENTORY_EQUIPMENT_CATEGORY'],
-  ['image', ' MAIN_INVENTORY_EQUIPMENT_IMAGE'],
-  ['alert_min_stock', '  MAIN_INVENTORY_EQUIPMENT_ALEART_MIN_STOCK'],
-  ['unit_rent_price', '  MAIN_INVENTORY_EQUIPMENT_UNIT_RENT_PRICE'],
-  ['brand_name', ' MAIN_INVENTORY_EQUIPMENT_BRAND_NAME'],
-  ['dimensions', ' MAIN_INVENTORY_EQUIPMENT_DIMENSIONS'],
-  ['weight', ' MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
-  ['color', '  MAIN_INVENTORY_EQUIPMENT_COLOR'],
-  ['status', ' MAIN_INVENTORY_EQUIPMENT_STATUS'],
-  ['i_stock', '  MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
+  ['name', 'MAIN_INVENTORY_EQUIPMENT_NAME'],
+  ['code', 'MAIN_INVENTORY_EQUIPMENT_CODE'],
+  ['description', 'MAIN_INVENTORY_EQUIPMENT_DESCRIPTION'],
+  ['unit', 'MAIN_INVENTORY_EQUIPMENT_UNIT'],
+  ['category', 'MAIN_INVENTORY_EQUIPMENT_CATEGORY'],
+  ['image', 'MAIN_INVENTORY_EQUIPMENT_IMAGE'],
+  ['alert_min_stock', 'MAIN_INVENTORY_EQUIPMENT_ALEART_MIN_STOCK'],
+  ['unit_rent_price', 'MAIN_INVENTORY_EQUIPMENT_UNIT_RENT_PRICE'],
+  ['brand_name', 'MAIN_INVENTORY_EQUIPMENT_BRAND_NAME'],
+  ['dimensions', 'MAIN_INVENTORY_EQUIPMENT_DIMENSIONS'],
+  ['weight', 'MAIN_INVENTORY_EQUIPMENT_WEIGHT'],
+  ['color', 'MAIN_INVENTORY_EQUIPMENT_COLOR'],
+  ['status', 'MAIN_INVENTORY_EQUIPMENT_STATUS'],
+  ['in_stock', 'MAIN_INVENTORY_EQUIPMENT_IN_STOCK']]
 
 const taskMasterAttributes = [
   ['name', 'TASK_NAME'],
@@ -152,6 +153,8 @@ const materialRequestAttributes = [
   ['transfer', 'TRANSFER'],
   ['site', 'SITE'],
   ['created_at', 'DATE'],
+  ['user', 'USER']
+
 ];
 const materialMainInventoryAttributesformaterialrequest = [
   ['name', 'MAIN_INVENTORY_MATERIAL_NAME'],
@@ -168,6 +171,23 @@ const materialMainInventoryAttributesformaterialrequest = [
   ['weight', 'MAIN_INVENTORY_MATERIAL_WEIGHT'],
   ['color', 'MAIN_INVENTORY_MATERIAL_COLOR'],
   ['status', 'MAIN_INVENTORY_MATERIAL_STATUS'],
-  ['in_stock', 'MAIN_INVENTORY_MATERIAL_IN_STOCK']]
+  ['in_stock', 'MAIN_INVENTORY_MATERIAL_IN_STOCK'],
+]
 
-module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest,authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes,materialRequestAttributes };
+
+  const equipmentRequestAttributes = [
+    ['name', 'NAME'],
+    ['description', 'DESCRIPTION'],
+    ['status', 'STATUS'],
+    ['code', 'CODE'],
+    ['task', 'TASK'],
+    ['e_status', 'E_STATUS'],
+    ['equipment', 'EQUIPMENT'],
+    ['qty', 'QTY'],
+    ['transfer', 'TRANSFER'],
+    ['site', 'SITE'],
+    ['created_at', 'DATE'],
+  ];
+
+
+module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest,authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes,materialRequestAttributes, equipmentRequestAttributes };

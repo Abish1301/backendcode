@@ -10,6 +10,7 @@ module.exports = {
         site_type: 1,
         created_at: new Date(),
         updated_at: new Date(),
+        status:true,
       },
       {
         name: 'Plumbing Issue',
@@ -17,6 +18,8 @@ module.exports = {
         site_type: 2,
         created_at: new Date(),
         updated_at: new Date(),
+        status:true,
+
       },
       {
         name: 'Structural Issue',
@@ -24,6 +27,8 @@ module.exports = {
         site_type: 3,
         created_at: new Date(),
         updated_at: new Date(),
+        status:true,
+
       },
       {
         name: 'HVAC Issue',
@@ -31,6 +36,8 @@ module.exports = {
         site_type: 4,
         created_at: new Date(),
         updated_at: new Date(),
+        status:true,
+
       },
       {
         name: 'Safety Issue',
@@ -38,6 +45,8 @@ module.exports = {
         site_type: 5,
         created_at: new Date(),
         updated_at: new Date(),
+        status:true,
+
       },
     ]);
   },

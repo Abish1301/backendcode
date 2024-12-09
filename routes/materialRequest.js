@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { material_request, MaterialMainInventory } = require('../models');
-const { Op } = require('sequelize'); 
-const { responseHandler, aliasResponseObjectData, materialRequestAttributes, materialMainInventoryAttributes, materialMainInventoryAttributesformaterialrequest } = require('../utils');
+const { materialRequestAttributes, materialMainInventoryAttributesformaterialrequest } = require('../utils');
 const crudController = require('../controllers/crudController'); 
 
 const searchableFields = ['m_status', 'qty','type']; 
@@ -14,14 +13,8 @@ const includeModels = [
   },
 ];
 
-router.get(
-  '/',
-  crudController.getAllByConditionwithincludeModels(
-    material_request,
-    searchableFields, 
-    materialRequestAttributes, 
-    includeModels
-  )
-);
+router.route('/')
+  .post(crudController.getAllByCondition(material_request, searchableFields, materialRequestAttributes,includeModels))
+
 
 module.exports = router;
