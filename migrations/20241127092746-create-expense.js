@@ -35,7 +35,10 @@ module.exports = {
         type: Sequelize.STRING(10)
       },
       site: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.INTEGER
+      },
+      task: {
+        type: Sequelize.INTEGER
       },
       type: {
         type: Sequelize.INTEGER

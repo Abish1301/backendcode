@@ -12,6 +12,7 @@ router.route('/')
   .put(crudController.updateByID(Task,field, taskMasterAttributes))
   .delete(crudController.deleteRecord(Task));
 
-router.post("/create", crudController.createWODuplicates(Task, field, taskMasterAttributes));
+  router.post("/create", crudController.createWODuplicates(Task, field, taskMasterAttributes));
+  router.post("/getById", crudController.getAllById(Task, taskMasterAttributes));
 
 module.exports = router;

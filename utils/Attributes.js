@@ -57,6 +57,7 @@ const expenseMasterAttributes = [
   ['name', 'EXPENSE_NAME'],
   ['type', 'EXPENSE_TYPE'],
   ['site', 'EXPENSE_SITE'],
+  ['task', 'EXPENSE_TASK'],
   ['date', 'EXPENSE_DATE'],
   ['attachement', 'EXPENSE_ATTACHEMENT'],
   ['amount', 'EXPENSE_AMOUNT'],
@@ -71,7 +72,8 @@ const expenseHeadAttributes = [
 
 const issueMasterAttributes = [
   ['name', 'ISSUE_NAME'],
-  ['site_type', 'ISSUE_SITE_TYPE'],
+  ['site', 'ISSUE_SITE'],
+  ['task', 'ISSUE_TASK'],
   ['remarks', 'ISSUE_REMARK']
 ]
 const materialMainInventoryAttributes = [

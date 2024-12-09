@@ -15,7 +15,9 @@ module.exports = {
       remarks: {
         type: Sequelize.STRING(100)
       },
-      site_type: {
+      site: {
+        type: Sequelize.INTEGER
+      },task: {
         type: Sequelize.INTEGER
       },
       d: {

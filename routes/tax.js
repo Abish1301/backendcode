@@ -13,5 +13,6 @@ router.route('/')
   .delete(crudController.deleteRecord(Tax));
 
 router.post("/create", crudController.createWODuplicates(Tax, field, taxAttributes));
+router.post("/getById", crudController.getAllById(Tax, taxAttributes));
 
 module.exports = router;

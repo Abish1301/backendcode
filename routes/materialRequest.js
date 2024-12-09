@@ -28,7 +28,8 @@ router.route('/')
   .post(crudController.getAllByCondition(material_request, searchableFields, materialRequestAttributes, includeModels))
   .put(crudController.updateByID(material_request, field, materialRequestAttributes))
   .delete(crudController.deleteRecord(material_request));
-router.post("/create", crudController.createWODuplicates(material_request, field, materialRequestAttributes));
+  router.post("/create", crudController.createWODuplicates(material_request, field, materialRequestAttributes));
+  router.post("/getById", crudController.getAllById(material_request, materialRequestAttributes, includeModels));
 
 
 module.exports = router;

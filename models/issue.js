@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Issue.init({
     name: DataTypes.STRING,
     remarks: DataTypes.STRING,
-    site_type: DataTypes.INTEGER,
+    site: DataTypes.INTEGER,
+    task: DataTypes.INTEGER,
     d: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

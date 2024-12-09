@@ -27,5 +27,6 @@ router.route('/')
   .delete(crudController.deleteRecord(AuthUser));
 
 router.post("/create", crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo,["email"]));
+router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
 
 module.exports = router;
