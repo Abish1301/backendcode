@@ -161,10 +161,7 @@ const workCategoryAttributes = [
 ];
 const materialRequestAttributes = [
   ['id', 'id'],
-  ['name', 'name'],
-  ['description', 'description'],
   ['status', 'status'],
-  ['code', 'code'],
   ['task', 'task'],
   ['m_status', 'm_status'],
   ['material', 'material'],
@@ -197,10 +194,7 @@ const materialMainInventoryAttributesformaterialrequest = [
 
   const equipmentRequestAttributes = [
     ['id', 'id'],
-    ['name', 'name'],
-    ['description', 'description'],
     ['status', 'status'],
-    ['code', 'code'],
     ['task', 'task'],
     ['e_status', 'e_status'],
     ['equipment', 'equipment'],
