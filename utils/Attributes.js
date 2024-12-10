@@ -1,7 +1,7 @@
 const authAttributes = [
   ['email', 'EMAIL'],
 ];
- 
+
 const authUserAttributes = [
   ['code', 'USER_CODE'],
   ['name', 'USER_NAME'],
@@ -12,7 +12,7 @@ const authUserAttributes = [
   ['address', 'USER_ADDRESS'],
   ['type', 'USER_TYPE'],
 ];
- 
+
 const roleMaterAttributes = [
   ['id', 'id'],
   ['name', 'name'],
@@ -21,12 +21,14 @@ const roleMaterAttributes = [
   ['status', 'status'],
   ['screens', 'screens']
 ];
- 
+
 const unitAttributes = [
   ['id', 'id'],
   ['name', 'name'],
   ['code', 'code'],
   ['status', 'status'],
+  ['user', 'user'],
+
 ];
 const taxAttributes = [
   ['id', 'id'],
@@ -56,7 +58,7 @@ const siteMasterAttributes = [
   ['estimation_amount', 'estimation_amount'],
   ['end_date', 'end_date_site'],
   ['status', 'status'],
- 
+
 ];
 const expenseMasterAttributes = [
   ['id', 'id'],
@@ -68,14 +70,14 @@ const expenseMasterAttributes = [
   ['amount', 'amount'],
   ['remark', 'remark']
 ]
- 
+
 const expenseHeadAttributes = [
   ['id', 'id'],
   ['name', 'name'],
   ['status', 'status'],
 ];
- 
- 
+
+
 const issueMasterAttributes = [
   ['id', 'id'],
   ['name', 'name'],
@@ -84,7 +86,7 @@ const issueMasterAttributes = [
   ['remarks', 'remarks'],
   ['profile', 'profile'],
   ['status', 'status'],
- 
+
 ]
 const materialMainInventoryAttributes = [
   ['id', 'id'],
@@ -103,8 +105,8 @@ const materialMainInventoryAttributes = [
   ['color', 'color'],
   ['status', 'status'],
   ['in_stock', 'in_stock']]
- 
- 
+
+
 const equipmentMainInventoryAttributes = [
   ['id', 'id'],
   ['name', 'name'],
@@ -121,7 +123,7 @@ const equipmentMainInventoryAttributes = [
   ['color', 'color'],
   ['status', 'status'],
   ['in_stock', 'in_stock']]
- 
+
 const taskMasterAttributes = [
   ['id', 'id'],
   ['name', 'name'],
@@ -135,7 +137,7 @@ const taskMasterAttributes = [
   ['end_date', 'end_date'],
   ['attachement', 'attachement'],
 ]
- 
+
 const taskTimelineAttributes = [
   ['id', 'id'],
   ['site', 'site'],
@@ -150,7 +152,7 @@ const taskTimelineAttributes = [
   ['attachement1', 'attachement1'],
   ['attachement2', 'attachement2']
 ]
- 
+
 const workCategoryAttributes = [
   ['id', 'id'],
   ['name', 'name'],
@@ -159,7 +161,10 @@ const workCategoryAttributes = [
 ];
 const materialRequestAttributes = [
   ['id', 'id'],
+  ['name', 'name'],
+  ['description', 'description'],
   ['status', 'status'],
+  ['code', 'code'],
   ['task', 'task'],
   ['m_status', 'm_status'],
   ['material', 'material'],
@@ -168,7 +173,7 @@ const materialRequestAttributes = [
   ['site', 'site'],
   ['created_at', 'created_at'],
   ['user', 'user']
- 
+
 ];
 const materialMainInventoryAttributesformaterialrequest = [
   ['id', 'id'],
@@ -188,11 +193,14 @@ const materialMainInventoryAttributesformaterialrequest = [
   ['status', 'status'],
   ['in_stock', 'in_stock'],
 ]
- 
- 
+
+
   const equipmentRequestAttributes = [
     ['id', 'id'],
+    ['name', 'name'],
+    ['description', 'description'],
     ['status', 'status'],
+    ['code', 'code'],
     ['task', 'task'],
     ['e_status', 'e_status'],
     ['equipment', 'equipment'],
@@ -201,7 +209,6 @@ const materialMainInventoryAttributesformaterialrequest = [
     ['site', 'site'],
     ['created_at', 'created_at'],
   ];
- 
- 
+
+
 module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest,authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes,materialRequestAttributes, equipmentRequestAttributes };
- 

@@ -10,7 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Issue.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+        
+      });
+      Issue.belongsTo(models.Task, {
+        foreignKey: 'task',
+        targetKey: 'id',
+      });
     }
   }
   Issue.init({

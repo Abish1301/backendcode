@@ -16,9 +16,17 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       site: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'SiteMaster',
+          key: 'id',
+        },
       },task: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'TaskMaster',
+          key: 'id',
+        },
       },
       d: {
         type: Sequelize.BOOLEAN,

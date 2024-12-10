@@ -14,16 +14,6 @@ const includeModels = [
   },
 ];
 
-
-// router.get(
-//   '/',
-//   crudController.getAllByConditionwithincludeModels(
-//     material_request,
-//     searchableFields, 
-//     materialRequestAttributes, 
-//     includeModels
-//   )
-// );
 router.route('/')
   .post(crudController.getAllByCondition(material_request, searchableFields, materialRequestAttributes, includeModels))
   .put(crudController.updateByID(material_request, field, materialRequestAttributes))

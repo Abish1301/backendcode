@@ -26,9 +26,14 @@ module.exports = {
       user: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        
       },
       unit:{
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'UnitMaster',
+          key: 'id',
+        },
  
       },
       created_at: {
@@ -42,13 +47,21 @@ module.exports = {
         defaultValue: Sequelize.NOW
       },
       site: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'SiteMaster',
+          key: 'id',
+        },
       },
       search_tags: {
         type: Sequelize.STRING(50)
       },
       work_category: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'WorkCategory',
+          key: 'id',
+        },
       },
       priority: {
         type: Sequelize.ENUM('High', 'Low', 'Medium'),

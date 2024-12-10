@@ -14,8 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
+  // console.log("Headers:", req.headers);
+  // console.log("Body:", req.body);
   next();
 });
 
