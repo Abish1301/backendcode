@@ -373,25 +373,36 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => 
   }
 };
 
-const getAllById = (Model, Attributes, includeModels = [],filter={}) => async (req, res) => {
+const getAllById = (Model, Attributes, includeModels = [], filter = {}) => async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
-  const { user, ...filters } = req.body;
+  const {  user, ...filters } = req.body; // Extract `id` and `user` from body
   try {
     const offset = (page - 1) * limit;
 
-    const whereCondition = {
-      d: 0,
-      ...filters, // Apply all filters from the body
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { user: filters.user || null }, // Explicit handling for user field
-            { user: null },
-          ],
-        },
-      ],
-      ...(Object.keys(filter).length > 0 ? filter : {}),
-    };
+    let whereCondition;
+    
+    // If `id` is the only key in `req.body`
+    if (filters.id && Object.keys(req.body).length === 1) {
+      whereCondition = {
+        d: 0,
+        id: filters.id,
+          ...(Object.keys(filter).length > 0 ? filter : {}),
+      };
+    } else {
+      whereCondition = {
+        d: 0,
+        ...filters, // Apply all other filters from the body
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { user: user || null }, // Explicit handling for user field
+              { user: null },
+            ],
+          },
+        ],
+        ...(Object.keys(filter).length > 0 ? filter : {}),
+      };
+    }
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,

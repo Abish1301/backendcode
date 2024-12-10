@@ -5,7 +5,7 @@ const crudController = require('../controllers/crudController');
 const { materialCategoryAttributes } = require('../utils');
 
 const searchableFields = ['name','code'];
-const field = 'code';
+const field = ['code'];
 
 router.route('/')
   .post(crudController.getAllByCondition(MaterialCategory, searchableFields, materialCategoryAttributes))
