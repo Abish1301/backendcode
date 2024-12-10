@@ -34,12 +34,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('Admin', 'User', 'Incharge'),
         allowNull: false,
       },
-      created_by: DataTypes.INTEGER,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
       auth_id: {  
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      user: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      d: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
       },
     },
     {

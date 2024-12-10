@@ -51,7 +51,7 @@ module.exports = {
         type: Sequelize.ENUM('Admin', 'User', 'Incharge'),
         allowNull: false,
       },
-      created_by: {
+      user: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
@@ -64,6 +64,16 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW,
+      },
+      status: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,  
+        defaultValue: true,  
+      },
+      d: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, // Default value for `d`
       },
       auth_id: {
         type: Sequelize.INTEGER,

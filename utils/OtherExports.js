@@ -55,7 +55,36 @@ const aliasResponseObjectDatainclude = (dataArray, attributes, includeModels = [
   });
 };
 
+const aliasResponseDatainclude = (data, attributes, includeModels = []) => {
+  const result = {}; // Result object to hold the transformed data
+
+  // Map the attributes array to transform the main model fields
+  attributes.forEach(([key, alias]) => {
+    if (data[key] !== undefined) {
+      result[alias] = data[key]; // Map the original data to alias names
+    }
+  });
+
+  // Loop through the included models and extract their data
+  includeModels.forEach(includeModel => {
+    const includeData = data[includeModel.as]; // Get data for the associated model
+    if (includeData) {
+      // If data exists for this model, map its fields too
+      const { dataValues } = includeData; 
+      includeModel.attributes.forEach(([key, alias]) => {
+        if (dataValues[key] !== undefined) {
+          result[alias] = dataValues[key]; // Map the included model fields to aliases
+        }
+      });
+    } else {
+      console.log(`No data found for alias: ${includeModel.as}`);
+    }
+  });
+
+  return result;
+};
+
   
-  module.exports = { aliasResponseData, aliasResponseObjectData,aliasResponseObjectDatainclude };
+  module.exports = { aliasResponseData, aliasResponseObjectData,aliasResponseObjectDatainclude, aliasResponseDatainclude };
   
 
