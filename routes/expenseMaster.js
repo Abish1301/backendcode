@@ -13,5 +13,6 @@ router.route('/')
   .delete(crudController.deleteRecord(Expense));
 
 router.post("/create", crudController.createWODuplicates(Expense, field, expenseMasterAttributes));
+router.post("/getById", crudController.getAllById(Expense, expenseMasterAttributes));
 
 module.exports = router;

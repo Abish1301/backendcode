@@ -10,13 +10,22 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Issue.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+        
+      });
+      Issue.belongsTo(models.Task, {
+        foreignKey: 'task',
+        targetKey: 'id',
+      });
     }
   }
   Issue.init({
     name: DataTypes.STRING,
     remarks: DataTypes.STRING,
-    site_type: DataTypes.INTEGER,
+    site: DataTypes.INTEGER,
+    task: DataTypes.INTEGER,
     d: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

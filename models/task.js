@@ -10,7 +10,19 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Task.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+        
+      });
+      Task.belongsTo(models.Unit, {
+        foreignKey: 'unit',
+        targetKey: 'id',
+      });
+      Task.belongsTo(models.WorkCategory, {
+        foreignKey: 'work_category',
+        targetKey: 'id',
+      });
     }
   }
   Task.init({
@@ -38,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     site: DataTypes.INTEGER,
     search_tags: DataTypes.STRING,
+    unit: DataTypes.INTEGER,
     work_category: DataTypes.INTEGER,
     priority: 
     {

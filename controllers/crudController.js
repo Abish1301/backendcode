@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
-const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser} = require('../utils');
-const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude} = require('../utils/OtherExports');
+const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser } = require('../utils');
+const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude } = require('../utils/OtherExports');
 
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
@@ -90,85 +90,86 @@ const deleteRecord = Model => async (req, res) => {
 };
 
 // get all by user=user & user=null  except d=1 rows
-const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+// const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
 
-  const { page = 1, limit = 10, search } = req.query;
-  const { user } = req.body
+//   const { page = 1, limit = 10, search } = req.query;
+//   const { user } = req.body
 
-  try {
-    const offset = (page - 1) * limit;
+//   try {
+//     const offset = (page - 1) * limit;
 
-    const whereCondition = {
-      ...(
-        search
-          ? {
-            [Op.or]: searchFields.map(field => ({
-              [field]: { [Op.like]: `%${search}%` },
-            })),
-          }
-          : {}
-      ),
-      d: 0,
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { user: user || null },
-            { user: null },
-          ],
-        },
-      ],
-    };
+//     const whereCondition = {
+//       ...(
+//         search
+//           ? {
+//             [Op.or]: searchFields.map(field => ({
+//               [field]: { [Op.like]: `%${search}%` },
+//             })),
+//           }
+//           : {}
+//       ),
+//       d: 0,
+//       [Op.and]: [
+//         {
+//           [Op.or]: [
+//             { user: user || null },
+//             { user: null },
+//           ],
+//         },
+//       ],
+//       ...(Object.keys(filter).length > 0 ? filter : {}),
+//     };
 
 
-    const { count, rows } = await Model.findAndCountAll({
-      where: whereCondition,
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
-      include: includeModels,
-    });
-    if (count === 0) {
-      return responseHandler(res, {
-        data: {},
-        status: 'error',
-        message: 'No data found',
-        statusCode: 200,
-      });
-    }
+//     const { count, rows } = await Model.findAndCountAll({
+//       where: whereCondition,
+//       limit: parseInt(limit, 10),
+//       offset: parseInt(offset, 10),
+//       include: includeModels,
+//     });
+//     if (count === 0) {
+//       return responseHandler(res, {
+//         data: {},
+//         status: 'No Data',
+//         message: 'No data found',
+//         statusCode: 200,
+//       });
+//     }
 
-    const totalPages = Math.ceil(count / limit);
+//     const totalPages = Math.ceil(count / limit);
 
-    const response = {
-      count,
-      totalPages,
-      currentPage: parseInt(page, 10),
-      results: includeModels.length > 0 ? aliasResponseObjectDatainclude(
-        rows.map(row => row.dataValues),
-        Attributes,
-        includeModels // Pass the includeModels to aliasResponseObjectData
-      ) : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
+//     const response = {
+//       count,
+//       totalPages,
+//       currentPage: parseInt(page, 10),
+//       results: includeModels.length > 0 ? aliasResponseObjectDatainclude(
+//         rows.map(row => row.dataValues),
+//         Attributes,
+//         includeModels // Pass the includeModels to aliasResponseObjectData
+//       ) : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes)
 
-    };
-    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
-    // res.json(response);
-    return responseHandler(res, {
-      data: response,
-      status: 'success',
-      message: 'Data feteched successfully',
-      statusCode: 200,
-      error: null,
-    });
-  } catch (error) {
-    console.error(`Error fetching records from ${Model.name}: ${error.message}`);
-    res.status(500).json({ error: error.message });
-    return responseHandler(res, {
-      data: null,
-      status: 'error',
-      message: 'Internal server error',
-      statusCode: 500,
-      error: error.message,
-    });
-  }
-};
+//     };
+//     console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
+//     // res.json(response);
+//     return responseHandler(res, {
+//       data: response,
+//       status: 'success',
+//       message: 'Data feteched successfully',
+//       statusCode: 200,
+//       error: null,
+//     });
+//   } catch (error) {
+//     console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+//     res.status(500).json({ error: error.message });
+//     return responseHandler(res, {
+//       data: null,
+//       status: 'error',
+//       message: 'Internal server error',
+//       statusCode: 500,
+//       error: error.message,
+//     });
+//   }
+// };
 
 // create a row without duplicate 
 const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
@@ -213,12 +214,12 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 };
 
 // update entire row or a field of a particular row by id
-const updateByID = (Model, field=[], Attributes) => async (req, res) => {
+const updateByID = (Model, field = [], Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
     if (Array.isArray(field) && field.length > 0) {
       const isFieldPresent = field.some(f => req.body[f]);
-      
+
       if (isFieldPresent) {
         const count = await FindDuplicate(Model, field, req.body);
         if (count > 0) {
@@ -231,7 +232,7 @@ const updateByID = (Model, field=[], Attributes) => async (req, res) => {
           });
         }
       }
-    } 
+    }
     const record = await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
     if (record[0] == 1) {
@@ -280,7 +281,7 @@ const updateByID = (Model, field=[], Attributes) => async (req, res) => {
 //         const returnData = { ...authUserData, record }; // Combine both records
 //         console.log(`Created a related record in ${model.name} with alias ${as}`);
 //         console.log('returnData',returnData);
-        
+
 //         // Respond with success
 //         return responseHandler(res, {
 //           data: aliasResponseObjectDatainclude(
@@ -307,23 +308,23 @@ const updateByID = (Model, field=[], Attributes) => async (req, res) => {
 //     });
 //   }
 // };
-const createUsers = (Model, Attributes, includeModels, AuthInfo,field=[]) => async (req, res) => {
-  console.log(field,'field');
-  
+const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => async (req, res) => {
+  console.log(field, 'field');
+
   try {
     // Create a new record in the main model (Auth model)
-       if (Array.isArray(field) && field.length > 0){
+    if (Array.isArray(field) && field.length > 0) {
       const count = await FindDuplicateforUser(Model, field, req.body);
-        if (count > 0) {
-          return responseHandler(res, {
-            data: null,
-            status: 'conflict',
-            message: 'Duplicate record found',
-            statusCode: 409,
-            error: 'Duplicate record exists',
-          });
-        }
-      
+      if (count > 0) {
+        return responseHandler(res, {
+          data: null,
+          status: 'conflict',
+          message: 'Duplicate record found',
+          statusCode: 409,
+          error: 'Duplicate record exists',
+        });
+      }
+
     }
     const record = await Model.create({ email: req.body.username, password: await bcrypt.hash(req.body.password, 10) });
     console.log(`Created a new record in ${Model.name}`);
@@ -372,6 +373,176 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo,field=[]) => asy
   }
 };
 
+const getAllById = (Model, Attributes, includeModels = [],filter={}) => async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const { user, ...filters } = req.body;
+  try {
+    const offset = (page - 1) * limit;
+
+    const whereCondition = {
+      d: 0,
+      ...filters, // Apply all filters from the body
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { user: filters.user || null }, // Explicit handling for user field
+            { user: null },
+          ],
+        },
+      ],
+      ...(Object.keys(filter).length > 0 ? filter : {}),
+    };
+
+    const { count, rows } = await Model.findAndCountAll({
+      where: whereCondition,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      include: includeModels,
+    });
+
+    if (count === 0) {
+      return responseHandler(res, {
+        data: {},
+        status: 'No Data',
+        message: 'No data found',
+        statusCode: 200,
+      });
+    }
+
+    const totalPages = Math.ceil(count / limit);
+
+    const response = {
+      count,
+      totalPages,
+      currentPage: parseInt(page, 10),
+      results: includeModels.length > 0
+        ? aliasResponseObjectDatainclude(
+          rows.map(row => row.dataValues),
+          Attributes,
+          includeModels // Pass the includeModels to aliasResponseObjectData
+        )
+        : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes),
+    };
+
+    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`);
+
+    return responseHandler(res, {
+      data: response.count == 1 ? response.results : response,
+      status: 'success',
+      message: 'Data fetched successfully',
+      statusCode: 200,
+      error: null,
+    });
+  } catch (error) {
+    console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
+
+// get all by user=user & user=null  except d=1 rows
+const getAllByCondition = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
+  const { page = 1, limit = 10, search } = req.query;
+  const { user } = req.body;
+
+  try {
+    const offset = (page - 1) * limit;
+
+    const whereCondition = {
+      ...(
+        search
+          ? {
+            [Op.or]: searchFields.map(field => ({
+              [field]: { [Op.like]: `%${search}%` },
+            })),
+          }
+          : {}
+      ),
+      d: 0,
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { user: user || null },
+            { user: null },
+          ],
+        },
+      ],
+      ...(Object.keys(filter).length > 0 ? filter : {}),
+    };
+
+    const { count, rows } = await Model.findAndCountAll({
+      where: whereCondition,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      include: includeModels,
+    });
+
+    if (count === 0) {
+      return responseHandler(res, {
+        data: {},
+        status: 'No Data',
+        message: 'No data found',
+        statusCode: 200,
+      });
+    }
+
+    const totalPages = Math.ceil(count / limit);
+
+    // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
+    const transformedResults = rows.map(row => {
+      const dataValues = row.dataValues;
+
+      // Dynamically extract and group fields for each included model
+      const transformedIncludes = includeModels.reduce((acc, includeModel) => {
+        const alias = includeModel.as;
+        if (dataValues[alias]) {
+          acc[alias] = Array.isArray(dataValues[alias])
+            ? dataValues[alias].map(item => item.dataValues)
+            : dataValues[alias].dataValues;
+        }
+        return acc;
+      }, {});
+
+      // Combine main record data with transformed include data and exclude `Details`
+      const { SiteDetails, TaskDetails, ...filteredData } = {
+        ...dataValues,
+        ...transformedIncludes,
+      };
+
+      return filteredData;
+    });
+
+    const response = {
+      count,
+      totalPages,
+      currentPage: parseInt(page, 10),
+      results: transformedResults,
+    };
+
+    console.log(`Fetched records from ${Model.name}: page ${page}, limit ${limit}`);
+    return responseHandler(res, {
+      data: response,
+      status: 'success',
+      message: 'Data fetched successfully',
+      statusCode: 200,
+      error: null,
+    });
+  } catch (error) {
+    console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+    return responseHandler(res, {
+      data: null,
+      status: 'error',
+      message: 'Internal server error',
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
 
 
 module.exports = {
@@ -382,5 +553,10 @@ module.exports = {
   getAllByCondition,
   createWODuplicates,
   updateByID,
-  createUsers
+  createUsers,
+  getAllById,
 };
+
+
+
+

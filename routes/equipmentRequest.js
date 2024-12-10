@@ -19,6 +19,7 @@ router.route('/')
   .put(crudController.updateByID(equipment_request, field, equipmentRequestAttributes))
   .delete(crudController.deleteRecord(equipment_request));
 router.post("/create", crudController.createWODuplicates(equipment_request, field, equipmentRequestAttributes));
+router.post("/getById", crudController.getAllById(equipment_request, equipmentRequestAttributes, includeModels));
 
 
 module.exports = router;

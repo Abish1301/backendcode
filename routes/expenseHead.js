@@ -12,6 +12,7 @@ router.route('/')
   .put(crudController.updateByID(ExpenseHead,field, expenseHeadAttributes))
   .delete(crudController.deleteRecord(ExpenseHead));
 
-router.post("/create", crudController.createWODuplicates(ExpenseHead, field, expenseHeadAttributes));
+  router.post("/create", crudController.createWODuplicates(ExpenseHead, field, expenseHeadAttributes));
+  router.post("/getById", crudController.getAllById(ExpenseHead, expenseHeadAttributes));
 
 module.exports = router;

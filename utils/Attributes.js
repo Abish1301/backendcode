@@ -27,6 +27,8 @@ const unitAttributes = [
   ['name', 'name'],
   ['code', 'code'],
   ['status', 'status'],
+  ['user', 'user'],
+
 ];
 const taxAttributes = [
   ['id', 'id'],
@@ -54,7 +56,7 @@ const siteMasterAttributes = [
   ['start_date', 'start_date'],
   ['incharge', 'incharge'],
   ['estimation_amount', 'estimation_amount'],
-  ['end_date', 'end_date'],
+  ['end_date', 'end_date_site'],
   ['status', 'status'],
 
 ];
@@ -79,8 +81,12 @@ const expenseHeadAttributes = [
 const issueMasterAttributes = [
   ['id', 'id'],
   ['name', 'name'],
-  ['site_type', 'site_type'],
-  ['remarks', 'remarks']
+  ['site', 'site'],
+  ['task', 'task'],
+  ['remarks', 'remarks'],
+  ['profile', 'profile'],
+  ['status', 'status'],
+
 ]
 const materialMainInventoryAttributes = [
   ['id', 'id'],

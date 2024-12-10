@@ -13,5 +13,6 @@ router.route('/')
   .delete(crudController.deleteRecord(Role));
 
 router.post("/create", crudController.createWODuplicates(Role, field, roleMaterAttributes));
+router.post("/getById", crudController.getAllById(Role,  roleMaterAttributes));
 
 module.exports = router;
