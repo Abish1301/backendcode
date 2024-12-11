@@ -24,10 +24,17 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       unit: {
-        type: Sequelize.INTEGER
-      },
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'UnitMaster',
+          key: 'id',
+        },},
       category: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'MaterialCategoryMaster',
+          key: 'id',
+        },
       },
       image: {
         type: Sequelize.STRING,

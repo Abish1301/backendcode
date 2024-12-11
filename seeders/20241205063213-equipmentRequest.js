@@ -6,8 +6,8 @@ module.exports = {
       {
         equipment: 1,
         qty: '50',
-        site: 101,
-        task: 201,
+        site: 1,
+        task: 1,
         transfer: 1,
         e_status: 'Pending',
         status: true,
@@ -18,8 +18,8 @@ module.exports = {
       {
         equipment: 2,
         qty: '100',
-        site: 102,
-        task: 202,
+        site: 2,
+        task: 2,
         transfer: 2,
         e_status: 'Approved',
         status: true,
@@ -30,8 +30,8 @@ module.exports = {
       {
         equipment: 3,
         qty: '30',
-        site: 103,
-        task: 203,
+        site: 1,
+        task: 3,
         transfer: 3,
         e_status: 'Rejected',
         status: false,

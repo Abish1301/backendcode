@@ -9,6 +9,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      unit: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'UnitMaster',
+          key: 'id',
+        },},
       name: {
         type: Sequelize.STRING(50)
       },
@@ -18,11 +24,12 @@ module.exports = {
       description: {
         type: Sequelize.STRING(100)
       },
-      unit: {
-        type: Sequelize.INTEGER
-      },
       category: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'MaterialCategoryMaster',
+          key: 'id',
+        },
       },
       image: {
         type: Sequelize.STRING,

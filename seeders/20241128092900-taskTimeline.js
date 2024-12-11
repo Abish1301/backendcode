@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.bulkInsert('TaskTimeline', [
       {
         site: 1,
-        task: 101,
+        task: 1,
         entry_date: '26-11-2024', 
         percentage: '20%',
         total_work_done: '20',
@@ -21,7 +21,7 @@ module.exports = {
       },
       {
         site: 2,
-        task: 102,
+        task: 2,
         entry_date: '27-11-2024', 
         percentage: '50%',
         total_work_done: '50',
@@ -35,8 +35,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        site: 3,
-        task: 103,
+        site: 1,
+        task: 3,
         entry_date: '28-11-2024', 
         percentage: '10%',
         total_work_done: '10',

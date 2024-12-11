@@ -58,7 +58,11 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       incharge: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'AuthUser',
+          key: 'id',
+        },
       },
       estimation_amount: {
         type: Sequelize.STRING(50)

@@ -35,13 +35,24 @@ module.exports = {
         type: Sequelize.STRING(10)
       },
       site: {
-        type: Sequelize.INTEGER
-      },
-      task: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'SiteMaster',
+          key: 'id',
+        },
+      },task: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'TaskMaster',
+          key: 'id',
+        },
       },
       type: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'ExpenseHead',
+          key: 'id',
+        },
       },
       amount: {
         type: Sequelize.STRING(50)

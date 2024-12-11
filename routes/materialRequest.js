@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { material_request, MaterialMainInventory } = require('../models');
-const { materialRequestAttributes, materialMainInventoryAttributesformaterialrequest } = require('../utils');
+const { material_request, MaterialMainInventory, Site, Task } = require('../models');
+const { materialRequestAttributes, materialMainInventoryAttributesformaterialrequest, siteMasterAttributes, taskMasterAttributes } = require('../utils');
 const crudController = require('../controllers/crudController');
 
 const searchableFields = ['m_status', 'qty'];
@@ -12,6 +12,17 @@ const includeModels = [
     as: 'MaterialMainInventory',
     attributes: materialMainInventoryAttributesformaterialrequest,
   },
+  {
+    model: Site,
+    as: 'Site',
+    attributes: siteMasterAttributes,
+  },
+  {
+    model: Task,
+    as: 'Task',
+    attributes: taskMasterAttributes,
+  },
+
 ];
 
 router.route('/')

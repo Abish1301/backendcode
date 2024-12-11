@@ -1,18 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { Site } = require('../models');
+const { Site, AuthUser } = require('../models');
 const crudController = require('../controllers/crudController');
-const { siteMasterAttributes } = require('../utils');
+const { siteMasterAttributes, authUserAttributes } = require('../utils');
 
 const searchableFields = ['name'];
 const field = [];
+const includeModels = [
+  {
+    model: AuthUser,
+    as: 'AuthUser',
+    attributes: authUserAttributes,
+  },
 
+];
 router.route('/')
-  .post(crudController.getAllByCondition(Site, searchableFields, siteMasterAttributes))
+  .post(crudController.getAllByCondition(Site, searchableFields, siteMasterAttributes, includeModels))
   .put(crudController.updateByID(Site,field, siteMasterAttributes))
   .delete(crudController.deleteRecord(Site));
 
   router.post("/create", crudController.createWODuplicates(Site, field, siteMasterAttributes));
-  router.post("/getById", crudController.getAllById(Site, siteMasterAttributes));
+  router.post("/getById", crudController.getAllById(Site, siteMasterAttributes, includeModels));
 
 module.exports = router;

@@ -8,6 +8,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'equipment',
         as: 'EquipmentMainInventory',
       });
+      EquipmentRequest.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+        
+      });
+      EquipmentRequest.belongsTo(models.Task, {
+        foreignKey: 'task',
+        targetKey: 'id',
+      });
     }
   }
   EquipmentRequest.init(
@@ -18,14 +27,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       qty: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
-      site: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      task: {
-        type: DataTypes.INTEGER,
         allowNull: false,
       },
       transfer: {
