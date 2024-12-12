@@ -1,16 +1,16 @@
 const authAttributes = [
-  ['email', 'EMAIL'],
+  ['email', 'email'],
 ];
 
 const authUserAttributes = [
-  ['code', 'USER_CODE'],
-  ['name', 'USER_NAME'],
-  ['description', 'USER_DESCRIPTION'],
-  ['profile_image', 'USER_PROFILE_IMAGE'],
-  ['email', 'USER_EMAIL'],
-  ['mobile', 'USER_MOBILE'],
-  ['address', 'USER_ADDRESS'],
-  ['type', 'USER_TYPE'],
+  ['code', 'code'],
+  ['name', 'name'],
+  ['description', 'description'],
+  ['profile_image', 'profile_image'],
+  ['email', 'email'],
+  ['mobile', 'mobile'],
+  ['address', 'address'],
+  ['type', 'type'],
 ];
 
 const roleMaterAttributes = [

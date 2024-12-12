@@ -21,6 +21,8 @@ npm install winston
 npx sequelize-cli model:generate --name Product --attributes name:string,price:float,categoryId:integer
 npx sequelize-cli model:generate --name Category --attributes name:string
 
+# Create Db
+npx sequelize-cli db:create --env development --config config/config.js
 
 
 # For Migration 

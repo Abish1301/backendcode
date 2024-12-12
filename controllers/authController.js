@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { Auth: AuthModel, AuthUser: AuthUserModel, Role: RoleModel } = require("../models");
-
-const Joi = require('joi'); 
-const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes } = require("../utils");
+const Joi = require('joi');
+const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes, roleMaterAttributes } = require("../utils");
+const Logger = require("../utils/logger"); // Assuming the logger file is in the root directory
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -14,6 +14,7 @@ const login = async (req, res) => {
 
   const { error } = loginSchema.validate(req.body);
   if (error) {
+    Logger.warn(`Login validation failed for email: ${email} - ${error.details[0].message}`); // Log validation error
     return responseHandler(res, {
       data: null,
       status: 'error',
@@ -29,12 +30,12 @@ const login = async (req, res) => {
       where: { email },
       include: [
         {
-          model: AuthUserModel, 
+          model: AuthUserModel,
           as: 'authuser',
           include: [
             {
-              model: RoleModel,  
-              as: 'authrole', 
+              model: RoleModel,
+              as: 'authrole',
             },
           ],
         },
@@ -42,6 +43,7 @@ const login = async (req, res) => {
     });
 
     if (!auth || !(await bcrypt.compare(password, auth.password))) {
+      Logger.error(`Login failed for email: ${email} - Invalid credentials`); // Log authentication failure
       return responseHandler(res, {
         data: null,
         status: 'error',
@@ -53,6 +55,7 @@ const login = async (req, res) => {
 
     const authUser = auth.authuser;
     if (!authUser) {
+      Logger.error(`Login failed for email: ${email} - User not found`); // Log missing user data
       return responseHandler(res, {
         data: null,
         status: 'error',
@@ -71,8 +74,10 @@ const login = async (req, res) => {
       refreshToken,
       authData: aliasResponseData(auth.get(), authAttributes),
       userData: aliasResponseData(authUser.get(), authUserAttributes),
-      roleData: authUser.authrole ? aliasResponseData(authUser.authrole.get(), roleAttributes) : null,
+      roleData: authUser.authrole ? aliasResponseData(authUser.authrole.get(), roleMaterAttributes) : null,
     };
+
+    Logger.info(`Login successful for email: ${email}`); // Log successful login
 
     return responseHandler(res, {
       data: responseData,
@@ -84,7 +89,7 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    Logger.error(`Error during login for email: ${email} - ${error.message}`); // Log unexpected errors
     return responseHandler(res, {
       data: null,
       status: 'error',
@@ -95,17 +100,23 @@ const login = async (req, res) => {
   }
 };
 
-
-
 const refreshToken = (req, res) => {
   const { token } = req.body;
 
-  if (!token) return res.sendStatus(403); 
+  if (!token) {
+    Logger.warn('Refresh token not provided'); // Log missing token
+    return res.sendStatus(403);
+  }
 
   jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); 
+    if (err) {
+      Logger.error('Invalid refresh token'); // Log invalid token error
+      return res.sendStatus(403);
+    }
 
     const accessToken = generateAccessToken(user);
+    Logger.info(`Refresh token used successfully for user: ${user.email}`); // Log successful refresh
+
     res.json({ accessToken });
   });
 };

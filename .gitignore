@@ -34,3 +34,6 @@ Thumbs.db
 
 # npm package distribution files
 *.tgz
+
+# Archive files
+*.zip
