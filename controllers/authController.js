@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { Auth: AuthModel, AuthUser: AuthUserModel, Role: RoleModel } = require("../models");
 
 const Joi = require('joi'); 
-const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes } = require("../utils");
+const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes, roleMaterAttributes } = require("../utils");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -71,7 +71,7 @@ const login = async (req, res) => {
       refreshToken,
       authData: aliasResponseData(auth.get(), authAttributes),
       userData: aliasResponseData(authUser.get(), authUserAttributes),
-      roleData: authUser.authrole ? aliasResponseData(authUser.authrole.get(), roleAttributes) : null,
+      roleData: authUser.authrole ? aliasResponseData(authUser.authrole.get(), roleMaterAttributes) : null,
     };
 
     return responseHandler(res, {

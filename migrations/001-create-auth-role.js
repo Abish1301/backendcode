@@ -51,20 +51,10 @@ module.exports = {
       },
     });
 
-    await queryInterface.addConstraint('AuthUser', {
-      fields: ['role_id'],
-      type: 'foreign key',
-      name: 'fk_role_id',
-      references: {
-        table: 'AuthRole', 
-        field: 'id',
-      },
-      onDelete: 'SET NULL',  
-    });
+
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint('AuthUser', 'fk_role_id');
     
     await queryInterface.dropTable('AuthRole');
   },
