@@ -22,11 +22,16 @@ module.exports = {
       },
       site: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      task: {
+        references: {
+          model: 'SiteMaster',
+          key: 'id',
+        },
+      },task: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        references: {
+          model: 'TaskMaster',
+          key: 'id',
+        },
       },
       transfer: {
         type: Sequelize.INTEGER,

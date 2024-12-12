@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     status: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,

@@ -10,10 +10,17 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       site: {
-        type: Sequelize.INTEGER
-      },
-      task: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'SiteMaster',
+          key: 'id',
+        },
+      },task: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'TaskMaster',
+          key: 'id',
+        },
       },
       entry_date: {
         type: Sequelize.STRING(10)

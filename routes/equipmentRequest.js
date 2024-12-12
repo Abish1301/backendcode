@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { equipment_request, EquipmentMainInventory } = require('../models');
-const { equipmentRequestAttributes, equipmentMainInventoryAttributes } = require('../utils');
+const { equipment_request, EquipmentMainInventory, Task, Site } = require('../models');
+const { equipmentRequestAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, siteMasterAttributes } = require('../utils');
 const crudController = require('../controllers/crudController');
 
 const searchableFields = ['e_status', 'qty'];
@@ -12,6 +12,17 @@ const includeModels = [
     as: 'EquipmentMainInventory',
     attributes: equipmentMainInventoryAttributes,
   },
+  {
+    model: Site,
+    as: 'Site',
+    attributes: siteMasterAttributes,
+  },
+  {
+    model: Task,
+    as: 'Task',
+    attributes: taskMasterAttributes,
+  },
+
 ];
 
 router.route('/')

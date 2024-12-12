@@ -8,6 +8,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'material',
         as: 'MaterialMainInventory',
       });
+      MaterialRequest.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+        
+      });
+      MaterialRequest.belongsTo(models.Task, {
+        foreignKey: 'task',
+        targetKey: 'id',
+      });
     }
   }
   MaterialRequest.init(

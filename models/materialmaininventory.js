@@ -8,7 +8,14 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.MaterialMainInventory, { foreignKey: 'material', as: 'material_request' });
     }
     static associate(models) {
-     
+      MaterialMainInventory.belongsTo(models.Unit, {
+        foreignKey: 'unit',
+        as: 'Unit',
+      }); 
+      MaterialMainInventory.belongsTo(models.MaterialCategory, {
+        foreignKey: 'category',
+        as: 'MaterialCategory',
+      });
       
     }
   }

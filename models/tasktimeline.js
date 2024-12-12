@@ -10,8 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-    }
+      TaskTimeline.belongsTo(models.Task, {
+        foreignKey: 'task',
+        targetKey: 'id',
+      });
+      TaskTimeline.belongsTo(models.Site, {
+        foreignKey: 'site',
+        targetKey: 'id',
+      });    }
   }
   TaskTimeline.init({
     site: DataTypes.INTEGER,

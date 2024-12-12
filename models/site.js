@@ -10,8 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-    }
+      Site.belongsTo(models.AuthUser, {
+        foreignKey: 'incharge',
+        as: 'AuthUser',
+      });    }
   }
   Site.init({
     name: DataTypes.STRING,
@@ -35,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     location_name: DataTypes.STRING,
     location_description: DataTypes.STRING,
     geo_location: DataTypes.STRING,
-    incharge: DataTypes.STRING,
+    incharge: DataTypes.INTEGER,
     estimation_amount: DataTypes.STRING
   }, {
     sequelize,
