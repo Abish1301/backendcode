@@ -164,9 +164,9 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
     if(DataByPK.user===null){
       return responseHandler(res, {
         data: null,
-        status: 'conflict',
+        status: 'Unauthorized',
         message: 'User is null',
-        statusCode: 409,
+        statusCode: 401,
         error: 'Cannot Update data',
       });
     }
