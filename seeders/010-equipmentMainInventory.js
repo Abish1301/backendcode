@@ -20,6 +20,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        tax:1,
       },
       {
         name: 'Bulldozer',
@@ -54,6 +55,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        tax:2,
       },
     ]);
   },

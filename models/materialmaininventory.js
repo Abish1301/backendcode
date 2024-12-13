@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'category',
         as: 'MaterialCategory',
       });
+       MaterialMainInventory.belongsTo(models.Tax, {
+        foreignKey: 'tax',
+        as: 'Tax',
+      });
       
     }
   }

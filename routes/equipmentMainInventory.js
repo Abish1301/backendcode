@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { EquipmentMainInventory, Unit, MaterialCategory } = require('../models');
+const { EquipmentMainInventory, Unit, MaterialCategory, Tax } = require('../models');
 const crudController = require('../controllers/crudController');
-const { equipmentMainInventoryAttributes, unitAttributes, materialCategoryAttributes } = require('../utils');
+const { equipmentMainInventoryAttributes, unitAttributes, materialCategoryAttributes, taxAttributes } = require('../utils');
 
 const searchableFields = ['name','code'];
 const field = ['code'];
@@ -16,7 +16,11 @@ const includeModels = [
     as: 'MaterialCategory',
     attributes: materialCategoryAttributes,
   },
-
+  {
+    model: Tax,
+    as: 'Tax',
+    attributes: taxAttributes,
+  },
 ];
 router.route('/')
   .post(crudController.getAllByCondition(EquipmentMainInventory, searchableFields, equipmentMainInventoryAttributes, includeModels))

@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      a_qty: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      e_date: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       site: {
         type: DataTypes.INTEGER,
         allowNull: false,

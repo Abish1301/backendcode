@@ -14,6 +14,8 @@ module.exports = {
         d: 0,
         created_at: new Date(),
         updated_at: new Date(),
+        e_date:'13-12-2024',
+        a_qty:'50',
       },
       {
         material: 2,
@@ -26,6 +28,8 @@ module.exports = {
         d: 0,
         created_at: new Date(),
         updated_at: new Date(),
+        e_date:'13-12-2024',
+        a_qty:'100',
       },
       {
         material: 3,
@@ -38,6 +42,8 @@ module.exports = {
         d: 0,
         created_at: new Date(),
         updated_at: new Date(),
+        e_date:'13-12-2024',
+        a_qty:'30',
       },
     ]);
   },
