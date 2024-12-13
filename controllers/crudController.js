@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
-const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser } = require('../utils');
+const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger } = require('../utils');
 const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude } = require('../utils/OtherExports');
 
 
@@ -159,6 +159,16 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
           });
         }
       }
+    }
+    const DataByPK=await Model.findByPk(id);
+    if(DataByPK.user===null){
+      return responseHandler(res, {
+        data: null,
+        status: 'conflict',
+        message: 'User is null',
+        statusCode: 409,
+        error: 'Cannot Update data',
+      });
     }
     const record = await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
