@@ -29,6 +29,6 @@ router.route('/')
   .delete(crudController.deleteRecord(Task));
 
   router.post("/create", crudController.createWODuplicates(Task, field, taskMasterAttributes));
-  router.post("/getById", crudController.getAllById(Task, taskMasterAttributes));
+  router.post("/getById", crudController.getAllById(Task, taskMasterAttributes, includeModels));
 
 module.exports = router;

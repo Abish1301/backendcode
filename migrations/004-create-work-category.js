@@ -36,7 +36,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
-      }
+      },
+      type: {
+        type: Sequelize.ENUM('1', '2'),
+        allowNull: false,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

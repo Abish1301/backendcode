@@ -5,6 +5,7 @@ const {
   aliasResponseData,
   FindDuplicate,
   FindDuplicateforUser,
+  Logger,
 } = require("../utils");
 const {
   aliasResponseObjectData,
@@ -47,6 +48,10 @@ const getAll =
       console.log(
         `Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`
       );
+      Logger.info(
+        `Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`
+      );
+
       res.json(response);
     } catch (error) {
       console.error(
@@ -62,6 +67,10 @@ const create = (Model) => async (req, res) => {
     console.log(
       `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
     );
+    Logger.info(
+      `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
+    );
+
     res.json(record);
   } catch (error) {
     console.error(`Error creating record in ${Model.name}: ${error.message}`);
@@ -74,6 +83,8 @@ const update = (Model, Attributes) => async (req, res) => {
     const { id, ...data } = req.body;
     await Model.update(data, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
+    Logger.info(`Updated record with ID ${id} in ${Model.name}`);
+
     res.json({ message: "Record updated" });
   } catch (error) {
     console.error(`Error updating record in ${Model.name}: ${error.message}`);
@@ -86,6 +97,8 @@ const deleteRecord = (Model) => async (req, res) => {
     const { id } = req.body;
     await Model.destroy({ where: { id } });
     console.log(`Deleted record with ID ${id} from ${Model.name}`);
+    Logger.info(`Deleted record with ID ${id} from ${Model.name}`);
+
     return responseHandler(res, {
       data: response,
       status: "success",
@@ -126,6 +139,9 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     // Create a new record
     const record = await Model.create(req.body);
     console.log(
+      `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
+    );
+    Logger.info(
       `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
     );
 
@@ -170,8 +186,20 @@ const updateByID =
           }
         }
       }
+      const DataByPK = await Model.findByPk(id);
+      if (DataByPK.user === null) {
+        return responseHandler(res, {
+          data: null,
+          status: "Unauthorized",
+          message: "User is null",
+          statusCode: 401,
+          error: "Cannot Update data",
+        });
+      }
       const record = await Model.update(data, { where: { id } });
       console.log(`Updated record with ID ${id} in ${Model.name}`);
+      Logger.info(`Updated record with ID ${id} in ${Model.name}`);
+
       if (record[0] == 1) {
         const updatedRecord = await Model.findByPk(id);
 
@@ -202,53 +230,10 @@ const updateByID =
     }
   };
 
-// const createUsers = (Model, Attributes, includeModels, AuthInfo) => async (req, res) => {
-//   try {
-//     // Create a new record in the main model
-//     const record = await Model.create({email:req.body.username, password:await bcrypt.hash(req.body.password, 10)});
-//     console.log(`Created a new record in ${Model.name}`);
-
-//     for (const include of includeModels) {
-//       const { model, as } = include;
-
-//       // Ensure the related model and alias exist
-//       if (model && as) {
-//         const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo });
-//         const returnData = { ...authUserData, record }; // Combine both records
-//         console.log(`Created a related record in ${model.name} with alias ${as}`);
-//         console.log('returnData',returnData);
-
-//         // Respond with success
-//         return responseHandler(res, {
-//           data: aliasResponseObjectDatainclude(
-//             returnData,
-//             Attributes,
-//             includeModels // Pass the includeModels to aliasResponseObjectData
-//           ),
-//           status: 'success',
-//           message: 'Record created successfully',
-//           statusCode: 200,
-//           error: null,
-//         });
-//       }
-//     }
-
-//   } catch (error) {
-//     console.error(`Error creating record in ${Model.name}: ${error.message}`);
-//     return responseHandler(res, {
-//       data: null,
-//       status: 'error',
-//       message: 'Internal server error',
-//       statusCode: 500,
-//       error: error.message,
-//     });
-//   }
-// };
+// create incharge, admin,user
 const createUsers =
   (Model, Attributes, includeModels, AuthInfo, field = []) =>
   async (req, res) => {
-    console.log(field, "field");
-
     try {
       // Create a new record in the main model (Auth model)
       if (Array.isArray(field) && field.length > 0) {
@@ -268,6 +253,7 @@ const createUsers =
         password: await bcrypt.hash(req.body.password, 10),
       });
       console.log(`Created a new record in ${Model.name}`);
+      Logger.info(`Created a new record in ${Model.name}`);
 
       const includeData = {}; // Object to hold the data for included models
 
@@ -286,6 +272,9 @@ const createUsers =
           console.log(
             `Created a related record in ${model.name} with alias ${as}`
           );
+          Logger.info(
+            `Created a related record in ${model.name} with alias ${as}`
+          );
         }
       }
 
@@ -294,10 +283,6 @@ const createUsers =
         ...record.dataValues, // Data from the main model
         ...includeData, // Data from included models
       };
-
-      // Log the final return data
-      console.log("returnData", returnData);
-
       // Respond with success
       return responseHandler(res, {
         data: aliasResponseDatainclude(returnData, Attributes, includeModels), // Pass the full combined data
@@ -318,6 +303,7 @@ const createUsers =
     }
   };
 
+//  get by id or by any of the field with user
 const getAllById =
   (Model, Attributes, includeModels = [], filter = {}) =>
   async (req, res) => {
@@ -369,24 +355,65 @@ const getAllById =
 
       const totalPages = Math.ceil(count / limit);
 
+      // const response = {
+      //   count,
+      //   totalPages,
+      //   currentPage: parseInt(page, 10),
+      //   results: includeModels.length > 0
+      //     ? aliasResponseObjectDatainclude(
+      //       rows.map(row => row.dataValues),
+      //       Attributes,
+      //       includeModels // Pass the includeModels to aliasResponseObjectData
+      //     )
+      //     : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes),
+      // };
+      // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
+
+      // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
+      const transformedResults = rows.map((row) => {
+        const dataValues = row.dataValues;
+
+        // Map alias attributes to their desired key names
+        const remappedAttributes = {};
+        Attributes.forEach(([originalKey, aliasKey]) => {
+          if (dataValues[originalKey] !== undefined) {
+            remappedAttributes[aliasKey] = dataValues[originalKey];
+            delete dataValues[originalKey]; // Remove the original key if needed
+          }
+        });
+
+        // Dynamically extract and group fields for each included model
+        const transformedIncludes = includeModels.reduce(
+          (acc, includeModel) => {
+            const alias = includeModel.as;
+            if (dataValues[alias]) {
+              acc[alias] = Array.isArray(dataValues[alias])
+                ? dataValues[alias].map((item) => item.dataValues)
+                : dataValues[alias].dataValues;
+            }
+            return acc;
+          },
+          {}
+        );
+
+        // Combine remapped main record data with transformed include data
+        return {
+          ...remappedAttributes,
+          ...transformedIncludes,
+        };
+      });
+
       const response = {
         count,
         totalPages,
         currentPage: parseInt(page, 10),
-        results:
-          includeModels.length > 0
-            ? aliasResponseObjectDatainclude(
-                rows.map((row) => row.dataValues),
-                Attributes,
-                includeModels // Pass the includeModels to aliasResponseObjectData
-              )
-            : aliasResponseObjectData(
-                rows.map((row) => row.dataValues),
-                Attributes
-              ),
+        results: transformedResults,
       };
 
       console.log(
+        `Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`
+      );
+      Logger.info(
         `Fetched records from ${Model.name}: page ${page}, limit ${limit}, total pages ${totalPages}`
       );
 

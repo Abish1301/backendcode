@@ -10,6 +10,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        type:1
       },
       {
         name: 'Plumbing Work',
@@ -17,6 +18,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        type:1
       },
       {
         name: 'Carpentry Work',
@@ -24,6 +26,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        type:2
       },
       {
         name: 'Painting',
@@ -31,6 +34,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        type:2
       },
       {
         name: 'Civil Work',
@@ -38,6 +42,7 @@ module.exports = {
         status: true,
         created_at: new Date(),
         updated_at: new Date(),
+        type:1
       },
     ]);
   },

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { AuthUser, Auth } = require('../models');
+const { AuthUser, Auth, Role } = require('../models');
 const crudController = require('../controllers/crudController');
-const { authAttributes, authUserAttributes } = require('../utils');
+const { authAttributes, authUserAttributes, roleMaterAttributes } = require('../utils');
 
 const searchableFields = ['name', 'code'];
 const field = [];
@@ -17,7 +17,12 @@ const includeModels = [
     model: Auth,
     as: 'auth',
     attributes: authAttributes,
+  }, {
+    model: Role,
+    as: 'authrole',
+    attributes: roleMaterAttributes,
   },
+  
 ];
 
 const filter =

@@ -15,6 +15,14 @@ module.exports = {
           model: 'UnitMaster',
           key: 'id',
         },},
+        tax: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'TaxMaster',
+            key: 'id',
+          },
+          allowNull: true,
+        },
       name: {
         type: Sequelize.STRING(50)
       },

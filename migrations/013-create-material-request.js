@@ -1,22 +1,31 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('equipment_request', {
+    await queryInterface.createTable('material_request', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      equipment: {
+      material: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'EquipmentMainInventory',
+          model: 'MaterialMainInventory',
           key: 'id',
         },
       },
       qty: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      a_qty: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      e_date: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -37,7 +46,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      e_status: {
+      m_status: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -67,6 +76,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('equipment_request');
+    await queryInterface.dropTable('material_request');
   },
 };

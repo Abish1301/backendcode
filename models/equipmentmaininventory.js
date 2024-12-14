@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'category',
         as: 'MaterialCategory',
       });
+      EquipmentMainInventory.belongsTo(models.Tax, {
+        foreignKey: 'tax',
+        as: 'Tax',
+      });
     }
   }
   EquipmentMainInventory.init({
@@ -49,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false, 
+    },
+    tax: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     user: {
       type: DataTypes.INTEGER,
