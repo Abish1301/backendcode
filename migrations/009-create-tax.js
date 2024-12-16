@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING(50)
       },
       description: {
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING(100)
       },
       start_date: {
         type: Sequelize.STRING(10)
