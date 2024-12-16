@@ -15,7 +15,7 @@ module.exports = {
         task: 1,
         amount: '500.00',
         remark: 'Purchased pens and paper',
-        attachement: 'path/office_supplies_receipt.pdf',
+        image: 'path/office_supplies_receipt.pdf',
       },
       {
         id: 2,
@@ -28,7 +28,7 @@ module.exports = {
         task: 2,
         amount: '1200.00',
         remark: 'Taxi fare for client meeting',
-        attachement: 'path/travel_expenses_invoice.pdf',
+        image: 'path/travel_expenses_invoice.pdf',
       },
       {
         id: 3,
@@ -41,7 +41,7 @@ module.exports = {
         task: 3,
         amount: '800.00',
         remark: 'Electricity bill for November',
-        attachement: 'path/utility_bill_receipt.pdf',
+        image: 'path/utility_bill_receipt.pdf',
       },
       {
         id: 4,
@@ -54,7 +54,7 @@ module.exports = {
         task: 3,
         amount: '2500.00',
         remark: 'Sponsorship for tech event',
-        attachement: 'path/event_sponsorship_agreement.pdf',
+        image: 'path/event_sponsorship_agreement.pdf',
       },
       {
         id: 5,
@@ -67,7 +67,7 @@ module.exports = {
         task: 2,
         amount: '1000.00',
         remark: 'Team-building event',
-        attachement: 'path/team_building_receipt.pdf',
+        image: 'path/team_building_receipt.pdf',
       },
       {
         id: 6,
@@ -80,7 +80,7 @@ module.exports = {
         task: 1,
         amount: '1500.00',
         remark: 'Social media marketing campaign',
-        attachement: 'path/social_media_invoice.pdf',
+        image: 'path/social_media_invoice.pdf',
       },
       {
         id: 7,
@@ -93,7 +93,7 @@ module.exports = {
         task: 4,
         amount: '1200.00',
         remark: 'Annual renewal for software license',
-        attachement: 'path/software_license_invoice.pdf',
+        image: 'path/software_license_invoice.pdf',
       },
       {
         id: 8,
@@ -106,7 +106,7 @@ module.exports = {
         task: 3,
         amount: '15000.00',
         remark: 'Monthly salary payment',
-        attachement: 'path/salary_payment_receipt.pdf',
+        image: 'path/salary_payment_receipt.pdf',
       },
       {
         id: 9,
@@ -119,7 +119,7 @@ module.exports = {
         task: 2,
         amount: '5000.00',
         remark: 'Monthly office rent payment',
-        attachement: 'path/office_rent_invoice.pdf',
+        image: 'path/office_rent_invoice.pdf',
       },
       {
         id: 10,
@@ -132,7 +132,7 @@ module.exports = {
         task: 1,
         amount: '3000.00',
         remark: 'Employee development training program',
-        attachement: 'path/training_receipt.pdf',
+        image: 'path/training_receipt.pdf',
       },
     ]);
   },

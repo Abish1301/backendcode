@@ -60,7 +60,7 @@ module.exports = {
       remark: {
         type: Sequelize.STRING(100)
       },
-      attachement: {
+      image: {
         type: Sequelize.STRING
       },
     });

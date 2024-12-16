@@ -73,7 +73,7 @@ module.exports = {
       end_date: {
         type: Sequelize.STRING(10)
       },
-      attachement: {
+      image: {
         type: Sequelize.STRING
       },
       

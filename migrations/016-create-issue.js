@@ -37,7 +37,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      profile: {
+      image: {
         type: Sequelize.STRING,
         allowNull: true,
       },

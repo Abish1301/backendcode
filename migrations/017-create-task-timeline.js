@@ -43,10 +43,10 @@ module.exports = {
       remarks: {
         type: Sequelize.STRING(100)
       },
-      attachement1: {
+      image: {
         type: Sequelize.STRING
       },
-      attachement2: {
+      image2: {
         type: Sequelize.STRING
       },
       d: {
