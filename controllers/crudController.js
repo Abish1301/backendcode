@@ -507,7 +507,8 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
     try {
       const { user, ...otherData } = req.body; // Extract fields from the body
       let imagePath = null;
-      console.log('req.body',req.body)
+      console.log('req.body', req.body);
+  
       // Step 1: Check for duplicates
       if (field) {
         const count = await FindDuplicate(Model, field, req.body);
@@ -524,8 +525,8 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
   
       // Step 2: Handle image saving (only if no duplicates are found)
       if (req.file) {
-        console.log('req.file',req.file)
-
+        console.log('req.file', req.file);
+  
         const imageBuffer = req.file.buffer; // Get the buffer from Multer
         const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`; // Unique filename
         const modelName = Model.name; // Use model name for folder
@@ -565,6 +566,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       });
     }
   };
+  
   
  
 module.exports = {
