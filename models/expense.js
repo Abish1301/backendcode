@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     amount: DataTypes.STRING,
     remark: DataTypes.STRING,
-    attachement: DataTypes.STRING
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Expense',

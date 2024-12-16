@@ -15,6 +15,8 @@ app.use((req, res, next) => {
   // Uncomment to log headers and body if necessary
   // Logger.info("Headers:", req.headers);
   // Logger.info("Body:", req.body);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
   next();
 });
 

@@ -6,7 +6,7 @@ const authUserAttributes = [
   ['code', 'code'],
   ['name', 'name'],
   ['description', 'description'],
-  ['profile_image', 'profile_image'],
+  ['image', 'image'],
   ['email', 'email'],
   ['mobile', 'mobile'],
   ['address', 'address'],
@@ -49,7 +49,7 @@ const siteMasterAttributes = [
   ['id', 'id'],
   ['name', 'name'],
   ['description', 'description'],
-  ['profile_image', 'profile_image'],
+  ['image', 'image'],
   ['location_name', 'location_name'],
   ['location_description', 'location_description'],
   ['geo_location', 'geo_location'],
@@ -66,7 +66,7 @@ const expenseMasterAttributes = [
   ['type', 'type'],
   ['site', 'site'],
   ['date', 'date'],
-  ['attachement', 'attachement'],
+  ['image', 'image'],
   ['amount', 'amount'],
   ['remark', 'remark']
 ]
@@ -84,7 +84,7 @@ const issueMasterAttributes = [
   ['site', 'site'],
   ['task', 'task'],
   ['remarks', 'remarks'],
-  ['profile', 'profile'],
+  ['image', 'image'],
   ['status', 'status'],
   ['created_at', 'created_at'],
 
@@ -141,7 +141,7 @@ const taskMasterAttributes = [
   ['priority', 'priority'],
   ['start_date', 'start_date'],
   ['end_date', 'end_date'],
-  ['attachement', 'attachement'],
+  ['image', 'image'],
 ]
 
 const taskTimelineAttributes = [
@@ -155,8 +155,8 @@ const taskTimelineAttributes = [
   ['unskilled_worker', 'unskilled_worker'],
   ['total_working_hours', 'total_working_hours'],
   ['remarks', 'remarks'],
-  ['attachement1', 'attachement1'],
-  ['attachement2', 'attachement2']
+  ['image', 'image'],
+  ['image2', 'image2']
 ]
 
 const workCategoryAttributes = [

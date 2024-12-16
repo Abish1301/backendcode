@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     start_date: DataTypes.STRING,
     end_date: DataTypes.STRING,
-    attachement: DataTypes.STRING
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Task',

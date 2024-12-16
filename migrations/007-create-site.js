@@ -45,7 +45,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING(100)
       },
-      profile_image: {
+      image: {
         type: Sequelize.STRING
       },
       location_name: {

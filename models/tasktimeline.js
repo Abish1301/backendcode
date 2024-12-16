@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     unskilled_worker: DataTypes.INTEGER,
     total_working_hours: DataTypes.STRING,
     remarks: DataTypes.STRING,
-    attachement1: DataTypes.STRING,
-    attachement2: DataTypes.STRING,
+    image: DataTypes.STRING,
+    image2: DataTypes.STRING,
     d: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

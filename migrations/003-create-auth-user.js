@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,  
       },
-      profile_image: {
+      image: {
         type: Sequelize.STRING,
         allowNull: true,  
       },
