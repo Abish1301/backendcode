@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
 const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger, uploadImageToFolder } = require('../utils');
 const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude } = require('../utils/OtherExports');
+
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
  
@@ -95,50 +96,6 @@ const deleteRecord = Model => async (req, res) => {
   }
 };
  
-// create a row without duplicate
-// const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
-//   try {
-//     const { user, ...otherData } = req.body;
- 
-//     if (field) {
-//       const count = await FindDuplicate(Model, field, req.body);
-//       if (count > 0) {
-//         return responseHandler(res, {
-//           data: null,
-//           status: 'conflict',
-//           message: 'Duplicate record found',
-//           statusCode: 409,
-//           error: 'Duplicate record exists',
-//         });
-//       }
-//     }
- 
-//     // Create a new record
-//     const record = await Model.create(req.body);
-//     console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
-//     Logger.info(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
- 
-//     return responseHandler(res, {
-//       data: aliasResponseData(record, Attributes),
-//       status: 'success',
-//       message: 'Record created successfully',
-//       statusCode: 200,
-//       error: null,
-//     });
- 
-//   } catch (error) {
-//     console.error(`Error creating record in ${Model.name}: ${error.message}`);
-//     return responseHandler(res, {
-//       data: null,
-//       status: 'error',
-//       message: 'Internal server error',
-//       statusCode: 500,
-//       error: error.message,
-//     });
-//   }
-// };
- 
-// update entire row or a field of a particular row by id
 const updateByID = (Model, field = [], Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
