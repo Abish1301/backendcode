@@ -22,7 +22,8 @@ const { FindDuplicate, FindDuplicateforUser } = require("./checkDuplicate");
 const { generateAccessToken, generateRefreshToken } = require("./jwt");
 const { aliasResponseData } = require("./OtherExports");
 const responseHandler = require("./responseHandler");
-const Logger = require("./logger")
+const Logger = require("./logger");
+const { uploadImageToFolder } = require("./blobStorage");
 
 module.exports = {
   generateAccessToken,
@@ -49,5 +50,6 @@ module.exports = {
   workCategoryAttributes,
   equipmentRequestAttributes,
   FindDuplicateforUser,
-  Logger
+  Logger,
+  uploadImageToFolder
 };

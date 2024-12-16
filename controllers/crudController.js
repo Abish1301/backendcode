@@ -1,9 +1,7 @@
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
-const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger } = require('../utils');
+const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger, uploadImageToFolder } = require('../utils');
 const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude } = require('../utils/OtherExports');
-
-
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
 
@@ -504,7 +502,68 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       });
     }
   };
- 
+
+const createWithImage = (Model, field, Attributes) => async (req, res) => {
+    try {
+      const { user, image, ...otherData } = req.body; // Extract image data
+      let imagePath = null;
+  
+      // Step 1: Check for duplicates
+      if (field) {
+        const count = await FindDuplicate(Model, field, req.body);
+        if (count > 0) {
+          return responseHandler(res, {
+            data: null,
+            status: 'conflict',
+            message: 'Duplicate record found',
+            statusCode: 409,
+            error: 'Duplicate record exists',
+          });
+        }
+      }
+  
+      // Step 2: Handle image saving (only if no duplicates are found)
+      if (image) {
+      const imageBuffer = Buffer.from(image, 'base64');
+      const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`; // Generate a unique filename
+      const modelName = Model.name; // Use model name for folder
+
+      // Upload the image to Azure Blob Storage in the folder named after the model
+      const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
+      
+      // Set the imagePath to the URL of the uploaded image
+      imagePath = uploadedImagePath;
+      }
+  
+      // Step 3: Create the new record
+      const recordData = {
+        ...req.body,
+        ...(imagePath ? { image: imagePath } : {}),
+      };
+  
+      const record = await Model.create(recordData);
+      console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
+      Logger.info(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
+  
+      return responseHandler(res, {
+        data: aliasResponseData(record, Attributes),
+        status: 'success',
+        message: 'Record created successfully',
+        statusCode: 200,
+        error: null,
+      });
+  
+    } catch (error) {
+      console.error(`Error creating record in ${Model.name}: ${error.message}`);
+      return responseHandler(res, {
+        data: null,
+        status: 'error',
+        message: 'Internal server error',
+        statusCode: 500,
+        error: error.message,
+      });
+    }
+  };
 
 module.exports = {
   getAll,
@@ -516,6 +575,7 @@ module.exports = {
   updateByID,
   createUsers,
   getAllById,
+  createWithImage
 };
 
 
