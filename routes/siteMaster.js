@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Site, AuthUser } = require('../models');
 const crudController = require('../controllers/crudController');
-const { siteMasterAttributes, authUserAttributes } = require('../utils');
+const { siteMasterAttributes, authUserAttributes, upload } = require('../utils');
 
 const searchableFields = ['name'];
 const field = [];
@@ -19,7 +19,12 @@ router.route('/')
   .put(crudController.updateByID(Site,field, siteMasterAttributes))
   .delete(crudController.deleteRecord(Site));
 
-  router.post("/create", crudController.createWODuplicates(Site, field, siteMasterAttributes));
+  // router.post("/create", crudController.createWODuplicates(Site, field, siteMasterAttributes));
+  router.post(
+    "/formData",
+    upload.single("image"), // Multer middleware to handle the "image" field
+    crudController.createWODuplicates(Site, field, siteMasterAttributes)
+  );
   router.post("/getById", crudController.getAllById(Site, siteMasterAttributes, includeModels));
 
 module.exports = router;

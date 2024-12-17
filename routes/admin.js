@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { AuthUser, Auth } = require('../models');
 const crudController = require('../controllers/crudController');
-const { authAttributes, authUserAttributes } = require('../utils');
+const { authAttributes, authUserAttributes, upload } = require('../utils');
 
 const searchableFields = ['name', 'code'];
 const field = [];
@@ -31,7 +31,11 @@ router.route('/')
   .put(crudController.updateByID(AuthUser, field, authUserAttributes))
   .delete(crudController.deleteRecord(AuthUser));
 
-router.post("/create", crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo, ["email"]));
-router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
+  router.post(
+    "/formData",
+    upload.single("image"), // Multer middleware to handle the "image" field
+    crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo,["email"])
+  );
+  router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
 
 module.exports = router;

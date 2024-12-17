@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { MaterialMainInventory, MaterialCategory, Unit, Tax } = require('../models');
 const crudController = require('../controllers/crudController');
-const { materialMainInventoryAttributes, unitAttributes, materialCategoryAttributes, taxAttributes } = require('../utils');
+const { materialMainInventoryAttributes, unitAttributes, materialCategoryAttributes, taxAttributes, upload } = require('../utils');
 
 const searchableFields = ['name','code','hsn_code'];
 const field = ['code','hsn_code'];
@@ -28,7 +28,11 @@ router.route('/')
   .put(crudController.updateByID(MaterialMainInventory,field, materialMainInventoryAttributes))
   .delete(crudController.deleteRecord(MaterialMainInventory));
 
-  router.post("/create", crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
-  router.post("/getById", crudController.getAllById(MaterialMainInventory,  materialMainInventoryAttributes, includeModels));
+  router.post(
+    "/formData",
+    upload.single("image"), // Multer middleware to handle the "image" field
+    crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes)
+  ); 
+   router.post("/getById", crudController.getAllById(MaterialMainInventory,  materialMainInventoryAttributes, includeModels));
 
 module.exports = router;

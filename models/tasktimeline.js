@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     total_working_hours: DataTypes.STRING,
     remarks: DataTypes.STRING,
     image: DataTypes.STRING,
-    image2: DataTypes.STRING,
     d: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

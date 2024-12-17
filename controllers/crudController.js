@@ -206,6 +206,8 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
 // create incharge, admin,user
 const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => async (req, res) => {
   try {
+    let imagePath = null;
+
     // Create a new record in the main model (Auth model)
     if (Array.isArray(field) && field.length > 0) {
       const count = await FindDuplicateforUser(Model, field, req.body);
@@ -220,6 +222,21 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => 
       }
  
     }
+    // Step 2: Handle image saving (only if no duplicates are found)
+      if (req.file) {
+        console.log('req.file', req.file);
+ 
+        const imageBuffer = req.file.buffer; // Get the buffer from Multer
+        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`; // Unique filename
+        const modelName = Model.name; // Use model name for folder
+ 
+        // Upload the image to Azure Blob Storage in the folder named after the model
+        const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
+ 
+        // Set the imagePath to the URL of the uploaded image
+        imagePath = uploadedImagePath;
+      }
+ 
     const record = await Model.create({ email: req.body.username, password: await bcrypt.hash(req.body.password, 10) });
     console.log(`Created a new record in ${Model.name}`);
     Logger.info(`Created a new record in ${Model.name}`);
@@ -233,7 +250,7 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => 
  
       // Ensure the related model and alias exist
       if (model && as) {
-        const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo });
+        const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo, ...imagePath ? { image: imagePath } : {} });
         includeData[as] = authUserData; // Store related model data by alias
         console.log(`Created a related record in ${model.name} with alias ${as}`);
         Logger.info(`Created a related record in ${model.name} with alias ${as}`);
@@ -506,9 +523,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
   const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     try {
       const { user, ...otherData } = req.body; // Extract fields from the body
-      let imagePath = null;
-      console.log('req.body', req.body);
- 
+      let imagePath = null; 
       // Step 1: Check for duplicates
       if (field) {
         const count = await FindDuplicate(Model, field, req.body);

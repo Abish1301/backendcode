@@ -156,14 +156,13 @@ const taskTimelineAttributes = [
   ['total_working_hours', 'total_working_hours'],
   ['remarks', 'remarks'],
   ['image', 'image'],
-  ['image2', 'image2']
 ]
 
 const workCategoryAttributes = [
   ['id', 'id'],
   ['name', 'name'],
   ['description', 'description'],
-  ['status', 'description'],
+  ['status', 'status'],
   ['type', 'type']
 ];
 const materialRequestAttributes = [

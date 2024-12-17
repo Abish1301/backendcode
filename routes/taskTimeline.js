@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { TaskTimeline, Site, Task } = require('../models');
 const crudController = require('../controllers/crudController');
-const { taskTimelineAttributes, taskMasterAttributes, siteMasterAttributes } = require('../utils');
+const { taskTimelineAttributes, taskMasterAttributes, siteMasterAttributes, upload } = require('../utils');
 
 const searchableFields = [];
 const field = [];
@@ -23,7 +23,11 @@ router.route('/')
   .put(crudController.updateByID(TaskTimeline,field, taskTimelineAttributes))
   .delete(crudController.deleteRecord(TaskTimeline));
 
-  router.post("/create", crudController.createWODuplicates(TaskTimeline, field, taskTimelineAttributes));
+  router.post(
+    "/formData",
+    upload.single("image"), // Multer middleware to handle the "image" field
+    crudController.createWODuplicates(TaskTimeline, field, taskTimelineAttributes)
+  );  
   router.post("/getById", crudController.getAllById(TaskTimeline, taskTimelineAttributes, includeModels));
 
 module.exports = router;

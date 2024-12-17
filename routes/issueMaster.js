@@ -2,13 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Issue,Site,Task } = require('../models');
 const crudController = require('../controllers/crudController');
-const { issueMasterAttributes,siteMasterAttributes, taskMasterAttributes } = require('../utils');
-const multer = require("multer");
- 
-// Configure Multer to handle image uploads in memory
-const storage = multer.memoryStorage(); // Store files in memory
-const upload = multer({ storage });
- console.log('storage',storage);
+const { issueMasterAttributes,siteMasterAttributes, taskMasterAttributes, upload } = require('../utils');
  
 const searchableFields = ['name'];
 const field = [];

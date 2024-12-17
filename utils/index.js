@@ -24,6 +24,7 @@ const { aliasResponseData } = require("./OtherExports");
 const responseHandler = require("./responseHandler");
 const Logger = require("./logger");
 const { uploadImageToFolder } = require("./blobStorage");
+const { upload } = require("./ImageUpload");
 
 module.exports = {
   generateAccessToken,
@@ -51,5 +52,6 @@ module.exports = {
   equipmentRequestAttributes,
   FindDuplicateforUser,
   Logger,
-  uploadImageToFolder
+  uploadImageToFolder,
+  upload
 };
