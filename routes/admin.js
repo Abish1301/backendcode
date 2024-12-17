@@ -28,14 +28,10 @@ const filter =
 const AuthInfo = { type: 'admin' }
 router.route('/')
   .post(crudController.getAllByCondition(AuthUser, searchableFields, authUserAttributes, includeModel, filter))
-  .put(crudController.updateByID(AuthUser, field, authUserAttributes))
+  .put(upload.single("image"), crudController.updateByID(AuthUser, field, authUserAttributes))
   .delete(crudController.deleteRecord(AuthUser));
 
-  router.post(
-    "/formData",
-    upload.single("image"), // Multer middleware to handle the "image" field
-    crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo,["email"])
-  );
-  router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
+router.post("/formData", upload.single("image"), crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo, ["email"]));
+router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
 
 module.exports = router;
