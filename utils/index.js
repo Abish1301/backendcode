@@ -23,7 +23,8 @@ const { generateAccessToken, generateRefreshToken } = require("./jwt");
 const { aliasResponseData } = require("./OtherExports");
 const responseHandler = require("./responseHandler");
 const Logger = require("./logger");
-const { uploadImageToFolder } = require("./blobStorage");
+const { uploadImageToFolder, updateImageToFolder } = require("./blobStorage");
+const { upload } = require("./ImageUpload");
 
 module.exports = {
   generateAccessToken,
@@ -51,5 +52,7 @@ module.exports = {
   equipmentRequestAttributes,
   FindDuplicateforUser,
   Logger,
-  uploadImageToFolder
+  uploadImageToFolder,
+  upload,
+  updateImageToFolder
 };

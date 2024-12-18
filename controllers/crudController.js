@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
-const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger, uploadImageToFolder } = require('../utils');
+const { responseHandler, aliasResponseData, FindDuplicate, FindDuplicateforUser, Logger, uploadImageToFolder, updateImageToFolder } = require('../utils');
 const { aliasResponseObjectData, aliasResponseObjectDatainclude, aliasResponseDatainclude } = require('../utils/OtherExports');
 
 const getAll = (Model, searchFields = [], includeModels = []) => async (req, res) => {
@@ -96,8 +96,11 @@ const deleteRecord = Model => async (req, res) => {
   }
 };
  
+ 
+// update entire row or a field of a particular row by id
 const updateByID = (Model, field = [], Attributes) => async (req, res) => {
   try {
+    let imagePath
     const { id, ...data } = req.body;
     if (Array.isArray(field) && field.length > 0) {
       const isFieldPresent = field.some(f => req.body[f]);
@@ -125,11 +128,27 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
         error: 'Cannot Update data',
       });
     }
-    const record = await Model.update(data, { where: { id } });
+
+    if (req.file) {
+      console.log('req.file', req.file);
+
+      const imageBuffer = req.file.buffer; // Get the buffer from Multer
+      const fileName =DataByPK.image ; // Unique filename
+      console.log(fileName,'filename');
+      
+      // Upload the image to Azure Blob Storage in the folder named after the model
+      const uploadedImagePath = await updateImageToFolder(imageBuffer, fileName);
+
+      // Set the imagePath to the URL of the uploaded image
+      imagePath = uploadedImagePath;
+    }
+    const updateData = { ...data, ...(imagePath ? { image: imagePath } : {}) };
+
+     await Model.update(updateData, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
     Logger.info(`Updated record with ID ${id} in ${Model.name}`);
  
-    if (record[0] == 1) {
+    
       const updatedRecord = await Model.findByPk(id);
  
       return responseHandler(res, {
@@ -139,15 +158,7 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
         statusCode: 200,
         error: null,
       });
-    }
-    return responseHandler(res, {
-      data: {},
-      status: 'success',
-      message: 'Record Updated successfully',
-      statusCode: 200,
-      error: null,
-    });
- 
+    
   } catch (error) {
     console.error(`Error updating record in ${Model.name}: ${error.message}`);
     return responseHandler(res, {
@@ -163,6 +174,8 @@ const updateByID = (Model, field = [], Attributes) => async (req, res) => {
 // create incharge, admin,user
 const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => async (req, res) => {
   try {
+    let imagePath = null;
+
     // Create a new record in the main model (Auth model)
     if (Array.isArray(field) && field.length > 0) {
       const count = await FindDuplicateforUser(Model, field, req.body);
@@ -177,6 +190,21 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => 
       }
  
     }
+    // Step 2: Handle image saving (only if no duplicates are found)
+      if (req.file) {
+        const fileExtension = req.file.mimetype.split('/')[1];
+
+        const imageBuffer = req.file.buffer; // Get the buffer from Multer
+        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`; // Unique filename
+        const modelName = Model.name; // Use model name for folder
+ 
+        // Upload the image to Azure Blob Storage in the folder named after the model
+        const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
+ 
+        // Set the imagePath to the URL of the uploaded image
+        imagePath = uploadedImagePath;
+      }
+ 
     const record = await Model.create({ email: req.body.username, password: await bcrypt.hash(req.body.password, 10) });
     console.log(`Created a new record in ${Model.name}`);
     Logger.info(`Created a new record in ${Model.name}`);
@@ -190,7 +218,7 @@ const createUsers = (Model, Attributes, includeModels, AuthInfo, field = []) => 
  
       // Ensure the related model and alias exist
       if (model && as) {
-        const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo });
+        const authUserData = await model.create({ ...req.body, auth_id: record.id, ...AuthInfo, ...imagePath ? { image: imagePath } : {} });
         includeData[as] = authUserData; // Store related model data by alias
         console.log(`Created a related record in ${model.name} with alias ${as}`);
         Logger.info(`Created a related record in ${model.name} with alias ${as}`);
@@ -463,9 +491,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
   const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     try {
       const { user, ...otherData } = req.body; // Extract fields from the body
-      let imagePath = null;
-      console.log('req.body', req.body);
- 
+      let imagePath = null; 
       // Step 1: Check for duplicates
       if (field) {
         const count = await FindDuplicate(Model, field, req.body);
@@ -482,12 +508,11 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
  
       // Step 2: Handle image saving (only if no duplicates are found)
       if (req.file) {
-        console.log('req.file', req.file);
- 
+        const fileExtension = req.file.mimetype.split('/')[1];
+
         const imageBuffer = req.file.buffer; // Get the buffer from Multer
-        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`; // Unique filename
+        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`; // Unique filename
         const modelName = Model.name; // Use model name for folder
- 
         // Upload the image to Azure Blob Storage in the folder named after the model
         const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
  
@@ -498,6 +523,7 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       // Step 3: Create the new record
       const recordData = {
         ...otherData,
+        user,
         ...(imagePath ? { image: imagePath } : {}), // Add the image path if available
       };
  
@@ -523,9 +549,6 @@ const getAllByCondition = (Model, searchFields = [], Attributes, includeModels =
       });
     }
   };
- 
-  
-  
  
 module.exports = {
   getAll,

@@ -10,8 +10,6 @@ const containerClient = blobServiceClient.getContainerClient(containerName);
 async function uploadImageToFolder(modelName, fileBuffer, blobName) {
   const folderName = `${modelName}/`; // Folder name is model name
   const fullBlobName = folderName + blobName; // Virtual folder path
-  console.log(fullBlobName, 'fullBlobName');
-
   // Get the block blob client
   const blockBlobClient = containerClient.getBlockBlobClient(fullBlobName);
 
@@ -22,4 +20,31 @@ async function uploadImageToFolder(modelName, fileBuffer, blobName) {
   return `/${fullBlobName}`;
 }
 
-module.exports = { uploadImageToFolder };
+
+async function updateImageToFolder(imageBuffer, blobName) {
+  blobName = blobName.startsWith('/') ? blobName.slice(1) : blobName;
+  // Get the block blob client for the specified blob name
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+  try {
+    // Check if the blob exists
+    const exists = await blockBlobClient.exists();
+
+    if (!exists) {
+      throw new Error(`The file at path ${blobName} does not exist.`);
+    }
+
+    // Overwrite the existing file with the new image buffer
+    await blockBlobClient.uploadData(imageBuffer, {
+      overwrite: true, // Ensure the file is overwritten
+    });
+
+    console.log(`File successfully updated in Azure Blob Storage: ${blobName}`);
+    return `/${blobName}`; // Return the location of the updated file
+  } catch (error) {
+    console.error(`Error updating file at path ${blobName}: ${error.message}`);
+    throw new Error('Failed to update file in Azure Blob Storage.');
+  }
+}
+
+module.exports = { uploadImageToFolder,updateImageToFolder };
