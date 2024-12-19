@@ -28,7 +28,7 @@ router.route('/')
   .put(upload.single("image"), crudController.updateByID(MaterialMainInventory, field, materialMainInventoryAttributes))
   .delete(crudController.deleteRecord(MaterialMainInventory));
 
-router.post("/formData", upload.single("image"), crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
+router.post("/formdata", upload.single("image"), crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
 router.post("/getById", crudController.getAllById(MaterialMainInventory, materialMainInventoryAttributes, includeModels));
 
 module.exports = router;

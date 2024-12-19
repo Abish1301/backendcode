@@ -24,9 +24,9 @@ router.route('/')
   .put(upload.single("image"), crudController.updateByID(Issue, field, issueMasterAttributes))
   .delete(crudController.deleteRecord(Issue));
 
-router.post("/formData", upload.single("image"), crudController.createWODuplicates(Issue, field, issueMasterAttributes));
+router.post("/formdata", upload.single("image"), crudController.createWODuplicates(Issue, field, issueMasterAttributes));
 router.post("/getById", crudController.getAllById(Issue, issueMasterAttributes, includeModels));
-router.put("/formData",upload.single("image"), crudController.updateByID(Issue, field, issueMasterAttributes))
+router.put("/formdata",upload.single("image"), crudController.updateByID(Issue, field, issueMasterAttributes))
 
 module.exports = router;
 
