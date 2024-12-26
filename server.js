@@ -5,16 +5,19 @@ const Logger = require("./utils/logger"); // Importing the logger
 const cors = require("cors");
 const { authenticateToken } = require("./middleware/authMiddleware");
 require("dotenv").config();
+const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
 // For URL-encoded form payloads (default limit is 1mb; increase as needed)
-app.use(express.urlencoded({ limit: "10mb", extended: true }));app.use((req, res, next) => {
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+app.use((req, res, next) => {
   // Uncomment to log headers and body if necessary
-  Logger.info("Headers:", req.headers);
-  Logger.info("Body:", req.body);
+  // Logger.info("Headers:", req.headers);
+  // Logger.info("Body:", req.body);
   console.log("Headers:", req.headers);
   console.log("Body:", req.body);
   next();
@@ -41,7 +44,7 @@ app.use((req, res) => {
   res.status(404).json({ message: "Endpoint not found" });
 });
 
-const PORT = process.env.PORT || 8000;
+
 app.listen(PORT, () => {
   Logger.info(`Hi, this is the backend for the construction app, calling from port ${PORT}`);
 });
