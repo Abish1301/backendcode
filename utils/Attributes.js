@@ -105,7 +105,6 @@ const materialMainInventoryAttributes = [
   ['weight', 'weight'],
   ['color', 'color'],
   ['status', 'status'],
-  ['in_stock', 'in_stock'],
   ['tax', 'tax']
 ]
 
@@ -196,7 +195,6 @@ const materialMainInventoryAttributesformaterialrequest = [
   ['weight', 'weight'],
   ['color', 'color'],
   ['status', 'status'],
-  ['in_stock', 'in_stock'],
 ]
 
 

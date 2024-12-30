@@ -37,11 +37,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    in_stock: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: '0',
-    },
     alert_min_stock: DataTypes.STRING,
     unit_rent_price: DataTypes.STRING,
     brand_name: DataTypes.STRING,
