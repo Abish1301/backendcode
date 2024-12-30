@@ -39,11 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       site: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       task: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       transfer: {
         type: DataTypes.INTEGER,
