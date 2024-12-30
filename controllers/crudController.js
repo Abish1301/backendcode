@@ -438,7 +438,7 @@ const getAllByCondition =
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
     const { user, site, task } = req.body;
-
+    console.log(req.body)
     try {
       const offset = (page - 1) * limit;
 
