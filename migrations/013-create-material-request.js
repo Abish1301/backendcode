@@ -28,15 +28,18 @@ module.exports = {
       e_date: {
         type: Sequelize.STRING,
         allowNull: false,
+        
       },
       site: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         references: {
           model: 'SiteMaster',
           key: 'id',
         },
       },task: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         references: {
           model: 'TaskMaster',
           key: 'id',

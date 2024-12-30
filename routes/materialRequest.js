@@ -4,7 +4,7 @@ const { material_request, MaterialMainInventory, Site, Task } = require('../mode
 const { materialRequestAttributes, materialMainInventoryAttributesformaterialrequest, siteMasterAttributes, taskMasterAttributes } = require('../utils');
 const crudController = require('../controllers/crudController');
 
-const searchableFields = ['m_status', 'qty'];
+const searchableFields = ['material'];
 const field = [];
 const includeModels = [
   {
