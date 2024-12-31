@@ -1,8 +1,10 @@
 const authAttributes = [
   ['email', 'email'],
+  
 ];
 
 const authUserAttributes = [
+  ['id','id'],
   ['code', 'code'],
   ['name', 'name'],
   ['description', 'description'],
@@ -11,6 +13,7 @@ const authUserAttributes = [
   ['mobile', 'mobile'],
   ['address', 'address'],
   ['type', 'type'],
+  ['status','status']
 ];
 
 const roleMaterAttributes = [
