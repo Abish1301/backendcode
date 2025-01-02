@@ -5,7 +5,7 @@ const crudController = require('../controllers/crudController');
 const { authAttributes, authUserAttributes, roleMaterAttributes, upload } = require('../utils');
 
 const searchableFields = ['name', 'code'];
-const field = [];
+const field = ["email"];
 const includeModels = [
   {
     model: AuthUser,
@@ -27,16 +27,17 @@ const includeModels = [
 
 const filter =
 {
-  type: 'user'
+  type: 'User'
 }
 
-const AuthInfo = { type: 'user' }
+const AuthInfo = { type: 'User' }
 router.route('/')
   .post(crudController.getAllByCondition(AuthUser, searchableFields, authUserAttributes, includeModel, filter))
-  .put(upload.single("image"), crudController.updateByID(AuthUser, field, authUserAttributes))
+  // .put(upload.single("image"), crudController.updateByID(AuthUser, field, authUserAttributes))
   .delete(crudController.deleteRecord(AuthUser));
 
-router.post("/formData", upload.single("image"), crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo, ["email"]));
+router.post("/formdata", upload.single("image"), crudController.createUsers(Auth, authAttributes, includeModels, AuthInfo,field));
+router.put("/formdata", upload.single("image"), crudController.updateByID(AuthUser, field, authUserAttributes));
 router.post("/getById", crudController.getAllById(AuthUser, authUserAttributes, includeModel, filter));
 
 module.exports = router;
