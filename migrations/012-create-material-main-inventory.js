@@ -49,12 +49,6 @@ module.exports = {
         allowNull: true,
 
       },
-      in_stock: {
-        type: Sequelize.STRING(20),
-        allowNull: false,
-        defaultValue: '0', 
-
-      },
       alert_min_stock: {
         type: Sequelize.STRING(20)
       },

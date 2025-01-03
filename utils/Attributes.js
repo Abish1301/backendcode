@@ -1,8 +1,10 @@
 const authAttributes = [
   ['email', 'email'],
+  
 ];
 
 const authUserAttributes = [
+  ['id','id'],
   ['code', 'code'],
   ['name', 'name'],
   ['description', 'description'],
@@ -11,6 +13,8 @@ const authUserAttributes = [
   ['mobile', 'mobile'],
   ['address', 'address'],
   ['type', 'type'],
+  ['status','status'],
+  ['role_id','role_id']
 ];
 
 const roleMaterAttributes = [
@@ -105,7 +109,6 @@ const materialMainInventoryAttributes = [
   ['weight', 'weight'],
   ['color', 'color'],
   ['status', 'status'],
-  ['in_stock', 'in_stock'],
   ['tax', 'tax']
 ]
 
@@ -196,7 +199,6 @@ const materialMainInventoryAttributesformaterialrequest = [
   ['weight', 'weight'],
   ['color', 'color'],
   ['status', 'status'],
-  ['in_stock', 'in_stock'],
 ]
 
 
