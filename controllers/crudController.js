@@ -615,30 +615,46 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 const getAllDataByCondition =
   (Model, searchFields = [], Attributes, includeModels = [], filter = {}) =>
   async (req, res) => {
-    const { user, site, task,search } = req.body;
-    console.log(req.body);
+    const { page = 1, limit = 10, search } = req.query;
+    const { user, site, task } = req.body;
+    console.log(req.body)
     try {
+      const offset = (page - 1) * limit;
+
       const whereCondition = {
         d: 0,
-        ...(search && {
-          [Op.or]: searchFields.map((field) => ({
-            [field]: { [Op.like]: `%${search}%` },
-          })),
-        }),
         [Op.and]: [
+          ...(search
+            ? [
+                {
+                  [Op.or]: searchFields.map((field) => ({
+                    [field]: {
+                      [Op.eq]: search, // Exact match condition
+                    },
+                  })),
+                },
+              ]
+            : []),
+          {
+            [Op.or]: searchFields.map((field) => ({
+              [field]: { [Op.like]: `%${search}%` },
+            })),
+          },
           { [Op.or]: [{ user: user || null }, { user: null }] },
           ...(site !== undefined && site !== null ? [{ site }] : []),
           ...(task !== undefined && task !== null ? [{ task }] : []),
         ],
         ...filter,
       };
-
-      const rows = await Model.findAll({
+      
+      const { count, rows } = await Model.findAndCountAll({
         where: whereCondition,
+        limit: parseInt(limit, 10),
+        offset: parseInt(offset, 10),
         include: includeModels,
       });
 
-      if (rows.length === 0) {
+      if (count === 0) {
         return responseHandler(res, {
           data: {},
           status: "No Data",
@@ -646,6 +662,8 @@ const getAllDataByCondition =
           statusCode: 200,
         });
       }
+
+      const totalPages = Math.ceil(count / limit);
 
       // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
       const transformedResults = rows.map((row) => {
@@ -682,11 +700,15 @@ const getAllDataByCondition =
       });
 
       const response = {
-        count: rows.length,
+        count,
+        totalPages,
+        currentPage: parseInt(page, 10),
         results: transformedResults,
       };
 
-      console.log(`Fetched all records from ${Model.name}`);
+      console.log(
+        `Fetched records from ${Model.name}: page ${page}, limit ${limit}`
+      );
       return responseHandler(res, {
         data: response,
         status: "success",
