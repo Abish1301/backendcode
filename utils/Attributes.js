@@ -128,9 +128,6 @@ const equipmentMainInventoryAttributes = [
   ['weight', 'weight'],
   ['color', 'color'],
   ['status', 'status'],
-  ['in_stock', 'in_stock'],
-  ['tax', 'tax']
-
 ]
 
 const taskMasterAttributes = [
@@ -145,6 +142,8 @@ const taskMasterAttributes = [
   ['start_date', 'start_date'],
   ['end_date', 'end_date'],
   ['image', 'image'],
+  ['priority', 'priority'],
+  ['unit', 'unit'],
 ]
 
 const taskTimelineAttributes = [
