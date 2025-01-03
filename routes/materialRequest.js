@@ -13,9 +13,9 @@ const {
   taskMasterAttributes,
 } = require("../utils");
 const crudController = require("../controllers/crudController");
-const { InventoryOverAll } = require("../controllers/materialRequest");
+const { InventoryOverAll,InventoryEntry, Inventorylogs } = require("../controllers/materialRequest");
 
-const searchableFields = ["material", "e_date"];
+const searchableFields = ["material", "e_date","m_status"];
 const field = [];
 const includeModels = [
   {
@@ -38,7 +38,7 @@ const includeModels = [
 router
   .route("/")
   .post(
-    crudController.getAllDataByCondition(
+    Inventorylogs(
       material_request,
       searchableFields,
       materialRequestAttributes,
