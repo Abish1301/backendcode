@@ -5,6 +5,8 @@ const crudController = require('../controllers/crudController');
 const { materialMainInventoryAttributes, unitAttributes, materialCategoryAttributes, taxAttributes, upload } = require('../utils');
 
 const searchableFields = ['name', 'code', 'hsn_code'];
+const searchableFieldsAll = ['id'];
+
 const field = ['code', 'hsn_code'];
 const includeModels = [
   {
@@ -31,5 +33,6 @@ router.route('/')
 router.post("/formdata", upload.single("image"), crudController.createWODuplicates(MaterialMainInventory, field, materialMainInventoryAttributes));
 router.post("/getById", crudController.getAllById(MaterialMainInventory, materialMainInventoryAttributes, includeModels));
 router.put("/formdata",upload.single("image"), crudController.updateByID(MaterialMainInventory, field, materialMainInventoryAttributes))
+router.post("/getDataAll", crudController.CommonGetForAll(MaterialMainInventory, searchableFieldsAll,materialMainInventoryAttributes, includeModels));
 
 module.exports = router;

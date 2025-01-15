@@ -134,23 +134,58 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       include: includeModels
     });
 
-    if (!count) {
-      return responseHandler(res, {
-        data: {},
-        status: "No Data",
-        message: "No data found",
-        statusCode: 200
-      });
-    }
+    const today = new Date().toISOString().split('T')[0];
+
+    const totals = rows.reduce((acc, row) => {
+      const qty = parseInt(row.qty) || 0;
+      const createdDate = new Date(row.created_at).toISOString().split('T')[0];
+      
+      // Overall totals
+      if (row.transfer === 1) {
+        acc.overallTotals.toInventoryTotal += qty;
+      } else if (row.transfer === 2) {
+        acc.overallTotals.siteTransferTotal += qty;
+      }
+
+      // Today's totals
+      if (createdDate === today) {
+        if (row.transfer === 1) {
+          acc.todayTotals.toInventoryTotal += qty;
+        } else if (row.transfer === 2) {
+          acc.todayTotals.siteTransferTotal += qty;
+        }
+      }
+
+      return acc;
+    }, {
+      overallTotals: { toInventoryTotal: 0, siteTransferTotal: 0 },
+      todayTotals: { toInventoryTotal: 0, siteTransferTotal: 0 }
+    });
 
     const transformedResults = transformResults(rows, Attributes, includeModels);
 
     return responseHandler(res, {
-      data: createPaginationResponse(count, page, limit, transformedResults),
+      data: {
+        count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: parseInt(page, 10),
+        results: transformedResults,
+        totals: {
+          overall: {
+            toInventory: totals.overallTotals.toInventoryTotal,
+            siteTransfer: totals.overallTotals.siteTransferTotal
+          },
+          today: {
+            toInventory: totals.todayTotals.toInventoryTotal,
+            siteTransfer: totals.todayTotals.siteTransferTotal
+          }
+        }
+      },
       status: "success",
       message: "Data fetched successfully",
       statusCode: 200
     });
+
   } catch (error) {
     console.error('Error in InventoryEntry:', error);
     return responseHandler(res, {
@@ -161,6 +196,8 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
     });
   }
 };
+
+
 
 const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
@@ -207,5 +244,7 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [],
     });
   }
 };
+
+
 
 module.exports = { InventoryOverAll, InventoryEntry, Inventorylogs };
