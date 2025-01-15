@@ -15,14 +15,6 @@ module.exports = {
           model: 'UnitMaster',
           key: 'id',
         },},
-        tax: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'TaxMaster',
-            key: 'id',
-          },
-          allowNull: true,
-        },
       name: {
         type: Sequelize.STRING(50)
       },
@@ -42,12 +34,6 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
         allowNull: true,
-
-      },
-      in_stock: {
-        type: Sequelize.STRING(20),
-        allowNull: false,
-        defaultValue: '0', 
 
       },
       alert_min_stock: {

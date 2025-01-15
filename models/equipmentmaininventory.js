@@ -21,10 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'category',
         as: 'MaterialCategory',
       });
-      EquipmentMainInventory.belongsTo(models.Tax, {
-        foreignKey: 'tax',
-        as: 'Tax',
-      });
     }
   }
   EquipmentMainInventory.init({
@@ -37,11 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    in_stock: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: '0',
-    },
     alert_min_stock: DataTypes.STRING,
     unit_rent_price: DataTypes.STRING,
     brand_name: DataTypes.STRING,
@@ -53,10 +44,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false, 
-    },
-    tax: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     },
     user: {
       type: DataTypes.INTEGER,
