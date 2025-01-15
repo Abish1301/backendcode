@@ -728,6 +728,83 @@ const getAllDataByCondition =
     }
   };
 
+const CommonGetForAll = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
+    const { user, search } = req.body;
+
+    try {
+        const whereCondition = {
+            d: 0,
+            status: 1,
+            [Op.and]: [
+                ...(search ? [{
+                    [Op.or]: searchFields.map(field => ({
+                      [field]: { [Op.eq]: search }
+                    }))
+                }] : []),
+                { [Op.or]: [{ user: user  }, { user: null }] },
+            ],
+            ...filter,
+        };
+
+        const data = await Model.findAll({
+            where: whereCondition,
+            include: includeModels,
+        });
+
+        if (!data.length) {
+            return responseHandler(res, {
+                data: [],
+                status: "No Data",
+                message: "No data found",
+                statusCode: 200,
+            });
+        }
+
+        const transformedResults = data.map((row) => {
+            const dataValues = row.dataValues;
+            const remappedAttributes = {};
+            
+            Attributes.forEach(([originalKey, aliasKey]) => {
+                if (dataValues[originalKey] !== undefined) {
+                    remappedAttributes[aliasKey] = dataValues[originalKey];
+                    delete dataValues[originalKey];
+                }
+            });
+
+            const transformedIncludes = includeModels.reduce((acc, includeModel) => {
+                const alias = includeModel.as;
+                if (dataValues[alias]) {
+                    acc[alias] = Array.isArray(dataValues[alias])
+                        ? dataValues[alias].map((item) => item.dataValues)
+                        : dataValues[alias].dataValues;
+                }
+                return acc;
+            }, {});
+
+            return {
+                ...remappedAttributes,
+                ...transformedIncludes,
+            };
+        });
+
+        return responseHandler(res, {
+            data: transformedResults,
+            status: "success",
+            message: "Data fetched successfully",
+            statusCode: 200,
+            error: null,
+        });
+    } catch (error) {
+        console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+        return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Internal server error",
+            statusCode: 500,
+            error: error.message,
+        });
+    }
+};
 
 module.exports = {
   getAll,
@@ -739,5 +816,6 @@ module.exports = {
   updateByID,
   createUsers,
   getAllById,
-  getAllDataByCondition
+  getAllDataByCondition,
+  CommonGetForAll
 };
