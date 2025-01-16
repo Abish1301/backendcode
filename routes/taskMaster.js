@@ -30,5 +30,6 @@ router.route('/')
 
 router.post("/formData", upload.single("image"), crudController.createWODuplicates(Task, field, taskMasterAttributes));
 router.post("/getById", crudController.getAllById(Task, taskMasterAttributes, includeModels));
+router.put("/formData",upload.single("image"), crudController.updateByID(Task, field, taskMasterAttributes))
 
 module.exports = router;
