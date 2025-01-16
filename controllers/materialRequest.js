@@ -52,17 +52,21 @@ const createPaginationResponse = (count, page, limit, results) => ({
 // Main controller functions
 const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user } = req.body;
+  const { user,filter, site } = req.body;
+  const siteid = site||null;
+  // const siteid = 2;
+
   const offset = (page - 1) * limit;
 
   try {
     const whereCondition = {
       ...createBaseWhereCondition(search, searchFields, user),
-      transfer: 1,
-      site: null,
-      task: null
+     
+      ...(siteid === null && {  transfer: 1 }) ,
+      ...filter,
+      site: siteid !== null ? siteid : null, 
+      ...(siteid === null && { task: null }) 
     };
-
     const { count, rows } = await Model.findAndCountAll({
       attributes: [
         'material',
@@ -115,16 +119,26 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
   }
 };
 
-const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
+const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user, site, task, m_status } = req.body;
+  const { user, site, task, m_status, filter } = req.body;
+  const siteid = site||null;
+  // const siteid = 2;
 
   try {
     const whereCondition = {
       ...createBaseWhereCondition(search, searchFields, user, m_status),
-      ...(site !== undefined && { site: site || null }),
-      ...(task !== undefined && { task: task || null }),
-      ...filter
+      ...(siteid !== null && { site: siteid || null }),
+      // ...(siteid !== null && { task: task || null }),
+      ...filter,
+      ...(filter.created_at && {
+        created_at: {
+          [Op.between]: [
+            `${filter.created_at} 00:00:00`, 
+            `${filter.created_at} 23:59:59`,
+          ],
+        },
+      }),
     };
 
     const { count, rows } = await Model.findAndCountAll({
@@ -199,15 +213,27 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
 
 
 
-const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [], filter = {}) => async (req, res) => {
+const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user, m_status } = req.body;
+  const { user, m_status, filter,site } = req.body;
+  const siteid = site||null;
+  // const siteid = 2;
 
   try {
     const whereCondition = {
       ...createBaseWhereCondition(search, searchFields, user, m_status),
       transfer: { [Op.ne]: 3 },
-      ...filter
+      ...(siteid !== null && { site: siteid || null }),
+
+      ...filter,
+      ...(filter.created_at && {
+        created_at: {
+          [Op.between]: [
+            `${filter.created_at} 00:00:00`,
+            `${filter.created_at} 23:59:59`,
+          ],
+        },
+      }),
     };
 
     const { count, rows } = await Model.findAndCountAll({

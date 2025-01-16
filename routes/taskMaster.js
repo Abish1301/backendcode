@@ -25,10 +25,10 @@ const includeModels = [
 ];
 router.route('/')
   .post(crudController.getAllByCondition(Task, searchableFields, taskMasterAttributes, includeModels))
-  .put(upload.single("image"), crudController.updateByID(Task, field, taskMasterAttributes))
   .delete(crudController.deleteRecord(Task));
+router.put("/formdata", upload.single("image"), crudController.updateByID(Task, field, taskMasterAttributes))
 
-router.post("/formData", upload.single("image"), crudController.createWODuplicates(Task, field, taskMasterAttributes));
+router.post("/formdata", upload.single("image"), crudController.createWODuplicates(Task, field, taskMasterAttributes));
 router.post("/getById", crudController.getAllById(Task, taskMasterAttributes, includeModels));
 router.put("/formData",upload.single("image"), crudController.updateByID(Task, field, taskMasterAttributes))
 
