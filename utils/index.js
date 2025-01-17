@@ -17,6 +17,7 @@ const {
   taskTimelineAttributes,
   workCategoryAttributes,
   equipmentRequestAttributes,
+  MaterialSpendAttributes,
 } = require("./Attributes");
 const { FindDuplicate, FindDuplicateforUser } = require("./checkDuplicate");
 const { generateAccessToken, generateRefreshToken } = require("./jwt");
@@ -54,5 +55,6 @@ module.exports = {
   Logger,
   uploadImageToFolder,
   upload,
-  updateImageToFolder
+  updateImageToFolder,
+  MaterialSpendAttributes
 };

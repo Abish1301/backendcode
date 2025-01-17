@@ -215,6 +215,13 @@ const equipmentRequestAttributes = [
   ['a_qty', 'a_qty'],
 
 ];
+const MaterialSpendAttributes = [
+  ['id', 'id'],
+  ['qty', 'qty'],
+  ['created_at', 'created_at'],
+  ['updated_at', 'updated_at'],
+  ['request', 'request']
+]
 
 
-module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes, materialRequestAttributes, equipmentRequestAttributes };
+module.exports = { roleMaterAttributes, authUserAttributes, materialMainInventoryAttributesformaterialrequest, authAttributes, unitAttributes, taxAttributes, materialCategoryAttributes, siteMasterAttributes, expenseMasterAttributes, expenseHeadAttributes, issueMasterAttributes, materialMainInventoryAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, taskTimelineAttributes, workCategoryAttributes, materialRequestAttributes, equipmentRequestAttributes, MaterialSpendAttributes };

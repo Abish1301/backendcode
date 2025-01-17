@@ -102,7 +102,7 @@ const deleteRecord = (Model) => async (req, res) => {
     Logger.info(`Deleted record with ID ${id} from ${Model.name}`);
 
     return responseHandler(res, {
-      data: response,
+      data: req.body,
       status: "success",
       message: "Data deleted successfully",
       statusCode: 200,
