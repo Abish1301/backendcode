@@ -108,4 +108,12 @@ router.post(
     includeModels
   )
 );
+router.post(
+  "/bulkCreate",
+  crudController.BulkCreate(
+    material_request,
+    field,
+    materialRequestAttributes,
+  )
+);
 module.exports = router;
