@@ -806,6 +806,78 @@ const CommonGetForAll = (Model, searchFields = [], Attributes, includeModels = [
     }
 };
 
+const BulkCreate =(Model,Attributes)=> async (req, res) => {
+    try {
+      const { user, records } = req.body; // Assuming `records` is an array of objects to be processed
+      let results = []; // Array to hold results for each record
+  
+      if (!Array.isArray(records) || records.length === 0) {
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "No records provided",
+          statusCode: 400,
+          error: "Invalid input",
+        });
+      }
+  
+      // Step 1: Loop through each record and process it
+      for (const recordData of records) {
+        let recordResult = {}; // Hold the result for the current record
+  
+        // Step 2: Create the new record
+        const finalRecordData = {
+          ...recordData,
+          user,
+          site:null, 
+          transfer:1,
+          task:null,
+          status:true,
+          a_qty:recordData.qty,
+          m_status:'Approved'
+        };
+  
+        const record = await Model.create(finalRecordData);
+        console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
+  
+        Logger.info(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
+  
+        // Step 3: Format the response for this record and push it to the results
+        recordResult = {
+          status: "success",
+          message: "Record created successfully",
+          statusCode: 200,
+          data: aliasResponseData(record, Attributes),
+          error: null,
+        };
+        results.push(recordResult);
+      }
+  
+      // Step 4: Return the results for all records
+      return responseHandler(res, {
+        data: results,
+        status: "success",
+        message: "Records processed successfully",
+        statusCode: 200,
+        error: null,
+      });
+    } catch (error) {
+      console.error(`Error creating records in ${Model.name}: ${error.message}`);
+      return responseHandler(res, {
+        data: null,
+        status: "error",
+        message: "Internal server error",
+        statusCode: 500,
+        error: error.message,
+      });
+    }
+  };
+  
+
+  
+
+  
+
 module.exports = {
   getAll,
   create,
@@ -817,5 +889,6 @@ module.exports = {
   createUsers,
   getAllById,
   getAllDataByCondition,
-  CommonGetForAll
+  CommonGetForAll,
+  BulkCreate
 };
