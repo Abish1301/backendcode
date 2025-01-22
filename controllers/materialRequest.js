@@ -308,8 +308,10 @@ const getAllDataByCondition =
           { [Op.or]: [{ user: user || null }, { user: null }] },
           ...(call === 'tab'
             ? [
-                { site: { [Op.ne]: null } }, // Exclude rows with site=null
-                { task: { [Op.ne]: null } }, // Exclude rows with task=null
+                ...(site !== undefined && site !== null
+                  ? [{ site }] // Filter by `site` value if it exists
+                  : [{ site: { [Op.ne]: null } }]), // Exclude rows with `site: null`
+                { task: { [Op.ne]: null } }, // Exclude rows with `task: null`
               ]
             : [
                 ...(site !== undefined && site !== null ? [{ site }] : []),
@@ -318,6 +320,7 @@ const getAllDataByCondition =
         ],
         ...rest,
       };
+      
       
       
       const { count, rows } = await Model.findAndCountAll({
