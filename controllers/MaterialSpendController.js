@@ -109,14 +109,7 @@ const getAllById =
 
         let whereCondition;
 
-        // If `id` is the only key in `req.body`
-        if (filters.id && Object.keys(req.body).length === 1) {
-          whereCondition = {
-            d: 0,
-            id: filters.id,
-            ...(Object.keys(filter).length > 0 ? filter : {}),
-          };
-        } else {
+
           whereCondition = {
             d: 0,
             ...filters, // Apply all other filters from the body
@@ -130,7 +123,7 @@ const getAllById =
             ],
             ...(Object.keys(filter).length > 0 ? filter : {}),
           };
-        }
+      
         const { count, rows } = await Model.findAndCountAll({
           where: whereCondition,
           limit: parseInt(limit, 10),
@@ -150,21 +143,6 @@ const getAllById =
 
         const totalPages = Math.ceil(count / limit);
 
-        // const response = {
-        //   count,
-        //   totalPages,
-        //   currentPage: parseInt(page, 10),
-        //   results: includeModels.length > 0
-        //     ? aliasResponseObjectDatainclude(
-        //       rows.map(row => row.dataValues),
-        //       Attributes,
-        //       includeModels // Pass the includeModels to aliasResponseObjectData
-        //     )
-        //     : aliasResponseObjectData(rows.map(row => row.dataValues), Attributes),
-        // };
-        // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
-
-        // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
         const transformedResults = rows.map((row) => {
           const dataValues = row.dataValues;
 
@@ -213,7 +191,9 @@ const getAllById =
         );
 
         return responseHandler(res, {
-          data: response.count == 1 ? response.results : response,
+          // data: response.count == 1 ? response.results : response,
+          data:  response,
+
           status: "success",
           message: "Data fetched successfully",
           statusCode: 200,
