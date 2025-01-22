@@ -84,7 +84,22 @@ const aliasResponseDatainclude = (data, attributes, includeModels = []) => {
   return result;
 };
 
-  
-  module.exports = { aliasResponseData, aliasResponseObjectData,aliasResponseObjectDatainclude, aliasResponseDatainclude };
+const convertToSequelizeInclude = (includes) => {
+            return includes.map((include) => {
+              const sequelizeInclude = {
+                model: include.model,
+                as: include.as,
+                attributes: include.attributes
+              };
+    
+              if (include.includeModels) {
+                sequelizeInclude.include = convertToSequelizeInclude(include.includeModels);
+              }
+    
+              return sequelizeInclude;
+            });
+};
+    
+  module.exports = { aliasResponseData, aliasResponseObjectData,aliasResponseObjectDatainclude, aliasResponseDatainclude ,convertToSequelizeInclude};
   
 
