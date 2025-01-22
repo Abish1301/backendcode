@@ -277,10 +277,10 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [])
 
 
 const getAllDataByCondition =
-  (Model, searchFields = [], Attributes, includeModels = [], filter = {}) =>
+  (Model, searchFields = [], Attributes, includeModels = []) =>
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
-    const { user, site, task, filter } = req.body;
+    const { user, site, task, filter={} } = req.body;
     const { call, ...rest } = filter;
 
     try {
