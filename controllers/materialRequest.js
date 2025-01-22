@@ -147,10 +147,14 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       offset: (page - 1) * limit,
       include: includeModels
     });
+    
+    const allData = await Model.findAll({
+      where: whereCondition,
+    });
 
     const today = new Date().toISOString().split('T')[0];
 
-    const totals = rows.reduce((acc, row) => {
+    const totals = allData.reduce((acc, row) => {
       const qty = parseInt(row.qty) || 0;
       const createdDate = new Date(row.created_at).toISOString().split('T')[0];
       
@@ -272,5 +276,131 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [])
 };
 
 
+const getAllDataByCondition =
+  (Model, searchFields = [], Attributes, includeModels = [], filter = {}) =>
+  async (req, res) => {
+    const { page = 1, limit = 10, search } = req.query;
+    const { user, site, task, filter } = req.body;
+    const { call, ...rest } = filter;
 
-module.exports = { InventoryOverAll, InventoryEntry, Inventorylogs };
+    try {
+      const offset = (page - 1) * limit;
+
+      const whereCondition = {
+        d: 0,
+        [Op.and]: [
+          ...(search
+            ? [
+                {
+                  [Op.or]: searchFields.map((field) => ({
+                    [field]: {
+                      [Op.eq]: search, // Exact match condition
+                    },
+                  })),
+                },
+              ]
+            : []),
+          {
+            [Op.or]: searchFields.map((field) => ({
+              [field]: { [Op.like]: `%${search}%` },
+            })),
+          },
+          { [Op.or]: [{ user: user || null }, { user: null }] },
+          ...(call === 'tab'
+            ? [
+                { site: { [Op.ne]: null } }, // Exclude rows with site=null
+                { task: { [Op.ne]: null } }, // Exclude rows with task=null
+              ]
+            : [
+                ...(site !== undefined && site !== null ? [{ site }] : []),
+                ...(task !== undefined && task !== null ? [{ task }] : []),
+              ]),
+        ],
+        ...rest,
+      };
+      
+      
+      const { count, rows } = await Model.findAndCountAll({
+        where: whereCondition,
+        limit: parseInt(limit, 10),
+        offset: parseInt(offset, 10),
+        include: includeModels,
+      });
+
+      if (count === 0) {
+        return responseHandler(res, {
+          data: {},
+          status: "No Data",
+          message: "No data found",
+          statusCode: 200,
+        });
+      }
+
+      const totalPages = Math.ceil(count / limit);
+
+      // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
+      const transformedResults = rows.map((row) => {
+        const dataValues = row.dataValues;
+
+        // Map alias attributes to their desired key names
+        const remappedAttributes = {};
+        Attributes.forEach(([originalKey, aliasKey]) => {
+          if (dataValues[originalKey] !== undefined) {
+            remappedAttributes[aliasKey] = dataValues[originalKey];
+            delete dataValues[originalKey]; // Remove the original key if needed
+          }
+        });
+
+        // Dynamically extract and group fields for each included model
+        const transformedIncludes = includeModels.reduce(
+          (acc, includeModel) => {
+            const alias = includeModel.as;
+            if (dataValues[alias]) {
+              acc[alias] = Array.isArray(dataValues[alias])
+                ? dataValues[alias].map((item) => item.dataValues)
+                : dataValues[alias].dataValues;
+            }
+            return acc;
+          },
+          {}
+        );
+
+        // Combine remapped main record data with transformed include data
+        return {
+          ...remappedAttributes,
+          ...transformedIncludes,
+        };
+      });
+
+      const response = {
+        count,
+        totalPages,
+        currentPage: parseInt(page, 10),
+        results: transformedResults,
+      };
+
+      console.log(
+        `Fetched records from ${Model.name}: page ${page}, limit ${limit}`
+      );
+      return responseHandler(res, {
+        data: response,
+        status: "success",
+        message: "Data fetched successfully",
+        statusCode: 200,
+        error: null,
+      });
+    } catch (error) {
+      console.error(
+        `Error fetching records from ${Model.name}: ${error.message}`
+      );
+      return responseHandler(res, {
+        data: null,
+        status: "error",
+        message: "Internal server error",
+        statusCode: 500,
+        error: error.message,
+      });
+    }
+  };
+
+module.exports = { InventoryOverAll, InventoryEntry, Inventorylogs, getAllDataByCondition };
