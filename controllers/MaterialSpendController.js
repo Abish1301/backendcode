@@ -2,39 +2,12 @@ const { responseHandler, aliasResponseData, Logger } = require("../utils");
 const { Op } = require("sequelize");
 const { convertToSequelizeInclude } = require("../utils/OtherExports");
 
-const createWODuplicates = (Model, Attributes) => async (req, res) => {
-  try {
-    const record = await Model.create(req.body);
-    console.log(
-      `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
-    );
-    Logger.info(
-      `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
-    );
 
-    return responseHandler(res, {
-      data: aliasResponseData(record, Attributes),
-      status: "success",
-      message: "Record created successfully",
-      statusCode: 200,
-      error: null,
-    });
-  } catch (error) {
-    console.error(`Error creating record in ${Model.name}: ${error.message}`);
-    return responseHandler(res, {
-      data: null,
-      status: "error",
-      message: "Internal server error",
-      statusCode: 500,
-      error: error.message,
-    });
-  }
-};
 
 const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =>
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
-    const {filter}=req.body ||{};
+    const {filter, user}=req.body ||{};
     try {
       const offset = (page - 1) * limit;
 
@@ -46,6 +19,16 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
           })),
         }),
         ...filter,
+        d:0,
+        user,
+        ...(filter.created_at && {
+          created_at: {
+            [Op.between]: [
+              `${filter.created_at} 00:00:00`, 
+              `${filter.created_at} 23:59:59`,
+            ],
+          },
+        }),
       };
 
       const { count, rows } = await Model.findAndCountAll({
@@ -55,6 +38,8 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
         include: convertToSequelizeInclude(includeModels),
         distinct: true
       });
+      const totalQty = await Model.sum('qty', { where: whereCondition });      
+console.log('totalQty',totalQty);
 
       if (count === 0) {
         return responseHandler(res, {
@@ -79,6 +64,7 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
         totalPages,
         currentPage: parseInt(page, 10),
         results: transformedResults,
+        totals:totalQty,
       };
 
       return responseHandler(res, {
@@ -215,4 +201,4 @@ const getAllById =
     };
 
 
-module.exports = { createWODuplicates, getAllByCondition, getAllById }
+module.exports = { getAllByCondition, getAllById }
