@@ -34,6 +34,7 @@ const createWODuplicates = (Model, Attributes) => async (req, res) => {
 const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =>
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
+    const {filter}=req.body ||{};
     try {
       const offset = (page - 1) * limit;
 

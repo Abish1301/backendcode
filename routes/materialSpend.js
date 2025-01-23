@@ -54,7 +54,7 @@ router.route('/')
   .put(crudController.updateByID(MaterialSpend,field, MaterialSpendAttributes))
   .delete(crudController.deleteRecord(MaterialSpend));
 
-router.post("/create", MaterialSpendController.createWODuplicates(MaterialSpend, field, MaterialSpendAttributes));
+router.post("/create", crudController.createWODuplicates(MaterialSpend, field, MaterialSpendAttributes));
 router.post("/getById", MaterialSpendController.getAllById(MaterialSpend, MaterialSpendAttributes,includeModel));
 
 module.exports = router;
