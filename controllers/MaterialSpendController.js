@@ -39,7 +39,6 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
         distinct: true
       });
       const totalQty = await Model.sum('qty', { where: whereCondition });      
-console.log('totalQty',totalQty);
 
       if (count === 0) {
         return responseHandler(res, {
