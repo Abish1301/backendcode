@@ -147,14 +147,10 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       offset: (page - 1) * limit,
       include: includeModels
     });
-    
-    const allData = await Model.findAll({
-      where: whereCondition,
-    });
 
     const today = new Date().toISOString().split('T')[0];
 
-    const totals = allData.reduce((acc, row) => {
+    const totals = rows.reduce((acc, row) => {
       const qty = parseInt(row.qty) || 0;
       const createdDate = new Date(row.created_at).toISOString().split('T')[0];
       

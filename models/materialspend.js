@@ -37,6 +37,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    user: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    d: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   }, {
     sequelize,
     modelName: 'MaterialSpend',

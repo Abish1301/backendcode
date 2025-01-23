@@ -30,6 +30,15 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       },
+      user: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      d: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, 
+      },
     });
   },
  down: async(queryInterface, Sequelize)=> {
