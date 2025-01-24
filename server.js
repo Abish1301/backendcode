@@ -30,6 +30,7 @@ fs.readdirSync("./routes/").forEach((file) => {
     const routeModule = require("./routes/" + file);
     if (routePath === "/api/auth") {
       app.use(routePath, routeModule);
+      console.log(routePath)
     } else {
       // app.use(routePath, authenticateToken, routeModule);
       app.use(routePath, routeModule);

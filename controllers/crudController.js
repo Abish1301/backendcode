@@ -127,6 +127,7 @@ const updateByID =
       try {
         let imagePath;
         const { id, ...data } = req.body;
+        console.log(id);
         if (Array.isArray(field) && field.length > 0) {
           const isFieldPresent = field.some((f) => req.body[f]);
 
