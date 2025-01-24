@@ -38,7 +38,7 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
         include: convertToSequelizeInclude(includeModels),
         distinct: true
       });
-      const totalQty = await Model.sum('qty', { where: whereCondition });      
+      // const totalQty = await Model.sum('qty', { where: whereCondition });      
 
       if (count === 0) {
         return responseHandler(res, {
@@ -63,7 +63,7 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
         totalPages,
         currentPage: parseInt(page, 10),
         results: transformedResults,
-        totals:totalQty,
+        // totals:totalQty,
       };
 
       return responseHandler(res, {
@@ -200,4 +200,64 @@ const getAllById =
     };
 
 
-module.exports = { getAllByCondition, getAllById }
+const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes) => async (req, res) => {
+      try {
+       
+        const record = await Model.create(req.body);
+        if (record) {
+          
+          const RequestData = await updateModel.findByPk(req.body.request);
+          const updatedQty = Number(RequestData.a_qty) - Number(req.body.qty);
+        
+          const updateData = {
+            a_qty: updatedQty,
+          };
+        
+          // Use `returning` to get the updated row(s) (for databases that support it)
+          const affectedRow = await updateModel.update(updateData, {
+            where: { id: req.body.request },
+          });          
+        
+          if (affectedRow > 0) {
+            const updatedRow = await updateModel.findByPk(req.body.request);
+        
+            // You can include the updated row in the response if needed
+            return responseHandler(res, {
+              data: {
+                newRecord: aliasResponseData(record, Attributes),
+                updatedRequest: aliasResponseData(updatedRow,updateModelAttributes) // Include the updated row
+              },
+              status: "success",
+              message: "Record created and updated successfully",
+              statusCode: 200,
+              error: null,
+            });
+          }
+        }
+        
+        console.log(
+          `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
+        );
+        Logger.info(
+          `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
+        );
+    
+        return responseHandler(res, {
+          data: aliasResponseData(record, Attributes),
+          status: "success",
+          message: "Record created successfully",
+          statusCode: 200,
+          error: null,
+        });
+      } catch (error) {
+        console.error(`Error creating record in ${Model.name}: ${error.message}`);
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "Internal server error",
+          statusCode: 500,
+          error: error.message,
+        });
+      }
+    };
+module.exports = { getAllByCondition, getAllById, createWODuplicates }
