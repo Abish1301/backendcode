@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Sequelize, Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
 const {
   responseHandler,
@@ -874,9 +874,136 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
   };
   
 
-  
+  const getAllData =
+  (Model, Attributes, includeModels = [], lenModal, avgModal) =>
+  async (req, res) => {
+    const { user, site } = req.body;
 
-  
+    try {
+      const whereCondition = {
+        d: 0,
+        [Op.and]: [
+          { [Op.or]: [{ user: user || null }, { user: null }] },
+        ],
+        site: site,
+      };
+      const where = {
+        d: 0,
+        [Op.and]: [
+          { [Op.or]: [{ user: user || null }, { user: null }] },
+        ],
+        id: site,
+      };
+
+      // Fetch all data with the main model
+      const allData = await Model.findAll({
+        where: where,
+        include: includeModels,
+      });
+
+      const transformedResults = allData.map((row) => {
+        const dataValues = row.dataValues;
+
+        // Map alias attributes to their desired key names
+        const remappedAttributes = {};
+        Attributes.forEach(([originalKey, aliasKey]) => {
+          if (dataValues[originalKey] !== undefined) {
+            remappedAttributes[aliasKey] = dataValues[originalKey];
+            delete dataValues[originalKey]; // Remove the original key if needed
+          }
+        });
+
+        // Dynamically extract and group fields for each included model
+        const transformedIncludes = includeModels.reduce(
+          (acc, includeModel) => {
+            const alias = includeModel.as;
+            if (dataValues[alias]) {
+              acc[alias] = Array.isArray(dataValues[alias])
+                ? dataValues[alias].map((item) => item.dataValues)
+                : dataValues[alias].dataValues;
+            }
+            return acc;
+          },
+          {}
+        );
+
+        // Combine remapped main record data with transformed include data
+        return {
+          ...remappedAttributes,
+          ...transformedIncludes,
+        };
+      });
+
+      // Calculate task length
+      const taskLength = await lenModal.count({
+        where: whereCondition,
+      });
+
+      // Fetch averages and chart data
+      const avgData = await getSiteDetails(whereCondition, avgModal);
+
+      const response = {
+        results: transformedResults,
+        averages: avgData,
+        taskLength: taskLength,
+      };
+
+      console.log(`Fetched records from ${Model.name}.`);
+      return responseHandler(res, {
+        data: response,
+        status: "success",
+        message: "Data fetched successfully",
+        statusCode: 200,
+        error: null,
+      });
+    } catch (error) {
+      console.error(`Error fetching records from ${Model.name}: ${error.message}`);
+      return responseHandler(res, {
+        data: null,
+        status: "error",
+        message: "Internal server error",
+        statusCode: 500,
+        error: error.message,
+      });
+    }
+  };
+
+const getSiteDetails = async (whereCondition, avgModal) => {
+  // try {
+    // Calculate overall average percentage
+    const averagePercentageData = await avgModal.findOne({
+      where: whereCondition,
+      attributes: [[Sequelize.fn("AVG", Sequelize.col("percentage")), "averagePercentage"]],
+      raw: true, // Returns a plain object instead of a Sequelize instance
+    });
+
+    const averagePercentage = averagePercentageData
+      ? parseFloat(averagePercentageData.averagePercentage) || 0
+      : 0;
+
+    // Fetch grouped average data for chart
+    const averages = await avgModal.findAll({
+      attributes: [
+        "task", // Group by taskId
+        [Sequelize.fn("AVG", Sequelize.col("percentage")), "averagePercentage"], // Calculate average percentage
+      ],
+      where: whereCondition,
+      group: ["task"], // Group by taskId
+    });
+
+    return {
+      ChartData: averages || {},
+      Percentage: averagePercentage || 0,
+    };
+  // } catch (error) {
+  //   console.error(`Error fetching site details:`, error);
+  //   return {
+  //     ChartData: {},
+  //     Percentage: 0,
+  //   };
+  // }
+};
+
 
 module.exports = {
   getAll,
@@ -890,5 +1017,6 @@ module.exports = {
   getAllById,
   getAllDataByCondition,
   CommonGetForAll,
-  BulkCreate
+  BulkCreate,
+  getAllData
 };
