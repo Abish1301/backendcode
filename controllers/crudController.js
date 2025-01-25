@@ -14,6 +14,7 @@ const {
   aliasResponseObjectDatainclude,
   aliasResponseDatainclude,
 } = require("../utils/OtherExports");
+const { Task} = require('../models');
 
 const getAll =
   (Model, searchFields = [], includeModels = []) =>
@@ -969,7 +970,6 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
   };
 
 const getSiteDetails = async (whereCondition, avgModal) => {
-  // try {
     // Calculate overall average percentage
     const averagePercentageData = await avgModal.findOne({
       where: whereCondition,
@@ -981,27 +981,39 @@ const getSiteDetails = async (whereCondition, avgModal) => {
       ? parseFloat(averagePercentageData.averagePercentage) || 0
       : 0;
 
-    // Fetch grouped average data for chart
-    const averages = await avgModal.findAll({
-      attributes: [
-        "task", // Group by taskId
-        [Sequelize.fn("AVG", Sequelize.col("percentage")), "averagePercentage"], // Calculate average percentage
-      ],
-      where: whereCondition,
-      group: ["task"], // Group by taskId
-    });
+      const averages = await avgModal.findAll({
+        attributes: [
+          "task", // Group by task ID
+          [Sequelize.fn("AVG", Sequelize.col("percentage")), "averagePercentage"], // Calculate average percentage
+        ],
+        include: [
+          {
+            model: Task, // Ensure Task model is properly included
+            as: "Task", // Match the alias in the association
+            attributes: ["id", "name"], // Fetch only the required fields
+            required: true, // Ensures only records with a matching Task are included
+          },
+        ],
+        where: whereCondition, // Apply your condition
+        group: ["task", "Task.id"], // Group by task ID and Task ID
+      });
+      const transformedAverages = averages.map((avg) => {
+        const data = avg.dataValues;
+        const taskName = avg.Task?.name || null; // Extract the task name from the included model
+        return {
+          task: data.task, // Task ID
+          taskName, // Task Name
+          averagePercentage: parseFloat(data.averagePercentage), // Calculated average
+        };
+      });
+      
+      console.log(transformedAverages);
+      
 
     return {
-      ChartData: averages || {},
+      ChartData: transformedAverages ,
       Percentage: averagePercentage || 0,
     };
-  // } catch (error) {
-  //   console.error(`Error fetching site details:`, error);
-  //   return {
-  //     ChartData: {},
-  //     Percentage: 0,
-  //   };
-  // }
 };
 
 
