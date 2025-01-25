@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Site, AuthUser } = require('../models');
+const { Site, AuthUser, TaskTimeline, Task} = require('../models');
 const crudController = require('../controllers/crudController');
 const { siteMasterAttributes, authUserAttributes, upload } = require('../utils');
 
@@ -20,5 +20,6 @@ router.route('/')
   .delete(crudController.deleteRecord(Site));
 router.post("/formData", upload.single("image"), crudController.createWODuplicates(Site, field, siteMasterAttributes));
 router.post("/getById", crudController.getAllById(Site, siteMasterAttributes, includeModels));
+router.post("/getsiteDetails", crudController.getAllData(Site, siteMasterAttributes, includeModels, Task, TaskTimeline));
 
 module.exports = router;
