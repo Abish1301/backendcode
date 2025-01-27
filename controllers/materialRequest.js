@@ -1,6 +1,6 @@
 const { Sequelize, Op } = require("sequelize");
 const { responseHandler } = require("../utils");
-
+const {MaterialSpend, EquipmentSpend} =require("../models")
 // Common helper functions
 const createBaseWhereCondition = (search, searchFields, user, m_status = 'Approved') => ({
   d: 0,
@@ -165,9 +165,30 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
     });
 
     const today = new Date().toISOString().split('T')[0];
+        
+    // Get request IDs from rows
+    const requestIds = rows.map(row => row.id);
+    const SpendModel= Model.name === 'material_request' ? MaterialSpend: EquipmentSpend
+
+    const todaySpendTotal = await SpendModel.sum('qty', {
+      where: {
+          request: {
+              [Op.in]: requestIds
+          },
+          created_at: {
+              [Op.between]: [
+                  `${today} 00:00:00`,
+                  `${today} 23:59:59`
+              ]
+          },
+          d:0,
+          user:user
+      }
+  }) || 0;
 
     const totals = allData.reduce((acc, row) => {
       const qty = parseInt(row.qty) || 0;
+      const a_qty = parseInt(row.a_qty) || 0;
       const createdDate = new Date(row.created_at).toISOString().split('T')[0];
       
       // Overall totals
@@ -175,6 +196,8 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
         acc.overallTotals.toInventoryTotal += qty;
       } else if (row.transfer === 2) {
         acc.overallTotals.siteTransferTotal += qty;
+        acc.overallTotals.spend += qty-a_qty;
+
       }
 
       // Today's totals
@@ -183,13 +206,13 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
           acc.todayTotals.toInventoryTotal += qty;
         } else if (row.transfer === 2) {
           acc.todayTotals.siteTransferTotal += qty;
-        }
+          }
       }
 
       return acc;
     }, {
-      overallTotals: { toInventoryTotal: 0, siteTransferTotal: 0 },
-      todayTotals: { toInventoryTotal: 0, siteTransferTotal: 0 }
+      overallTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend:0 },
+      todayTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend:0 }
     });
 
     const transformedResults = transformResults(rows, Attributes, includeModels);
@@ -203,11 +226,13 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
         totals: {
           overall: {
             toInventory: totals.overallTotals.toInventoryTotal,
-            siteTransfer: totals.overallTotals.siteTransferTotal
+            siteTransfer: totals.overallTotals.siteTransferTotal,
+            spend: totals.overallTotals.spend
           },
           today: {
             toInventory: totals.todayTotals.toInventoryTotal,
-            siteTransfer: totals.todayTotals.siteTransferTotal
+            siteTransfer: totals.todayTotals.siteTransferTotal,
+            spend: todaySpendTotal
           }
         }
       },
