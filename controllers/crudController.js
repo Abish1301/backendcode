@@ -836,7 +836,8 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
           task:null,
           status:true,
           a_qty:recordData.qty,
-          m_status:'Approved'
+          m_status:'Approved',
+          e_status:'Approved'
         };
   
         const record = await Model.create(finalRecordData);
