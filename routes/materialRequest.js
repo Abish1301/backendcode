@@ -77,7 +77,9 @@ router.post(
     material_request,
     searchableFields,
     materialRequestAttributes,
-    includeModels
+    includeModels,
+    fStatus='m_status',
+    fKey='material'
   )
 );
 router.post(
@@ -86,8 +88,7 @@ router.post(
     material_request,
     searchableFields,
     materialRequestAttributes,
-    includeModels
-  )
+    includeModels  )
 );
 router.post(
   "/getDataInventoryLog",

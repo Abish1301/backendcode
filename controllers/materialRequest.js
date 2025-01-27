@@ -14,6 +14,18 @@ const createBaseWhereCondition = (search, searchFields, user, m_status = 'Approv
     ...(m_status !== undefined && m_status !== null ? [{ m_status }] : [{ m_status: 'Approved' }])
   ]
 });
+const BaseWhereCondition = (search, searchFields, user, e_status = 'Approved') => ({
+  d: 0,
+  [Op.and]: [
+    ...(search ? [{
+      [Op.or]: searchFields.map(field => ({
+        [field]: { [Op.like]: `%${search}%` }
+      }))
+    }] : []),
+    { [Op.or]: [{ user: user || null }, { user: null }] },
+    ...(e_status !== undefined && e_status !== null ? [{ e_status }] : [{ e_status: 'Approved' }])
+  ]
+});
 
 const transformResults = (rows, Attributes, includeModels) => {
   return rows.map(row => {
@@ -50,7 +62,7 @@ const createPaginationResponse = (count, page, limit, results) => ({
 });
 
 // Main controller functions
-const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = [], fStatus, fKey) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
   const { user,filter, site } = req.body;
   const siteid = site||null;
@@ -60,7 +72,7 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
 
   try {
     const whereCondition = {
-      ...createBaseWhereCondition(search, searchFields, user),
+      ...(fStatus==='m_status'?createBaseWhereCondition(search, searchFields, user):BaseWhereCondition(search, searchFields, user)),
      
       ...(siteid === null && {  transfer: 1 }) ,
       ...filter,
@@ -69,8 +81,8 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
     };
     const { count, rows } = await Model.findAndCountAll({
       attributes: [
-        'material',
-        'm_status',
+        fStatus,
+        fKey,
         [Sequelize.fn('SUM', Sequelize.col('qty')), 'qty'],
         [Sequelize.fn('SUM', Sequelize.col('a_qty')), 'a_qty'],
         ...includeModels.map(model => [
@@ -79,7 +91,7 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
         ])
       ],
       where: whereCondition,
-      group: ['material', 'm_status', ...includeModels.map(model => `${model.as}.id`)],
+      group: [fStatus, fKey, ...includeModels.map(model => `${model.as}.id`)],
       include: includeModels,
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
@@ -121,13 +133,13 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
 
 const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user, site, task, m_status, filter } = req.body;
+  const { user, site, task, m_status ,e_status, filter } = req.body;
   const siteid = site||null;
   // const siteid = 2;
 
   try {
     const whereCondition = {
-      ...createBaseWhereCondition(search, searchFields, user, m_status),
+      ...Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status): BaseWhereCondition(search, searchFields, user, e_status),
       ...(siteid !== null && { site: siteid || null }),
       // ...(siteid !== null && { task: task || null }),
       ...filter,
@@ -218,14 +230,13 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
 
 
 const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
+  
   const { page = 1, limit = 10, search } = req.query;
-  const { user, m_status, filter,site } = req.body;
+  const { user, m_status,e_status, filter,site } = req.body;
   const siteid = site||null;
-  // const siteid = 2;
-
   try {
     const whereCondition = {
-      ...createBaseWhereCondition(search, searchFields, user, m_status),
+      ...(Model.name === 'material_request'? createBaseWhereCondition(search, searchFields, user, m_status): BaseWhereCondition(search, searchFields, user, e_status)),
       transfer: { [Op.ne]: 3 },
       ...(siteid !== null && { site: siteid || null }),
 

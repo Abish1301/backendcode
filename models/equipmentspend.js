@@ -3,22 +3,20 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class MaterialSpend extends Model {
+  class EquipmentSpend extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    
     static associate(models) {
-      
-      MaterialSpend.belongsTo(models.material_request, {
+      EquipmentSpend.belongsTo(models.equipment_request, {
         foreignKey: 'request',
         targetKey: 'id',
         
-      });    }
+      });      }
   }
-  MaterialSpend.init({
+  EquipmentSpend.init({
     request: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -47,14 +45,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'MaterialSpend',
-    tableName: 'MaterialSpend',
+    modelName: 'EquipmentSpend',
+    tableName: 'EquipmentSpend',
     freezeTableName: true,
     timestamps: false,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
 
-
   });
-  return MaterialSpend;
+  return EquipmentSpend;
 };
