@@ -811,7 +811,7 @@ const CommonGetForAll = (Model, searchFields = [], Attributes, includeModels = [
 
 const BulkCreate =(Model,Attributes)=> async (req, res) => {
     try {
-      const { user, records } = req.body; // Assuming `records` is an array of objects to be processed
+      const { user, records,extra } = req.body; // Assuming `records` is an array of objects to be processed
       let results = []; // Array to hold results for each record
   
       if (!Array.isArray(records) || records.length === 0) {
@@ -832,13 +832,9 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
         const finalRecordData = {
           ...recordData,
           user,
-          site:null, 
-          transfer:1,
-          task:null,
           status:true,
           a_qty:recordData.qty,
-          m_status:'Approved',
-          e_status:'Approved'
+          ...extra
         };
   
         const record = await Model.create(finalRecordData);
