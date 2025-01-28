@@ -48,11 +48,14 @@ const field = [];
     }
   
   ];
+const searchableFields =[]
 
 router.route('/')
-  .post(MaterialSpendController.getAllByCondition(MaterialSpend, MaterialSpendAttributes, includeModel))
-  .put(crudController.updateByID(MaterialSpend,field, MaterialSpendAttributes))
+  .post(crudController.getAllByCondition(MaterialSpend,searchableFields, MaterialSpendAttributes, includeModel))
+  .put(MaterialSpendController.updateRecord(MaterialSpend, MaterialSpendAttributes, material_request))
   .delete(crudController.deleteRecord(MaterialSpend));
+  router.delete("/delete", MaterialSpendController.deleteRecord(MaterialSpend, material_request));
+  
 
 router.post("/create", MaterialSpendController.createWODuplicates(MaterialSpend, MaterialSpendAttributes,material_request,materialRequestAttributes));
 router.post("/getById", MaterialSpendController.getAllById(MaterialSpend, MaterialSpendAttributes,includeModel));

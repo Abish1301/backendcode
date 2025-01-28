@@ -46,9 +46,9 @@ const field = [];
 
 router.route('/')
   .post(MaterialSpendController.getAllByCondition(EquipmentSpend, MaterialSpendAttributes, includeModel))
-  .put(crudController.updateByID(EquipmentSpend,field, MaterialSpendAttributes))
+  .put(MaterialSpendController.updateRecord(EquipmentSpend, MaterialSpendAttributes, equipment_request))
   .delete(crudController.deleteRecord(EquipmentSpend));
-
+  router.delete("/delete", MaterialSpendController.deleteRecord(EquipmentSpend, equipment_request));
 router.post("/create", MaterialSpendController.createWODuplicates(EquipmentSpend, MaterialSpendAttributes,equipment_request,materialRequestAttributes));
 router.post("/getById", MaterialSpendController.getAllById(EquipmentSpend, MaterialSpendAttributes,includeModel));
 

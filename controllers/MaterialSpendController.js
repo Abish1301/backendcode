@@ -260,4 +260,181 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
         });
       }
     };
-module.exports = { getAllByCondition, getAllById, createWODuplicates }
+
+
+    const deleteRecord = (Model, updateModel) => async (req, res) => {
+      try {
+        const { request, id, qty } = req.body;
+      console.log( request, id, qty);
+      
+        // Validate the input
+        if (!request || !id || typeof qty === "undefined") {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Missing required fields",
+            statusCode: 400,
+            error: "Invalid request data",
+          });
+        }
+    
+        // Fetch the related record from updateModel
+        const RequestData = await updateModel.findByPk(request);
+    
+        if (!RequestData) {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Related record not found",
+            statusCode: 404,
+            error: "Invalid request ID",
+          });
+        }
+    
+        // Calculate updated quantity
+        const updatedQty = Number(RequestData.a_qty) + Number(qty);
+    
+        // Update the quantity in updateModel
+        const [affectedRow] = await updateModel.update(
+          { a_qty: updatedQty },
+          { where: { id: request } }
+        );
+    
+        if (affectedRow > 0) {
+          // Delete the record from Model
+          const deletedRow = await Model.destroy({ where: { id } });
+    
+          if (deletedRow) {
+            console.log(`Deleted record with ID ${id} from ${Model.name}`);
+            Logger.info(`Deleted record with ID ${id} from ${Model.name}`);
+    
+            return responseHandler(res, {
+              data: { id },
+              status: "success",
+              message: "Data deleted successfully",
+              statusCode: 200,
+              error: null,
+            });
+          } else {
+            return responseHandler(res, {
+              data: null,
+              status: "error",
+              message: "Failed to delete the record",
+              statusCode: 500,
+              error: "Delete operation failed",
+            });
+          }
+        } else {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Failed to update related record",
+            statusCode: 500,
+            error: "Update operation failed",
+          });
+        }
+      } catch (error) {
+        console.error(`Error deleting record in ${Model.name}: ${error.message}`);
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "Internal server error",
+          statusCode: 500,
+          error: error.message,
+        });
+      }
+    };
+    
+
+    const updateRecord = (Model, Attributes, updateModel) => async (req, res) => {
+      try {
+    
+        // Validate the input
+        if (!req.body.request || !req.body.id || typeof req.body.qty === 'undefined') {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Missing required fields",
+            statusCode: 400,
+            error: "Invalid request data",
+          });
+        }
+    
+        // Find the related records
+        const RequestData1 = await updateModel.findByPk(req.body.request);
+        const RequestData2 = await Model.findByPk(req.body.id);
+    
+        if (!RequestData1 || !RequestData2) {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Record not found",
+            statusCode: 404,
+            error: "Invalid IDs provided",
+          });
+        }
+    
+        // Calculate updated quantity
+        const updatedQty =
+          Number(RequestData1.a_qty) +
+          Number(RequestData2.qty) -
+          Number(req.body.qty);
+    
+        // Update the related model's data
+        const [affectedRow] = await updateModel.update(
+          { a_qty: updatedQty },
+          { where: { id: req.body.request } }
+        );
+    
+        if (affectedRow > 0) {
+          // Update the main record
+          const [updatedRow] = await Model.update(
+            { qty: req.body.qty },
+            { where: { id: req.body.id } }
+          );
+    
+          if (updatedRow > 0) {
+            // Fetch the updated record
+            const updatedRecord = await Model.findByPk(req.body.id);
+    
+            console.log(`Updated record with ID ${req.body.id} from ${Model.name}`);
+            Logger.info(`Updated record with ID ${req.body.id} from ${Model.name}`);
+    
+            return responseHandler(res, {
+              data: aliasResponseData(updatedRecord, Attributes),
+              status: "success",
+              message: "Data updated successfully",
+              statusCode: 200,
+              error: null,
+            });
+          } else {
+            return responseHandler(res, {
+              data: null,
+              status: "error",
+              message: "Failed to update the main record",
+              statusCode: 500,
+              error: "Update failed",
+            });
+          }
+        } else {
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Failed to update related data",
+            statusCode: 500,
+            error: "Update failed",
+          });
+        }
+      } catch (error) {
+        console.error(`Error updating record in ${Model.name}: ${error.message}`);
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "Internal server error",
+          statusCode: 500,
+          error: error.message,
+        });
+      }
+    };
+    
+module.exports = { getAllByCondition, getAllById, createWODuplicates, deleteRecord, updateRecord }
