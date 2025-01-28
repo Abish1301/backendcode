@@ -211,6 +211,7 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
         
           const updateData = {
             a_qty: updatedQty,
+            updated_at: new Date()
           };
         
           // Use `returning` to get the updated row(s) (for databases that support it)
@@ -265,7 +266,6 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
     const deleteRecord = (Model, updateModel) => async (req, res) => {
       try {
         const { request, id, qty } = req.body;
-      console.log( request, id, qty);
       
         // Validate the input
         if (!request || !id || typeof qty === "undefined") {
@@ -296,7 +296,7 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
     
         // Update the quantity in updateModel
         const [affectedRow] = await updateModel.update(
-          { a_qty: updatedQty },
+          { a_qty: updatedQty, updated_at: new Date() },
           { where: { id: request } }
         );
     
@@ -382,14 +382,14 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
     
         // Update the related model's data
         const [affectedRow] = await updateModel.update(
-          { a_qty: updatedQty },
+          { a_qty: updatedQty , updated_at: new Date()},
           { where: { id: req.body.request } }
         );
     
         if (affectedRow > 0) {
           // Update the main record
           const [updatedRow] = await Model.update(
-            { qty: req.body.qty },
+            { qty: req.body.qty, updated_at: new Date() },
             { where: { id: req.body.id } }
           );
     

@@ -84,7 +84,7 @@ const create = (Model) => async (req, res) => {
 const update = (Model, Attributes) => async (req, res) => {
   try {
     const { id, ...data } = req.body;
-    await Model.update(data, { where: { id } });
+    await Model.update({ ...data, updated_at: new Date() }, { where: { id } });
     console.log(`Updated record with ID ${id} in ${Model.name}`);
     Logger.info(`Updated record with ID ${id} in ${Model.name}`);
 
@@ -173,6 +173,7 @@ const updateByID =
         const updateData = {
           ...data,
           ...(imagePath ? { image: imagePath } : {}),
+          updated_at: new Date()
         };
 
         await Model.update(updateData, { where: { id } });
