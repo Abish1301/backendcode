@@ -1,6 +1,6 @@
 const { Sequelize, Op } = require("sequelize");
 const { responseHandler } = require("../utils");
-const {MaterialSpend, EquipmentSpend} =require("../models")
+const { MaterialSpend, EquipmentSpend } = require("../models")
 // Common helper functions
 const createBaseWhereCondition = (search, searchFields, user, m_status = 'Approved') => ({
   d: 0,
@@ -30,7 +30,7 @@ const BaseWhereCondition = (search, searchFields, user, e_status = 'Approved') =
 const transformResults = (rows, Attributes, includeModels) => {
   return rows.map(row => {
     const dataValues = row.dataValues;
-    
+
     const remappedAttributes = Object.fromEntries(
       Attributes.filter(([originalKey]) => dataValues[originalKey] !== undefined)
         .map(([originalKey, aliasKey]) => [aliasKey, dataValues[originalKey]])
@@ -64,20 +64,20 @@ const createPaginationResponse = (count, page, limit, results) => ({
 // Main controller functions
 const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = [], fStatus, fKey) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user,filter, site } = req.body;
-  const siteid = site||null;
+  const { user, filter, site } = req.body;
+  const siteid = site || null;
   // const siteid = 2;
 
   const offset = (page - 1) * limit;
 
   try {
     const whereCondition = {
-      ...(fStatus==='m_status'?createBaseWhereCondition(search, searchFields, user):BaseWhereCondition(search, searchFields, user)),
-     
-      ...(siteid === null && {  transfer: 1 }) ,
+      ...(fStatus === 'm_status' ? createBaseWhereCondition(search, searchFields, user) : BaseWhereCondition(search, searchFields, user)),
+
+      ...(siteid === null && { transfer: 1 }),
       ...filter,
-      site: siteid !== null ? siteid : null, 
-      ...(siteid === null && { task: null }) 
+      site: siteid !== null ? siteid : null,
+      ...(siteid === null && { task: null })
     };
     const { count, rows } = await Model.findAndCountAll({
       attributes: [
@@ -133,20 +133,20 @@ const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = 
 
 const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
-  const { user, site, task, m_status ,e_status, filter } = req.body;
-  const siteid = site||null;
+  const { user, site, task, m_status, e_status, filter } = req.body;
+  const siteid = site || null;
   // const siteid = 2;
 
   try {
     const whereCondition = {
-      ...Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status): BaseWhereCondition(search, searchFields, user, e_status),
+      ...Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status) : BaseWhereCondition(search, searchFields, user, e_status),
       ...(siteid !== null && { site: siteid || null }),
       // ...(siteid !== null && { task: task || null }),
       ...filter,
       ...(filter.created_at && {
         created_at: {
           [Op.between]: [
-            `${filter.created_at} 00:00:00`, 
+            `${filter.created_at} 00:00:00`,
             `${filter.created_at} 23:59:59`,
           ],
         },
@@ -159,44 +159,44 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       offset: (page - 1) * limit,
       include: includeModels
     });
-    
+
     const allData = await Model.findAll({
       where: whereCondition,
     });
 
     const today = new Date().toISOString().split('T')[0];
-        
+
     // Get request IDs from rows
     const requestIds = rows.map(row => row.id);
-    const SpendModel= Model.name === 'material_request' ? MaterialSpend: EquipmentSpend
+    const SpendModel = Model.name === 'material_request' ? MaterialSpend : EquipmentSpend
 
     const todaySpendTotal = await SpendModel.sum('qty', {
       where: {
-          request: {
-              [Op.in]: requestIds
-          },
-          created_at: {
-              [Op.between]: [
-                  `${today} 00:00:00`,
-                  `${today} 23:59:59`
-              ]
-          },
-          d:0,
-          user:user
+        request: {
+          [Op.in]: requestIds
+        },
+        created_at: {
+          [Op.between]: [
+            `${today} 00:00:00`,
+            `${today} 23:59:59`
+          ]
+        },
+        d: 0,
+        user: user
       }
-  }) || 0;
+    }) || 0;
 
     const totals = allData.reduce((acc, row) => {
       const qty = parseInt(row.qty) || 0;
       const a_qty = parseInt(row.a_qty) || 0;
       const createdDate = new Date(row.created_at).toISOString().split('T')[0];
-      
+
       // Overall totals
       if (row.transfer === 1) {
         acc.overallTotals.toInventoryTotal += qty;
       } else if (row.transfer === 2) {
         acc.overallTotals.siteTransferTotal += qty;
-        acc.overallTotals.spend += qty-a_qty;
+        acc.overallTotals.spend += qty - a_qty;
 
       }
 
@@ -206,13 +206,13 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
           acc.todayTotals.toInventoryTotal += qty;
         } else if (row.transfer === 2) {
           acc.todayTotals.siteTransferTotal += qty;
-          }
+        }
       }
 
       return acc;
     }, {
-      overallTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend:0 },
-      todayTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend:0 }
+      overallTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend: 0 },
+      todayTotals: { toInventoryTotal: 0, siteTransferTotal: 0, spend: 0 }
     });
 
     const transformedResults = transformResults(rows, Attributes, includeModels);
@@ -255,13 +255,13 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
 
 
 const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = []) => async (req, res) => {
-  
+
   const { page = 1, limit = 10, search } = req.query;
-  const { user, m_status,e_status, filter,site } = req.body;
-  const siteid = site||null;
+  const { user, m_status, e_status, filter, site } = req.body;
+  const siteid = site || null;
   try {
     const whereCondition = {
-      ...(Model.name === 'material_request'? createBaseWhereCondition(search, searchFields, user, m_status): BaseWhereCondition(search, searchFields, user, e_status)),
+      ...(Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status) : BaseWhereCondition(search, searchFields, user, e_status)),
       transfer: { [Op.ne]: 3 },
       ...(siteid !== null && { site: siteid || null }),
 
@@ -314,19 +314,19 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [])
 
 const getAllDataByCondition =
   (Model, searchFields = [], Attributes, includeModels = []) =>
-  async (req, res) => {
-    const { page = 1, limit = 10, search } = req.query;
-    const { user, site, task, filter={} } = req.body;
-    const { call, ...rest } = filter;
+    async (req, res) => {
+      const { page = 1, limit = 10, search } = req.query;
+      const { user, site, task, filter = {} } = req.body;
+      const { call, ...rest } = filter;
 
-    try {
-      const offset = (page - 1) * limit;
+      try {
+        const offset = (page - 1) * limit;
 
-      const whereCondition = {
-        d: 0,
-        [Op.and]: [
-          ...(search
-            ? [
+        const whereCondition = {
+          d: 0,
+          [Op.and]: [
+            ...(search
+              ? [
                 {
                   [Op.or]: searchFields.map((field) => ({
                     [field]: {
@@ -335,111 +335,171 @@ const getAllDataByCondition =
                   })),
                 },
               ]
-            : []),
-          {
-            [Op.or]: searchFields.map((field) => ({
-              [field]: { [Op.like]: `%${search}%` },
-            })),
-          },
-          { [Op.or]: [{ user: user || null }, { user: null }] },
-          ...(call === 'tab'
-            ? [
+              : []),
+            {
+              [Op.or]: searchFields.map((field) => ({
+                [field]: { [Op.like]: `%${search}%` },
+              })),
+            },
+            { [Op.or]: [{ user: user || null }, { user: null }] },
+            ...(call === 'tab'
+              ? [
                 ...(site !== undefined && site !== null
                   ? [{ site }] // Filter by `site` value if it exists
                   : [{ site: { [Op.ne]: null } }]), // Exclude rows with `site: null`
-                { task: { [Op.ne]: null } }, // Exclude rows with `task: null`
+                // { task: { [Op.ne]: null } }, // Exclude rows with `task: null`
               ]
-            : [
+              : [
                 ...(site !== undefined && site !== null ? [{ site }] : []),
                 ...(task !== undefined && task !== null ? [{ task }] : []),
               ]),
-        ],
-        ...rest,
-      };
-      
-      
-      
-      const { count, rows } = await Model.findAndCountAll({
-        where: whereCondition,
-        limit: parseInt(limit, 10),
-        offset: parseInt(offset, 10),
-        include: includeModels,
-      });
+          ],
+          ...rest,
+        };
 
-      if (count === 0) {
+
+
+        const { count, rows } = await Model.findAndCountAll({
+          where: whereCondition,
+          limit: parseInt(limit, 10),
+          offset: parseInt(offset, 10),
+          include: includeModels,
+        });
+
+        if (count === 0) {
+          return responseHandler(res, {
+            data: {},
+            status: "No Data",
+            message: "No data found",
+            statusCode: 200,
+          });
+        }
+
+        const totalPages = Math.ceil(count / limit);
+
+        // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
+        const transformedResults = rows.map((row) => {
+          const dataValues = row.dataValues;
+
+          // Map alias attributes to their desired key names
+          const remappedAttributes = {};
+          Attributes.forEach(([originalKey, aliasKey]) => {
+            if (dataValues[originalKey] !== undefined) {
+              remappedAttributes[aliasKey] = dataValues[originalKey];
+              delete dataValues[originalKey]; // Remove the original key if needed
+            }
+          });
+
+          // Dynamically extract and group fields for each included model
+          const transformedIncludes = includeModels.reduce(
+            (acc, includeModel) => {
+              const alias = includeModel.as;
+              if (dataValues[alias]) {
+                acc[alias] = Array.isArray(dataValues[alias])
+                  ? dataValues[alias].map((item) => item.dataValues)
+                  : dataValues[alias].dataValues;
+              }
+              return acc;
+            },
+            {}
+          );
+
+          // Combine remapped main record data with transformed include data
+          return {
+            ...remappedAttributes,
+            ...transformedIncludes,
+          };
+        });
+
+        const response = {
+          count,
+          totalPages,
+          currentPage: parseInt(page, 10),
+          results: transformedResults,
+        };
+
+        console.log(
+          `Fetched records from ${Model.name}: page ${page}, limit ${limit}`
+        );
         return responseHandler(res, {
-          data: {},
-          status: "No Data",
-          message: "No data found",
+          data: response,
+          status: "success",
+          message: "Data fetched successfully",
           statusCode: 200,
+          error: null,
+        });
+      } catch (error) {
+        console.error(
+          `Error fetching records from ${Model.name}: ${error.message}`
+        );
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "Internal server error",
+          statusCode: 500,
+          error: error.message,
         });
       }
+    };
 
-      const totalPages = Math.ceil(count / limit);
-
-      // Transform the results dynamically, excluding `SiteDetails` and `TaskDetails`
-      const transformedResults = rows.map((row) => {
-        const dataValues = row.dataValues;
-
-        // Map alias attributes to their desired key names
-        const remappedAttributes = {};
-        Attributes.forEach(([originalKey, aliasKey]) => {
-          if (dataValues[originalKey] !== undefined) {
-            remappedAttributes[aliasKey] = dataValues[originalKey];
-            delete dataValues[originalKey]; // Remove the original key if needed
-          }
-        });
-
-        // Dynamically extract and group fields for each included model
-        const transformedIncludes = includeModels.reduce(
-          (acc, includeModel) => {
-            const alias = includeModel.as;
-            if (dataValues[alias]) {
-              acc[alias] = Array.isArray(dataValues[alias])
-                ? dataValues[alias].map((item) => item.dataValues)
-                : dataValues[alias].dataValues;
-            }
-            return acc;
-          },
-          {}
-        );
-
-        // Combine remapped main record data with transformed include data
-        return {
-          ...remappedAttributes,
-          ...transformedIncludes,
+    const updateRecord = (Model) => async (req, res) => {
+      try {
+        const { row, update, user } = req.body;
+        let remainingQty = row.qty; 
+        console.log("Incoming row:", row);
+    
+        const whereCondition = {
+          user: user,
+          ...(row.equipment ? { equipment: row.equipment } : { material: row.material }),
+          transfer: 1,
         };
-      });
+    
+        const sortOrder = update === "newest" ? [["created_at", "DESC"]] : [["created_at", "ASC"]];
+    
+        const records = await Model.findAll({
+          where: whereCondition, 
+          order: sortOrder
+        });
+    
+        console.log("Fetched records:", records.length);
+    
+        for (let record of records) {
+          if (remainingQty <= 0) break; 
+    
+          const deductedQty = Math.min(record.a_qty, remainingQty);
+          remainingQty -= deductedQty;
+    
+          record.a_qty -= deductedQty;
+          record.updated_at = new Date()
+          await record.save();  
+        }
+    
+        if (remainingQty === 0) {
+          await Model.update(
+            { ...(row.e_status ? { e_status: "Approved" } : { m_status: "Approved" }), updated_at: new Date() },
+            
+            { where: { id: row.id } }
+          );
+        }
+    
+        return responseHandler(res, {
+          data: req.body,
+          status: "success",
+          message: "Data updated successfully",
+          statusCode: 200,
+          error: null,
+        });
+      } catch (error) {
+        console.error("Error updating records:", error);
+        return responseHandler(res, {
+          data: null,
+          status: "error",
+          message: "Failed to update related data",
+          statusCode: 500,
+          error: "Update failed",
+        });
+      }
+    };
+    
 
-      const response = {
-        count,
-        totalPages,
-        currentPage: parseInt(page, 10),
-        results: transformedResults,
-      };
-
-      console.log(
-        `Fetched records from ${Model.name}: page ${page}, limit ${limit}`
-      );
-      return responseHandler(res, {
-        data: response,
-        status: "success",
-        message: "Data fetched successfully",
-        statusCode: 200,
-        error: null,
-      });
-    } catch (error) {
-      console.error(
-        `Error fetching records from ${Model.name}: ${error.message}`
-      );
-      return responseHandler(res, {
-        data: null,
-        status: "error",
-        message: "Internal server error",
-        statusCode: 500,
-        error: error.message,
-      });
-    }
-  };
-
-module.exports = { InventoryOverAll, InventoryEntry, Inventorylogs, getAllDataByCondition };
+module.exports = { InventoryOverAll, InventoryEntry, Inventorylogs, getAllDataByCondition, updateRecord };

@@ -3,7 +3,7 @@ const router = express.Router();
 const { equipment_request, EquipmentMainInventory, Task, Site } = require('../models');
 const { equipmentRequestAttributes, equipmentMainInventoryAttributes, taskMasterAttributes, siteMasterAttributes } = require('../utils');
 const crudController = require('../controllers/crudController');
-const { InventoryOverAll, InventoryEntry, Inventorylogs, getAllDataByCondition } = require('../controllers/materialRequest');
+const { InventoryOverAll, InventoryEntry, Inventorylogs, getAllDataByCondition ,updateRecord} = require('../controllers/materialRequest');
 
 const searchableFields = ['e_status', 'qty'];
 const field = [];
@@ -68,6 +68,12 @@ router.post(
     equipment_request,
     field,
     equipmentRequestAttributes,
+  )
+);
+router.post(
+  "/update",
+  updateRecord(
+    equipment_request,
   )
 );
 module.exports = router;

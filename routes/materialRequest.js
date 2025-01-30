@@ -13,7 +13,7 @@ const {
   taskMasterAttributes,
 } = require("../utils");
 const crudController = require("../controllers/crudController");
-const { InventoryOverAll, Inventorylogs, InventoryEntry, getAllDataByCondition } = require("../controllers/materialRequest");
+const { InventoryOverAll, Inventorylogs, InventoryEntry, getAllDataByCondition,updateRecord } = require("../controllers/materialRequest");
 
 const searchableFields = ["material", "e_date","m_status"];
 const searchableFields1 = ["material"];
@@ -115,6 +115,13 @@ router.post(
     material_request,
     field,
     materialRequestAttributes,
+  )
+);
+
+router.post(
+  "/update",
+  updateRecord(
+    material_request,
   )
 );
 module.exports = router;
