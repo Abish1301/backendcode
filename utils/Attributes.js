@@ -177,6 +177,7 @@ const materialRequestAttributes = [
   ['transfer', 'transfer'],
   ['site', 'site'],
   ['created_at', 'created_at'],
+  ['updated_at', 'updated_at'],
   ['user', 'user'],
   ['e_date', 'e_date'],
   ['a_qty', 'a_qty'],
@@ -213,6 +214,8 @@ const equipmentRequestAttributes = [
   ['created_at', 'created_at'],
   ['e_date', 'e_date'],
   ['a_qty', 'a_qty'],
+  ['updated_at', 'updated_at'],
+
 
 ];
 const MaterialSpendAttributes = [

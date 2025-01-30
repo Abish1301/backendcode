@@ -190,6 +190,7 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       const qty = parseInt(row.qty) || 0;
       const a_qty = parseInt(row.a_qty) || 0;
       const createdDate = new Date(row.created_at).toISOString().split('T')[0];
+      const created = new Date(row.updated_at).toISOString().split('T')[0];
 
       // Overall totals
       if (row.transfer === 1) {
@@ -204,9 +205,15 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
       if (createdDate === today) {
         if (row.transfer === 1) {
           acc.todayTotals.toInventoryTotal += qty;
-        } else if (row.transfer === 2) {
-          acc.todayTotals.siteTransferTotal += qty;
-        }
+        } 
+        // else if (row.transfer === 2) {
+        //   acc.todayTotals.siteTransferTotal += qty;
+        // }
+      }
+      if(created === today){
+        if (row.transfer === 2) {
+            acc.todayTotals.siteTransferTotal += qty;
+          }
       }
 
       return acc;

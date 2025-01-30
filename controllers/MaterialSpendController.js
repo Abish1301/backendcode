@@ -211,7 +211,6 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
         
           const updateData = {
             a_qty: updatedQty,
-            updated_at: new Date()
           };
         
           // Use `returning` to get the updated row(s) (for databases that support it)
@@ -296,7 +295,7 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
     
         // Update the quantity in updateModel
         const [affectedRow] = await updateModel.update(
-          { a_qty: updatedQty, updated_at: new Date() },
+          { a_qty: updatedQty},
           { where: { id: request } }
         );
     
@@ -382,7 +381,7 @@ const createWODuplicates = (Model, Attributes,updateModel,updateModelAttributes)
     
         // Update the related model's data
         const [affectedRow] = await updateModel.update(
-          { a_qty: updatedQty , updated_at: new Date()},
+          { a_qty: updatedQty },
           { where: { id: req.body.request } }
         );
     

@@ -51,7 +51,7 @@ const field = [];
 const searchableFields =[]
 
 router.route('/')
-  .post(crudController.getAllByCondition(MaterialSpend,searchableFields, MaterialSpendAttributes, includeModel))
+  .post(MaterialSpendController.getAllByCondition(MaterialSpend, MaterialSpendAttributes, includeModel))
   .put(MaterialSpendController.updateRecord(MaterialSpend, MaterialSpendAttributes, material_request))
   .delete(crudController.deleteRecord(MaterialSpend));
   router.delete("/delete", MaterialSpendController.deleteRecord(MaterialSpend, material_request));
