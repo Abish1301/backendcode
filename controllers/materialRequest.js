@@ -60,7 +60,54 @@ const createPaginationResponse = (count, page, limit, results) => ({
   currentPage: parseInt(page, 10),
   results
 });
+const applyDateFilters = (filter, whereCondition) => {
+  if (filter.created_at && filter.updated_at) {
+    // If both created_at and updated_at are present, apply OR condition
+    whereCondition[Op.or] = [
+      {
+        created_at: {
+          [Op.between]: [
+            `${filter.created_at} 00:00:00`,
+            `${filter.created_at} 23:59:59`,
+          ],
+        },
+        transfer: 1, // Filter only where transfer = 1 for created_at
+      },
+      {
+        updated_at: {
+          [Op.between]: [
+            `${filter.updated_at} 00:00:00`,
+            `${filter.updated_at} 23:59:59`,
+          ],
+        },
+        transfer: 2, // Filter only where transfer = 2 for updated_at
+      },
+    ];
+  } else {
+    // Handle individual cases for created_at and updated_at
+    if (filter.created_at) {
+      whereCondition.created_at = {
+        [Op.between]: [
+          `${filter.created_at} 00:00:00`,
+          `${filter.created_at} 23:59:59`,
+        ],
+      };
+      whereCondition.transfer = 1; // Filter only where transfer = 1 for created_at
+    }
 
+    if (filter.updated_at) {
+      whereCondition.updated_at = {
+        [Op.between]: [
+          `${filter.updated_at} 00:00:00`,
+          `${filter.updated_at} 23:59:59`,
+        ],
+      };
+      whereCondition.transfer = 2; // Filter only where transfer = 2 for updated_at
+    }
+  }
+
+  return whereCondition;
+};
 // Main controller functions
 const InventoryOverAll = (Model, searchFields = [], Attributes, includeModels = [], fStatus, fKey) => async (req, res) => {
   const { page = 1, limit = 10, search } = req.query;
@@ -136,22 +183,58 @@ const InventoryEntry = (Model, searchFields = [], Attributes, includeModels = []
   const { user, site, task, m_status, e_status, filter } = req.body;
   const siteid = site || null;
   // const siteid = 2;
+  const{ created_at, updated_at,...rest}= filter ||{}
 
   try {
     const whereCondition = {
       ...Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status) : BaseWhereCondition(search, searchFields, user, e_status),
       ...(siteid !== null && { site: siteid || null }),
-      // ...(siteid !== null && { task: task || null }),
-      ...filter,
-      ...(filter.created_at && {
-        created_at: {
+    ...rest
+    };
+    if (filter.created_at && filter.updated_at) {
+      whereCondition[Op.or] = [
+        {
+          created_at: {
+            [Op.between]: [
+              `${filter.created_at} 00:00:00`,
+              `${filter.created_at} 23:59:59`,
+            ],
+          },
+          transfer: 1,  // Filter only where transfer = 1 for created_at
+        },
+        {
+          updated_at: {
+            [Op.between]: [
+              `${filter.updated_at} 00:00:00`,
+              `${filter.updated_at} 23:59:59`,
+            ],
+          },
+          transfer: 2,  // Filter only where transfer = 2 for updated_at
+        },
+      ];
+    } else {
+      // Handle filter for created_at when transfer is 1
+      if (filter.created_at) {
+        whereCondition.created_at = {
           [Op.between]: [
             `${filter.created_at} 00:00:00`,
             `${filter.created_at} 23:59:59`,
           ],
-        },
-      }),
-    };
+        };
+        whereCondition.transfer = 1;  // Filter only where transfer = 1 for created_at
+      }
+
+      // Handle filter for updated_at when transfer is 2
+      if (filter.updated_at) {
+        whereCondition.updated_at = {
+          [Op.between]: [
+            `${filter.updated_at} 00:00:00`,
+            `${filter.updated_at} 23:59:59`,
+          ],
+        };
+        whereCondition.transfer = 2;  // Filter only where transfer = 2 for updated_at
+      }
+    }
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,
@@ -266,22 +349,61 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [])
   const { page = 1, limit = 10, search } = req.query;
   const { user, m_status, e_status, filter, site } = req.body;
   const siteid = site || null;
+  const{ created_at, updated_at,...rest}= filter ||{}
+
   try {
+    console.log(filter);
+    
     const whereCondition = {
       ...(Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status) : BaseWhereCondition(search, searchFields, user, e_status)),
       transfer: { [Op.ne]: 3 },
       ...(siteid !== null && { site: siteid || null }),
-
-      ...filter,
-      ...(filter.created_at && {
-        created_at: {
+      ...rest
+    };
+    if (filter.created_at && filter.updated_at) {
+      whereCondition[Op.or] = [
+        {
+          created_at: {
+            [Op.between]: [
+              `${filter.created_at} 00:00:00`,
+              `${filter.created_at} 23:59:59`,
+            ],
+          },
+          transfer: 1,  // Filter only where transfer = 1 for created_at
+        },
+        {
+          updated_at: {
+            [Op.between]: [
+              `${filter.updated_at} 00:00:00`,
+              `${filter.updated_at} 23:59:59`,
+            ],
+          },
+          transfer: 2,  // Filter only where transfer = 2 for updated_at
+        },
+      ];
+    } else {
+      // Handle filter for created_at when transfer is 1
+      if (filter.created_at) {
+        whereCondition.created_at = {
           [Op.between]: [
             `${filter.created_at} 00:00:00`,
             `${filter.created_at} 23:59:59`,
           ],
-        },
-      }),
-    };
+        };
+        whereCondition.transfer = 1;  // Filter only where transfer = 1 for created_at
+      }
+
+      // Handle filter for updated_at when transfer is 2
+      if (filter.updated_at) {
+        whereCondition.updated_at = {
+          [Op.between]: [
+            `${filter.updated_at} 00:00:00`,
+            `${filter.updated_at} 23:59:59`,
+          ],
+        };
+        whereCondition.transfer = 2;  // Filter only where transfer = 2 for updated_at
+      }
+    }
 
     const { count, rows } = await Model.findAndCountAll({
       where: whereCondition,
