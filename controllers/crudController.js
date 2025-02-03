@@ -14,7 +14,7 @@ const {
   aliasResponseObjectDatainclude,
   aliasResponseDatainclude,
 } = require("../utils/OtherExports");
-const { Task} = require('../models');
+const { Task, equipment_request, material_request, TaskTimeline, Expense,Issue} = require('../models');
 
 const getAll =
   (Model, searchFields = [], includeModels = []) =>
@@ -1015,6 +1015,105 @@ const getSiteDetails = async (whereCondition, avgModal) => {
     };
 };
 
+const getStat =()=> async (req, res) => {
+  try {
+    const { site, task, user } = req.body;
+    const whereCondition = {
+      d: 0,
+      status: 1,
+      [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+      site: site,
+      task: task,
+    };
+    const expenseWhere={
+      d: 0,
+      [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+      site: site,
+      task: task,
+    }
+    
+    const today = new Date().toISOString().split("T")[0];
+
+    // Expense totals
+    const ExpenseTotal = await Expense.sum("amount", { where: expenseWhere });
+    const TodayExpenseTotal = await Expense.sum("amount", {
+      where: {
+        ...expenseWhere,
+        created_at: {
+          [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`],
+        },
+      },
+    });
+
+    // Issue totals
+    const IssueTotalData = await Issue.findAndCountAll({ where: whereCondition });
+    const TodayIssueTotalData = await Issue.findAndCountAll({
+      where: {
+        ...whereCondition,
+        created_at: {
+          [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`],
+        },
+      },
+    });
+
+    // Equipment & Material Requests
+    const equipmentData = await equipment_request.findAndCountAll({ where: whereCondition });
+    const materialData = await material_request.findAndCountAll({ where: whereCondition });
+
+    // Latest percentage from TaskTimeline
+    const latestEntry = await TaskTimeline.findOne({
+      where: expenseWhere,
+      order: [["entry_date", "DESC"]], // Sort by latest entry_date
+      attributes: ["percentage"], // Select only the percentage column
+    });
+
+    const latestPercentage = latestEntry ? latestEntry.percentage : 0; // Handle null case
+
+    const response = {
+      percentage: latestPercentage,
+      Equipment: {
+        request: equipmentData.count,
+        accepted: equipmentData.rows.filter((item) => item.status === "Approved").length,
+        rejected: equipmentData.rows.filter((item) => item.status === "Rejected").length,
+      },
+      Material: {
+        request: materialData.count,
+        accepted: materialData.rows.filter((item) => item.status === "Approved").length,
+        rejected: materialData.rows.filter((item) => item.status === "Rejected").length,
+      },
+      Issue: {
+        today: TodayIssueTotalData.count,
+        total: IssueTotalData.count,
+      },
+      Expense: {
+        total: ExpenseTotal,
+        today: TodayExpenseTotal,
+      },
+    };
+
+    return responseHandler(res, {
+      data: response,
+      status: "success",
+      message: "Data fetched successfully",
+      statusCode: 200,
+      error: null,
+    });
+
+  } catch (error) {
+    console.error(`Error fetching records: ${error.message}`);
+    console.log(error);
+    
+    return responseHandler(res, {
+      data: null,
+      status: "error",
+      message: "Internal server error",
+      statusCode: 500,
+      error: error.message,
+    });
+  }
+};
+
+
 
 module.exports = {
   getAll,
@@ -1029,5 +1128,6 @@ module.exports = {
   getAllDataByCondition,
   CommonGetForAll,
   BulkCreate,
-  getAllData
+  getAllData,
+  getStat
 };
