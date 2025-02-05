@@ -8,13 +8,14 @@ const {
   Logger,
   uploadImageToFolder,
   updateImageToFolder,
+  expenseMasterAttributes,
 } = require("../utils");
 const {
   aliasResponseObjectData,
   aliasResponseObjectDatainclude,
   aliasResponseDatainclude,
 } = require("../utils/OtherExports");
-const { Task, equipment_request, material_request, TaskTimeline, Expense,Issue} = require('../models');
+const { Task, equipment_request, material_request, TaskTimeline, Expense,Issue, Site, AuthUser} = require('../models');
 
 const getAll =
   (Model, searchFields = [], includeModels = []) =>
@@ -1113,7 +1114,134 @@ const getStat =()=> async (req, res) => {
   }
 };
 
+const getDashboardData =()=> async (req, res) => {
+    try {
+      const { user } = req.body;
+  
+      const whereCondition = {
+        d: 0,
+        status: 1,
+        [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+      };
+  
+      const expenseWhere = {
+        d: 0,
+        [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+      };
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1; // Months are zero-based, so add 1
+      const currentYear = currentDate.getFullYear();
 
+
+      // Run multiple queries in parallel using Promise.all()
+      const [
+        site,
+        task,
+        authUserCount,
+        issue,
+        monthWiseExpense,
+        latestExpenses,
+        thisMonthExpense,
+        totalExpense,
+        equipmentTransferSums,
+        materialTransferSums
+      ] = await Promise.all([
+        Site.findAndCountAll({ where: whereCondition }),
+        Task.findAndCountAll({ where: whereCondition }),
+        AuthUser.count({ where:{ ...whereCondition,type :'user'} }), // Use count() instead of findAndCountAll()
+        Issue.findAndCountAll({ where: whereCondition }),
+        Expense.findAll({
+          attributes: [
+            [Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m"), "month"],
+            [Sequelize.fn("SUM", Sequelize.col("amount")), "total_amount"],
+            [Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
+          ],
+          where: expenseWhere,
+          group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m")],
+          order: [[Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m"), "ASC"]],
+        }),
+        Expense.findAll({
+          attributes:expenseMasterAttributes, // Ensure required attributes are specified
+          where: expenseWhere,
+          order: [["created_at", "DESC"]],
+          limit: 5,
+        }),
+        Expense.findOne({
+          attributes: [[Sequelize.fn("SUM", Sequelize.col("amount")), "this_month_total"]],
+          where: {
+            ...expenseWhere,
+            [Op.and]: [
+              Sequelize.where(Sequelize.fn("MONTH", Sequelize.col("created_at")), currentMonth),
+              Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("created_at")), currentYear),
+            ],
+          },
+        }),
+        Expense.findOne({
+          attributes: [[Sequelize.fn("SUM", Sequelize.col("amount")), "total_expense"]],
+          where: expenseWhere,
+        }),
+        equipment_request.findAll({
+          attributes: [
+            "transfer",
+            [Sequelize.fn("SUM", Sequelize.col("qty")), "total_qty"]
+          ],
+          where: whereCondition,
+          group: ["transfer"]
+        }),
+        material_request.findAll({
+          attributes: [
+            "transfer",
+            [Sequelize.fn("SUM", Sequelize.col("qty")), "total_qty"]
+          ],
+          where: whereCondition,
+          group: ["transfer"]
+        })
+      ]);
+      console.log(equipmentTransferSums);
+      
+      const formatTransferData = (data) => {
+        return {
+          inv: data.find(item => Number(item.dataValues.transfer) === 1)?.dataValues.total_qty || 0,
+          site:  data.find(item => Number(item.dataValues.transfer) === 2)?.dataValues.total_qty || 0,
+          purchase:  data.find(item => Number(item.dataValues.transfer) === 3)?.dataValues.total_qty || 0,
+        };
+      };
+  
+      const response = {
+        site: site.count,
+        task: task.count,
+        Equipment: formatTransferData(equipmentTransferSums),
+        Material: formatTransferData(materialTransferSums),
+        issue: issue.count,
+        user: authUserCount,
+        LatestExpense: latestExpenses,
+        MonthWiseExpense: monthWiseExpense,
+        ThisMonthExpense: thisMonthExpense?.dataValues?.this_month_total || 0, // Avoid undefined values
+        TotalExpense: totalExpense?.dataValues?.total_expense || 0
+      };
+      console.log(response);
+      
+  
+      return responseHandler(res, {
+        data: response,
+        status: "success",
+        message: "Data fetched successfully",
+        statusCode: 200,
+        error: null,
+      });
+  
+    } catch (error) {
+      console.error(`Error fetching records: ${error.message}`);
+      return responseHandler(res, {
+        data: null,
+        status: "error",
+        message: "Internal server error",
+        statusCode: 500,
+        error: error.message,
+      });
+    }
+  };
+  
 
 module.exports = {
   getAll,
@@ -1129,5 +1257,6 @@ module.exports = {
   CommonGetForAll,
   BulkCreate,
   getAllData,
-  getStat
+  getStat,
+  getDashboardData
 };
