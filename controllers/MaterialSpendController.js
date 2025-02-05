@@ -42,7 +42,7 @@ const getAllByCondition = (Model, Attributes, includeModels = [], filter = {}) =
 
       if (count === 0) {
         return responseHandler(res, {
-          data: {},
+          data: [],
           status: "No Data",
           message: "No data found",
           statusCode: 200,
@@ -120,7 +120,7 @@ const getAllById =
 
         if (count === 0) {
           return responseHandler(res, {
-            data: {},
+            data: [],
             status: "No Data",
             message: "No data found",
             statusCode: 200,

@@ -4,7 +4,7 @@ const { TaskTimeline, Site, Task } = require('../models');
 const crudController = require('../controllers/crudController');
 const { taskTimelineAttributes, taskMasterAttributes, siteMasterAttributes, upload } = require('../utils');
 
-const searchableFields = [];
+const searchableFields = ['entry_date'];
 const field = [];
 const includeModels = [
   {
