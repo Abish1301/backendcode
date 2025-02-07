@@ -18,7 +18,7 @@ router.route('/')
   .post(crudController.getAllByCondition(Site, searchableFields, siteMasterAttributes, includeModels))
   .put(upload.single("image"), crudController.updateByID(Site, field, siteMasterAttributes))
   .delete(crudController.deleteRecord(Site));
-router.post("/formData", upload.single("image"), crudController.createWODuplicates(Site, field, siteMasterAttributes));
+router.post("/formdata", upload.single("image"), crudController.createWODuplicates(Site, field, siteMasterAttributes));
 router.post("/getById", crudController.getAllById(Site, siteMasterAttributes, includeModels));
 router.post("/getsiteDetails", crudController.getAllData(Site, siteMasterAttributes, includeModels, Task, TaskTimeline));
 
