@@ -615,33 +615,22 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
 };
 
 const getAllDataByCondition =
-  (Model, searchFields = [], Attributes, includeModels = [], filter = {}) =>
+  (Model, searchFields = [], Attributes, includeModels = []) =>
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
-    const { user, site, task } = req.body;
+    const { user, site, task, filter } = req.body;
     console.log(req.body)
     try {
       const offset = (page - 1) * limit;
 
       const whereCondition = {
         d: 0,
+        ...(search && {
+          [Op.or]: searchFields.map((field) => ({
+            [field]: { [Op.like]: `%${search}%` },
+          })),
+        }),
         [Op.and]: [
-          ...(search
-            ? [
-                {
-                  [Op.or]: searchFields.map((field) => ({
-                    [field]: {
-                      [Op.eq]: search, // Exact match condition
-                    },
-                  })),
-                },
-              ]
-            : []),
-          {
-            [Op.or]: searchFields.map((field) => ({
-              [field]: { [Op.like]: `%${search}%` },
-            })),
-          },
           { [Op.or]: [{ user: user || null }, { user: null }] },
           ...(site !== undefined && site !== null ? [{ site }] : []),
           ...(task !== undefined && task !== null ? [{ task }] : []),

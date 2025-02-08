@@ -24,7 +24,7 @@ const includeModels = [
   },
 ];
 router.route('/')
-  .post(crudController.getAllByCondition(Task, searchableFields, taskMasterAttributes, includeModels))
+  .post(crudController.getAllDataByCondition(Task, searchableFields, taskMasterAttributes, includeModels))
   .delete(crudController.deleteRecord(Task));
 router.put("/formdata", upload.single("image"), crudController.updateByID(Task, field, taskMasterAttributes))
 
