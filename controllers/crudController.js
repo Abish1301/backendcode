@@ -204,16 +204,17 @@ const updateByID =
 
 // create incharge, admin,user
 const createUsers =
-  (Model, Attributes, includeModels, AuthInfo,field) =>
+  (Model, Attributes, includeModels, AuthInfo, field) =>
     async (req, res) => {
+      const transaction = await Model.sequelize.transaction(); // Start a transaction
       try {
         let imagePath = null;
 
-        // Create a new record in the main model (Auth model)
+        // Check for duplicate records before inserting
         if (Array.isArray(field) && field.length > 0) {
           const count = await FindDuplicateforUser(Model, field, req.body);
           const count1 = await FindDuplicate(includeModels[0].model, field, req.body);
-          if (count > 0 ||count1>0) {
+          if (count > 0 || count1 > 0) {
             return responseHandler(res, {
               data: null,
               status: "conflict",
@@ -223,73 +224,84 @@ const createUsers =
             });
           }
         }
-        // Step 2: Handle image saving (only if no duplicates are found)
+
+        // Handle image saving if no duplicates are found
         if (req.file) {
           const fileExtension = req.file.mimetype.split("/")[1];
 
-          const imageBuffer = req.file.buffer; // Get the buffer from Multer
-          const fileName = `${Date.now()}_${Math.random()
-            .toString(36)
-            .substr(2, 9)}.${fileExtension}`; // Unique filename
-          const modelName = Model.name; // Use model name for folder
+          const imageBuffer = req.file.buffer;
+          const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
+          const modelName = Model.name;
 
-          // Upload the image to Azure Blob Storage in the folder named after the model
-          const uploadedImagePath = await uploadImageToFolder(
-            modelName,
-            imageBuffer,
-            fileName
-          );
-
-          // Set the imagePath to the URL of the uploaded image
+          const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
           imagePath = uploadedImagePath;
         }
 
+        // Create the main model record inside the transaction
         const record = await Model.create({
           email: req.body.username,
           password: await bcrypt.hash(req.body.password, 10),
-        });
+        }, { transaction });
+
         console.log(`Created a new record in ${Model.name}`);
         Logger.info(`Created a new record in ${Model.name}`);
 
         const includeData = {}; // Object to hold the data for included models
+        let includeSuccess = false; // Flag to track if includeModels were inserted
 
-        // Loop through the includeModels to create associated records
+        // Loop through includeModels and insert associated records
         for (const include of includeModels) {
           const { model, as } = include;
-
-          // Ensure the related model and alias exist
           if (model && as) {
             const authUserData = await model.create({
               ...req.body,
               auth_id: record.id,
               ...AuthInfo,
               ...(imagePath ? { image: imagePath } : {}),
-            });
-            includeData[as] = authUserData; // Store related model data by alias
-            console.log(
-              `Created a related record in ${model.name} with alias ${as}`
-            );
-            Logger.info(
-              `Created a related record in ${model.name} with alias ${as}`
-            );
+            }, { transaction });
+
+            if (authUserData) {
+              includeData[as] = authUserData;
+              includeSuccess = true;
+              console.log(`Created a related record in ${model.name} with alias ${as}`);
+              Logger.info(`Created a related record in ${model.name} with alias ${as}`);
+            }
           }
         }
 
+        // If the related table data was not inserted, rollback and return an error
+        if (!includeSuccess) {
+          await transaction.rollback();
+          return responseHandler(res, {
+            data: null,
+            status: "error",
+            message: "Failed to insert related record. Operation rolled back.",
+            statusCode: 500,
+            error: "Transaction failed for related table",
+          });
+        }
+
+        // Commit the transaction after all operations are successful
+        await transaction.commit();
+
         // Combine both records (auth data and included models data)
         const returnData = {
-          ...record.dataValues, // Data from the main model
-          ...includeData, // Data from included models
+          ...record.dataValues,
+          ...includeData,
         };
+
         // Respond with success
         return responseHandler(res, {
-          data: aliasResponseDatainclude(returnData, Attributes, includeModels), // Pass the full combined data
+          data: aliasResponseDatainclude(returnData, Attributes, includeModels),
           status: "success",
           message: "Record created successfully",
           statusCode: 200,
           error: null,
         });
+
       } catch (error) {
         console.error(`Error creating record in ${Model.name}: ${error.message}`);
+        await transaction.rollback(); // Rollback in case of any error
         return responseHandler(res, {
           data: null,
           status: "error",
@@ -299,6 +311,7 @@ const createUsers =
         });
       }
     };
+
 
 //  get by id or by any of the field with user
 const getAllById =
