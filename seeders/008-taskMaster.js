@@ -9,13 +9,13 @@ module.exports = {
         name: 'Develop Website',
         description: 'Design and develop a corporate website',
         status: true,
-        site: 1, // site from SiteMaster table
-        unit: 1, // unit from Unit table
+        site: 1,
+        unit: 1,
         search_tags: 'website, development, design',
-        work_category: 6, // work category from WorkCategory table
+        work_category: 6,
         priority: 'High',
-        start_date: '27-11-2024',
-        end_date: '10-12-2024',
+        start_date: '2024-11-27',
+        end_date: '2024-12-10',
         image: 'path/website_design_doc.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -25,13 +25,13 @@ module.exports = {
         name: 'Database Migration',
         description: 'Migrate data from legacy database to the new system',
         status: true,
-        site: 2, // site from SiteMaster table
-        unit: 2, // unit from Unit table
+        site: 2,
+        unit: 2,
         search_tags: 'migration, database, legacy',
-        work_category: 7, // work category from WorkCategory table
+        work_category: 7,
         priority: 'Medium',
-        start_date: '28-11-2024',
-        end_date: '05-12-2024',
+        start_date: '2024-11-28',
+        end_date: '2024-12-05',
         image: 'path/migration_plan.docx',
         created_at: new Date(),
         updated_at: new Date(),
@@ -41,13 +41,13 @@ module.exports = {
         name: 'API Integration',
         description: 'Integrate third-party APIs for payment processing',
         status: true,
-        site: 3, // site from SiteMaster table
-        unit: 3, // unit from Unit table
+        site: 3,
+        unit: 3,
         search_tags: 'api, integration, payment',
-        work_category: 8, // work category from WorkCategory table
+        work_category: 8,
         priority: 'Low',
-        start_date: '29-11-2024',
-        end_date: '15-12-2024',
+        start_date: '2024-11-29',
+        end_date: '2024-12-15',
         image: 'path/api_docs.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -57,13 +57,13 @@ module.exports = {
         name: 'SEO Optimization',
         description: 'Optimize website for better search engine rankings',
         status: true,
-        site: 4, // site from SiteMaster table
-        unit: 4, // unit from Unit table
+        site: 4,
+        unit: 4,
         search_tags: 'SEO, optimization, website',
-        work_category: 9, // work category from WorkCategory table
+        work_category: 9,
         priority: 'High',
-        start_date: '01-12-2024',
-        end_date: '07-12-2024',
+        start_date: '2024-12-01',
+        end_date: '2024-12-07',
         image: 'path/seo_guide.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -73,13 +73,13 @@ module.exports = {
         name: 'User Authentication Setup',
         description: 'Setup user authentication system for the platform',
         status: true,
-        site: 5, // site from SiteMaster table
-        unit: 5, // unit from Unit table
+        site: 5,
+        unit: 5,
         search_tags: 'authentication, login, security',
-        work_category: 6, // work category from WorkCategory table
+        work_category: 6,
         priority: 'Medium',
-        start_date: '02-12-2024',
-        end_date: '10-12-2024',
+        start_date: '2024-12-02',
+        end_date: '2024-12-10',
         image: 'path/auth_setup.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -89,13 +89,13 @@ module.exports = {
         name: 'Payment Gateway Setup',
         description: 'Integrate payment gateways for online transactions',
         status: true,
-        site: 6, // site from SiteMaster table
-        unit: 6, // unit from Unit table
+        site: 6,
+        unit: 6,
         search_tags: 'payment, gateway, integration',
-        work_category: 7, // work category from WorkCategory table
+        work_category: 7,
         priority: 'High',
-        start_date: '05-12-2024',
-        end_date: '15-12-2024',
+        start_date: '2024-12-05',
+        end_date: '2024-12-15',
         image: 'path/payment_gateway_plan.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -105,13 +105,13 @@ module.exports = {
         name: 'Website Security Enhancement',
         description: 'Enhance website security features and data protection',
         status: true,
-        site: 7, // site from SiteMaster table
-        unit: 7, // unit from Unit table
+        site: 7,
+        unit: 7,
         search_tags: 'security, website, protection',
-        work_category: 8, // work category from WorkCategory table
+        work_category: 8,
         priority: 'High',
-        start_date: '07-12-2024',
-        end_date: '20-12-2024',
+        start_date: '2024-12-07',
+        end_date: '2024-12-20',
         image: 'path/security_enhancement.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -121,13 +121,13 @@ module.exports = {
         name: 'Content Management Setup',
         description: 'Implement content management system for website',
         status: true,
-        site: 8, // site from SiteMaster table
-        unit: 8, // unit from Unit table
+        site: 8,
+        unit: 8,
         search_tags: 'CMS, content management, website',
-        work_category: 9, // work category from WorkCategory table
+        work_category: 9,
         priority: 'Medium',
-        start_date: '10-12-2024',
-        end_date: '20-12-2024',
+        start_date: '2024-12-10',
+        end_date: '2024-12-20',
         image: 'path/cms_setup.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -137,13 +137,13 @@ module.exports = {
         name: 'Mobile App Development',
         description: 'Develop mobile app for the corporate website',
         status: true,
-        site: 9, // site from SiteMaster table
-        unit: 9, // unit from Unit table
+        site: 9,
+        unit: 9,
         search_tags: 'mobile app, development, website',
-        work_category: 10, // work category from WorkCategory table
+        work_category: 10,
         priority: 'Low',
-        start_date: '12-12-2024',
-        end_date: '30-12-2024',
+        start_date: '2024-12-12',
+        end_date: '2024-12-30',
         image: 'path/mobile_app_plan.pdf',
         created_at: new Date(),
         updated_at: new Date(),
@@ -153,13 +153,13 @@ module.exports = {
         name: 'Site Analytics Setup',
         description: 'Setup analytics tools to track website performance',
         status: true,
-        site: 10, // site from SiteMaster table
-        unit: 10, // unit from Unit table
+        site: 10,
+        unit: 10,
         search_tags: 'analytics, website, performance',
-        work_category: 6, // work category from WorkCategory table
+        work_category: 6,
         priority: 'Medium',
-        start_date: '14-12-2024',
-        end_date: '22-12-2024',
+        start_date: '2024-12-14',
+        end_date: '2024-12-22',
         image: 'path/analytics_setup.pdf',
         created_at: new Date(),
         updated_at: new Date(),

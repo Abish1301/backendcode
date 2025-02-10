@@ -1029,7 +1029,7 @@ const getStat =()=> async (req, res) => {
     const TodayExpenseTotal = await Expense.sum("amount", {
       where: {
         ...expenseWhere,
-        created_at: {
+        date: {
           [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`],
         },
       },
@@ -1141,18 +1141,18 @@ const getDashboardData =()=> async (req, res) => {
         Issue.findAndCountAll({ where: whereCondition }),
         Expense.findAll({
           attributes: [
-            [Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m"), "month"],
+            [Sequelize.fn("DATE_FORMAT", Sequelize.col("date"), "%Y-%m"), "month"],
             [Sequelize.fn("SUM", Sequelize.col("amount")), "total_amount"],
             [Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
           ],
           where: expenseWhere,
-          group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m")],
-          order: [[Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%Y-%m"), "ASC"]],
+          group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("date"), "%Y-%m")],
+          order: [[Sequelize.fn("DATE_FORMAT", Sequelize.col("date"), "%Y-%m"), "ASC"]],
         }),
         Expense.findAll({
           attributes:expenseMasterAttributes, // Ensure required attributes are specified
           where: expenseWhere,
-          order: [["created_at", "DESC"]],
+          order: [["date", "DESC"]],
           limit: 5,
         }),
         Expense.findOne({
@@ -1160,8 +1160,8 @@ const getDashboardData =()=> async (req, res) => {
           where: {
             ...expenseWhere,
             [Op.and]: [
-              Sequelize.where(Sequelize.fn("MONTH", Sequelize.col("created_at")), currentMonth),
-              Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("created_at")), currentYear),
+              Sequelize.where(Sequelize.fn("MONTH", Sequelize.col("date")), currentMonth),
+              Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("date")), currentYear),
             ],
           },
         }),
