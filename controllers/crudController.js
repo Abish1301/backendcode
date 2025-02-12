@@ -356,7 +356,7 @@ const getAllById =
 
         if (count === 0) {
           return responseHandler(res, {
-            data: [],
+            data: {},
             status: "No Data",
             message: "No data found",
             statusCode: 200,
@@ -481,7 +481,7 @@ const getAllByCondition =
 
         if (count === 0) {
           return responseHandler(res, {
-            data: [],
+            data: {},
             status: "No Data",
             message: "No data found",
             statusCode: 200,
@@ -660,7 +660,7 @@ const getAllDataByCondition =
 
       if (count === 0) {
         return responseHandler(res, {
-          data: [],
+          data: {},
           status: "No Data",
           message: "No data found",
           statusCode: 200,
@@ -759,7 +759,7 @@ const CommonGetForAll = (Model, searchFields = [], Attributes, includeModels = [
 
         if (!data.length) {
             return responseHandler(res, {
-                data: [],
+                data: {},
                 status: "No Data",
                 message: "No data found",
                 statusCode: 200,
