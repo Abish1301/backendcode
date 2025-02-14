@@ -1119,6 +1119,8 @@ const getStat =()=> async (req, res) => {
 const getDashboardData =()=> async (req, res) => {
     try {
       const { user } = req.body;
+      console.log(user);
+      
   
       const whereCondition = {
         d: 0,
@@ -1128,7 +1130,8 @@ const getDashboardData =()=> async (req, res) => {
   
       const expenseWhere = {
         d: 0,
-        [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+        // [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
+        user:user
       };
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth() + 1; // Months are zero-based, so add 1
