@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
-const { Auth: AuthModel, AuthUser: AuthUserModel, Role: RoleModel } = require("../models");
+const { Auth: AuthModel, AuthUser: AuthUserModel, Role: RoleModel, Site } = require("../models");
 const Joi = require('joi');
-const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes, roleMaterAttributes } = require("../utils");
+const { generateAccessToken, generateRefreshToken, aliasResponseData, responseHandler, authAttributes, authUserAttributes, roleAttributes, roleMaterAttributes, siteMasterAttributes } = require("../utils");
 const Logger = require("../utils/logger"); // Assuming the logger file is in the root directory
 
 const login = async (req, res) => {
@@ -68,12 +68,22 @@ const login = async (req, res) => {
     // Generate the tokens
     const accessToken = generateAccessToken(authUser);
     const refreshToken = generateRefreshToken(authUser);
-
+    const userData = aliasResponseData(authUser.get(), authUserAttributes);
+    const siteData = userData.type === "Incharge" 
+    ? (await Site.findAll({ 
+        where: { incharge: String(userData.id) }, 
+        attributes: ["id"] // Fetch only the 'id' column
+      })).map(site => site.id) 
+    : null;
+  
+  console.log(siteData, "jhhhh");
+      
     const responseData = {
       accessToken,
       refreshToken,
       authData: aliasResponseData(auth.get(), authAttributes),
-      userData: aliasResponseData(authUser.get(), authUserAttributes),
+      userData: userData,
+      siteData: siteData,
       roleData: authUser.authrole ? aliasResponseData(authUser.authrole.get(), roleMaterAttributes) : null,
     };
 

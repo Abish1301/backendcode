@@ -453,7 +453,10 @@ const getAllByCondition =
   (Model, searchFields = [], Attributes, includeModels = [], filter = {}) =>
     async (req, res) => {
       const { page = 1, limit = 10, search } = req.query;
-      const { user, site, task } = req.body;
+      const { user, site, task, filterData={} } = req.body;
+      const {siteData ,...rest}=filterData;
+      console.log(filterData);
+      
       try {
         const offset = (page - 1) * limit;
 
@@ -466,10 +469,17 @@ const getAllByCondition =
           }),
           [Op.and]: [
             { [Op.or]: [{ user: user || null }, { user: null }] },
+            // ...(site !== undefined && site !== null ? [{ site }] : []),
             ...(site !== undefined && site !== null ? [{ site }] : []),
+            ...(Array.isArray(siteData) && siteData.length > 0
+              ? [{ site: { [Op.in]: siteData } }]
+              : siteData !== undefined && siteData !== null
+              ? [{ site: siteData }]
+              : []),            
             ...(task !== undefined && task !== null ? [{ task }] : []),
           ],
           ...filter,
+          ...rest,
         };
 
         const { count, rows } = await Model.findAndCountAll({
@@ -631,7 +641,8 @@ const getAllDataByCondition =
   (Model, searchFields = [], Attributes, includeModels = []) =>
   async (req, res) => {
     const { page = 1, limit = 10, search } = req.query;
-    const { user, site, task, filter } = req.body;
+    const { user, site, task, filter, filterData={} } = req.body;
+    const {siteData ,...rest}=filterData;
     console.log(req.body)
     try {
       const offset = (page - 1) * limit;
@@ -646,6 +657,12 @@ const getAllDataByCondition =
         [Op.and]: [
           { [Op.or]: [{ user: user || null }, { user: null }] },
           ...(site !== undefined && site !== null ? [{ site }] : []),
+          ...(Array.isArray(siteData) && siteData.length > 0
+          ? [{ site: { [Op.in]: siteData } }]
+          : siteData !== undefined && siteData !== null
+          ? [{ site: siteData }]
+          : []),            
+
           ...(task !== undefined && task !== null ? [{ task }] : []),
         ],
         ...filter,
@@ -1118,20 +1135,40 @@ const getStat =()=> async (req, res) => {
 
 const getDashboardData =()=> async (req, res) => {
     try {
-      const { user } = req.body;
-      console.log(user);
+      const { user ,siteData} = req.body;
       
   
-      const whereCondition = {
+      const whereCondition1 = {
         d: 0,
         status: 1,
         [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
       };
-  
-      const expenseWhere = {
+      const whereCondition = {
         d: 0,
-        // [Op.and]: [{ [Op.or]: [{ user: user }, { user: null }] }],
-        user:user
+        status: 1,
+        [Op.and]: [
+          { [Op.or]: [{ user: user || null }, { user: null }] },
+          ...(Array.isArray(siteData) && siteData.length > 0
+            ? [{ site: { [Op.in]: siteData } }]
+            : siteData !== undefined && siteData !== null
+            ? [{ site: siteData }]
+            : []),            
+        ],      
+      };
+  
+      const expenseWhere1 = {
+        d: 0,
+        user:user,
+      }; const expenseWhere = {
+        d: 0,
+        user:user,
+        [Op.and]: [
+          ...(Array.isArray(siteData) && siteData.length > 0
+            ? [{ site: { [Op.in]: siteData } }]
+            : siteData !== undefined && siteData !== null
+            ? [{ site: siteData }]
+            : []),            
+        ],      
       };
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth() + 1; // Months are zero-based, so add 1
@@ -1151,9 +1188,9 @@ const getDashboardData =()=> async (req, res) => {
         equipmentTransferSums,
         materialTransferSums
       ] = await Promise.all([
-        Site.findAndCountAll({ where: whereCondition }),
+        Site.findAndCountAll({ where: whereCondition1 }),
         Task.findAndCountAll({ where: whereCondition }),
-        AuthUser.count({ where:{ ...whereCondition,type :'user'} }), // Use count() instead of findAndCountAll()
+        AuthUser.count({ where:{ ...whereCondition1,type :'user'} }), // Use count() instead of findAndCountAll()
         Issue.findAndCountAll({ where: whereCondition }),
         Expense.findAll({
           attributes: [
@@ -1174,10 +1211,15 @@ const getDashboardData =()=> async (req, res) => {
         Expense.findOne({
           attributes: [[Sequelize.fn("SUM", Sequelize.col("amount")), "this_month_total"]],
           where: {
-            ...expenseWhere,
+            ...expenseWhere1,
             [Op.and]: [
               Sequelize.where(Sequelize.fn("MONTH", Sequelize.col("date")), currentMonth),
               Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("date")), currentYear),
+              ...(Array.isArray(siteData) && siteData.length > 0
+            ? [{ site: { [Op.in]: siteData } }]
+            : siteData !== undefined && siteData !== null
+            ? [{ site: siteData }]
+            : []),  
             ],
           },
         }),
@@ -1224,7 +1266,6 @@ const getDashboardData =()=> async (req, res) => {
         ThisMonthExpense: thisMonthExpense?.dataValues?.this_month_total || 0, // Avoid undefined values
         TotalExpense: totalExpense?.dataValues?.total_expense || 0
       };
-      console.log(response);
       
   
       return responseHandler(res, {
