@@ -1,3 +1,6 @@
+
+const BASE_URL = process.env.BASE_URL;
+
 const emailTemplates = {
     otpTemplate: (otp) => `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -44,6 +47,8 @@ const emailTemplates = {
             <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Remarks:${data.remarks||"N/A"}</h1>
             <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Site:${data?.Site?.name||"N/A"}</h1>
             <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Task:${data?.Task?.name||"N/A"}</h1>
+            <img src="${BASE_URL}${data.image}" alt="issue image" style="max-width:100%; height:auto; display:block; margin:10px auto;" />
+
         </div>
     </div>
 `,
@@ -58,6 +63,7 @@ notificationTemplateExpense: (data) => `
         <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Date:${data?.date||"N/A"}</h1>
         <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Type:${data?.ExpenseHead?.name||"N/A"}</h1>
         <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Amount:${data?.amount||"N/A"}</h1>
+        <img src="${BASE_URL}${data.image}" alt="transaction image" style="max-width:100%; height:auto; display:block; margin:10px auto;" />
     </div>
 </div>
 `,

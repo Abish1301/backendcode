@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const { responseHandler, emailTemplates, FindDuplicatewithoutUser } = require("../utils");
 const bcrypt = require("bcryptjs");
-
+const EMAIL_RECEIVE=process.env.EMAIL_RECEIVE
 // Configure transporter once and reuse it
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -175,7 +175,7 @@ const sendNotifymail = async (data,name) => {
   
   console.log(`Sending notification mail`);
   return sendEmail({
-    to: "dheebablessy2000@gmail.com",
+    to: EMAIL_RECEIVE,
     subject: `Notification for ${name}`,
     html: name==="Issue"? emailTemplates.notificationTemplateIssue(data):emailTemplates.notificationTemplateExpense(data),
   });

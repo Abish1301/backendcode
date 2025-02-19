@@ -1,5 +1,7 @@
 const { Sequelize, Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
+const path = require("path");
 const {
   responseHandler,
   aliasResponseData,
@@ -131,6 +133,8 @@ const updateByID =
         let imagePath;
         const { id, ...data } = req.body;
         console.log(id);
+        console.log(data);
+        
         if (Array.isArray(field) && field.length > 0) {
           const isFieldPresent = field.some((f) => req.body[f]);
 
@@ -158,23 +162,50 @@ const updateByID =
           });
         }
 
+        // if (req.file) {
+
+        //   const imageBuffer = req.file.buffer; // Get the buffer from Multer
+        //   const fileName = DataByPK.image; // Unique filename
+
+        //   // Upload the image to Azure Blob Storage in the folder named after the model
+        //   const uploadedImagePath = await updateImageToFolder(
+        //     imageBuffer,
+        //     fileName
+        //   );
+
+        //   // Set the imagePath to the URL of the uploaded image
+        //   imagePath = uploadedImagePath;
+        // }
         if (req.file) {
-
-          const imageBuffer = req.file.buffer; // Get the buffer from Multer
-          const fileName = DataByPK.image; // Unique filename
-
-          // Upload the image to Azure Blob Storage in the folder named after the model
-          const uploadedImagePath = await updateImageToFolder(
-            imageBuffer,
-            fileName
-          );
-
-          // Set the imagePath to the URL of the uploaded image
-          imagePath = uploadedImagePath;
-        }
+          const imageBuffer = req.file.buffer;
+          const fileName = DataByPK.image; // Get existing filename from DB (but don't update DB)
+          
+          // Move uploads folder outside the project folder
+          const baseFolder = path.join(__dirname, "..", "uploads"); // One level up
+          const modelFolder = path.join(baseFolder, Model.name); // Model-specific folder
+      
+          // Ensure the folder exists
+          if (!fs.existsSync(modelFolder)) {
+              fs.mkdirSync(modelFolder, { recursive: true });
+          }
+      
+          // Define file path (same filename as before)
+          const filePath = path.join(__dirname,  "..", fileName);
+      
+          // Delete old file if it exists
+          if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+          }
+      
+          // Save new image with the same filename
+          fs.writeFileSync(filePath, imageBuffer);
+          // /uploads/Issue/1739956790890_xc1a10r25.png
+          console.log(`Image updated: ${filePath}`);
+      }
         const updateData = {
           ...data,
           ...(imagePath ? { image: imagePath } : {}),
+          ...(data.task==='null'? {task:null}: {task:data.task}),
           updated_at: new Date()
         };
 
@@ -227,15 +258,39 @@ const createUsers =
         }
 
         // Handle image saving if no duplicates are found
+        // if (req.file) {
+        //   const fileExtension = req.file.mimetype.split("/")[1];
+
+        //   const imageBuffer = req.file.buffer;
+        //   const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
+        //   const modelName = Model.name;
+
+        //   const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
+        //   imagePath = uploadedImagePath;
+        // }
         if (req.file) {
           const fileExtension = req.file.mimetype.split("/")[1];
-
           const imageBuffer = req.file.buffer;
           const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
-          const modelName = Model.name;
-
-          const uploadedImagePath = await uploadImageToFolder(modelName, imageBuffer, fileName);
-          imagePath = uploadedImagePath;
+          const modelName = Model.name; // Use model name for folder
+    
+          // Define folder path
+          const baseFolder = path.join(__dirname, "..", "uploads");
+          const modelFolder = path.join(baseFolder, modelName); // Model-specific folder
+    
+          // Check if folder exists, if not, create it
+          if (!fs.existsSync(modelFolder)) {
+            fs.mkdirSync(modelFolder, { recursive: true });
+          }
+    
+          // Define file path
+          const filePath = path.join(modelFolder, fileName);
+    
+          // Save file to local storage
+          fs.writeFileSync(filePath, imageBuffer);
+    
+          // Set the file path (relative)
+          imagePath = `/uploads/${modelName}/${fileName}`;
         }
 
         // Create the main model record inside the transaction
@@ -585,25 +640,48 @@ const createWODuplicates = (Model, field, Attributes,includeModels) => async (re
     }
 
     // Step 2: Handle image saving (only if no duplicates are found)
+    // if (req.file) {
+    //   const fileExtension = req.file.mimetype.split("/")[1];
+
+    //   const imageBuffer = req.file.buffer; // Get the buffer from Multer
+    //   const fileName = `${Date.now()}_${Math.random()
+    //     .toString(36)
+    //     .substr(2, 9)}.${fileExtension}`; // Unique filename
+    //   const modelName = Model.name; // Use model name for folder
+    //   // Upload the image to Azure Blob Storage in the folder named after the model
+    //   const uploadedImagePath = await uploadImageToFolder(
+    //     modelName,
+    //     imageBuffer,
+    //     fileName
+    //   );
+
+    //   // Set the imagePath to the URL of the uploaded image
+    //   imagePath = uploadedImagePath;
+    // }
     if (req.file) {
       const fileExtension = req.file.mimetype.split("/")[1];
-
-      const imageBuffer = req.file.buffer; // Get the buffer from Multer
-      const fileName = `${Date.now()}_${Math.random()
-        .toString(36)
-        .substr(2, 9)}.${fileExtension}`; // Unique filename
+      const imageBuffer = req.file.buffer;
+      const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
       const modelName = Model.name; // Use model name for folder
-      // Upload the image to Azure Blob Storage in the folder named after the model
-      const uploadedImagePath = await uploadImageToFolder(
-        modelName,
-        imageBuffer,
-        fileName
-      );
 
-      // Set the imagePath to the URL of the uploaded image
-      imagePath = uploadedImagePath;
+      // Define folder path
+      const baseFolder = path.join(__dirname, "..", "uploads");
+      const modelFolder = path.join(baseFolder, modelName); // Model-specific folder
+
+      // Check if folder exists, if not, create it
+      if (!fs.existsSync(modelFolder)) {
+        fs.mkdirSync(modelFolder, { recursive: true });
+      }
+
+      // Define file path
+      const filePath = path.join(modelFolder, fileName);
+
+      // Save file to local storage
+      fs.writeFileSync(filePath, imageBuffer);
+
+      // Set the file path (relative)
+      imagePath = `/uploads/${modelName}/${fileName}`;
     }
-
     // Step 3: Create the new record
     const recordData = {
       ...otherData,

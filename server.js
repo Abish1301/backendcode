@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const bodyParser = require("body-parser");
 const Logger = require("./utils/logger"); // Importing the logger
 const cors = require("cors");
@@ -13,6 +14,7 @@ app.use(express.json({ limit: "10mb" }));
 
 // For URL-encoded form payloads (default limit is 1mb; increase as needed)
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use((req, res, next) => {
   // Uncomment to log headers and body if necessary
