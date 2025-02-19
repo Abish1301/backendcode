@@ -16,6 +16,7 @@ const {
   aliasResponseDatainclude,
 } = require("../utils/OtherExports");
 const { Task, equipment_request, material_request, TaskTimeline, Expense,Issue, Site, AuthUser} = require('../models');
+const { sendNotifymail } = require('./emailController');
 
 const getAll =
   (Model, searchFields = [], includeModels = []) =>
@@ -565,7 +566,7 @@ const getAllByCondition =
       }
     };
 
-const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
+const createWODuplicates = (Model, field, Attributes,includeModels) => async (req, res) => {
   try {
     const { user, ...otherData } = req.body; // Extract fields from the body
     let imagePath = null;
@@ -617,6 +618,13 @@ const createWODuplicates = (Model, field, Attributes) => async (req, res) => {
     Logger.info(
       `Created a new record in ${Model.name}: ${JSON.stringify(record)}`
     );
+    if (Model.name==="Issue"||Model.name==="Expense"){
+      const data = await Model.findOne({
+        where: {id: record.id},
+        include: includeModels,
+    });
+      sendNotifymail(data,Model.name)
+    }
 
     return responseHandler(res, {
       data: aliasResponseData(record, Attributes),

@@ -169,6 +169,16 @@ const ChangePassword = (Modal) => async (req, res) => {
         });
     }
 };
-
-module.exports = { sendEmail, sendOtpEmail, createOTPRecord, verifyOTP, ChangePassword };
+const sendNotifymail = async (data,name) => {
+  const getData =
+  console.log(data);
+  
+  console.log(`Sending notification mail`);
+  return sendEmail({
+    to: "dheebablessy2000@gmail.com",
+    subject: `Notification for ${name}`,
+    html: name==="Issue"? emailTemplates.notificationTemplateIssue(data):emailTemplates.notificationTemplateExpense(data),
+  });
+};
+module.exports = { sendEmail, sendOtpEmail, createOTPRecord, verifyOTP, ChangePassword,sendNotifymail };
  

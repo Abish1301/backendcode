@@ -29,7 +29,7 @@ router.route('/')
   .put(upload.single("image"), crudController.updateByID(Expense, field, expenseMasterAttributes))
   .delete(crudController.deleteRecord(Expense));
 
-router.post("/formData", upload.single("image"), crudController.createWODuplicates(Expense, field, expenseMasterAttributes));
+router.post("/formData", upload.single("image"), crudController.createWODuplicates(Expense, field, expenseMasterAttributes,includeModels));
 router.post("/getById", crudController.getAllById(Expense, expenseMasterAttributes, includeModels));
 router.put("/formData",upload.single("image"), crudController.updateByID(Expense, field, expenseMasterAttributes))
 
