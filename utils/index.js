@@ -19,15 +19,17 @@ const {
   equipmentRequestAttributes,
   MaterialSpendAttributes,
 } = require("./Attributes");
-const { FindDuplicate, FindDuplicateforUser } = require("./checkDuplicate");
+const { FindDuplicate, FindDuplicateforUser,FindDuplicatewithoutUser } = require("./checkDuplicate");
 const { generateAccessToken, generateRefreshToken } = require("./jwt");
 const { aliasResponseData } = require("./OtherExports");
 const responseHandler = require("./responseHandler");
 const Logger = require("./logger");
 const { uploadImageToFolder, updateImageToFolder } = require("./blobStorage");
 const { upload } = require("./ImageUpload");
-
+const emailTemplates = require("./emailTemplates")
 module.exports = {
+  FindDuplicatewithoutUser,
+  emailTemplates,
   generateAccessToken,
   generateRefreshToken,
   materialMainInventoryAttributesformaterialrequest,
