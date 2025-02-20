@@ -131,7 +131,7 @@ const updateByID =
     async (req, res) => {
       try {
         let imagePath;
-        const { id, ...data } = req.body;        
+        const { id,image, ...data } = req.body;        
         if (Array.isArray(field) && field.length > 0) {
           const isFieldPresent = field.some((f) => req.body[f]);
 
@@ -173,33 +173,46 @@ const updateByID =
         //   // Set the imagePath to the URL of the uploaded image
         //   imagePath = uploadedImagePath;
         // }
-        if (req.file) {
-          const imageBuffer = req.file.buffer;
-          const fileName = DataByPK.image; // Get existing filename from DB (but don't update DB)
-          
-          // Move uploads folder outside the project folder
-          const baseFolder = path.join(__dirname, "..", "uploads"); // One level up
-          const modelFolder = path.join(baseFolder, Model.name); // Model-specific folder
-      
-          // Ensure the folder exists
-          if (!fs.existsSync(modelFolder)) {
-              fs.mkdirSync(modelFolder, { recursive: true });
-          }
-      
-          // Define file path (same filename as before)
-          const filePath = path.join(__dirname,  "..", fileName);
-      
-          // Delete old file if it exists
-          if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath);
-          }
-      
-          // Save new image with the same filename
-          fs.writeFileSync(filePath, imageBuffer);
-      }
+    
+      if (req.file) {
+        const imageBuffer = req.file.buffer;
+        const fileName = DataByPK.image; // Get existing filename from DB
+        let file;
+        // Move uploads folder outside the project folder
+        const baseFolder = path.join(__dirname, "..", "uploads"); // One level up
+        const modelFolder = path.join(baseFolder, Model.name); // Model-specific folder
+    
+        // Ensure the folder exists
+        if (!fs.existsSync(modelFolder)) {
+            fs.mkdirSync(modelFolder, { recursive: true });
+        }
+    
+        // If fileName is null, generate a new filename
+        if (!fileName) {
+          const fileExtension = req.file.mimetype.split("/")[1];
+          file = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
+        } else {
+            // Delete old file if it exists
+            const Path= path.join(__dirname,  "..", fileName);
+
+            if (fs.existsSync(Path)) {
+                fs.unlinkSync(Path);
+            }
+              
+        }
+    
+        // Define new file path
+        const filePath =!fileName? path.join(modelFolder, file):path.join(__dirname, "..", fileName);
+    
+        // Save new image
+        fs.writeFileSync(filePath, imageBuffer);
+        imagePath=!fileName? `/uploads/${Model.name}/${file}`:fileName
+    
+        console.log(`Image ${DataByPK.image ? "updated" : "created"}: ${filePath}`);
+    }
         const updateData = {
           ...data,
-          ...(imagePath ? { image: imagePath } : {}),
+          ...(imagePath ? { image: imagePath } : {image:null}),
           ...(data.task==='null'? {task:null}: {task:data.task}),
           updated_at: new Date()
         };
@@ -264,9 +277,6 @@ const createUsers =
         //   imagePath = uploadedImagePath;
         // }
         if (req.file) {
-          if (req.file==='null'){
-            imagePath=null;
-          }
           const fileExtension = req.file.mimetype.split("/")[1];
           const imageBuffer = req.file.buffer;
           const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
@@ -311,7 +321,7 @@ const createUsers =
               ...req.body,
               auth_id: record.id,
               ...AuthInfo,
-              ...(imagePath ? { image: imagePath } : {}),
+              ...(imagePath ? { image: imagePath } : {image:null}),
             }, { transaction });
 
             if (authUserData) {
