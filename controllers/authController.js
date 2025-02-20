@@ -75,9 +75,7 @@ const login = async (req, res) => {
         attributes: ["id"] // Fetch only the 'id' column
       })).map(site => site.id) 
     : null;
-  
-  console.log(siteData, "jhhhh");
-      
+        
     const responseData = {
       accessToken,
       refreshToken,

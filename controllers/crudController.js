@@ -131,10 +131,7 @@ const updateByID =
     async (req, res) => {
       try {
         let imagePath;
-        const { id, ...data } = req.body;
-        console.log(id);
-        console.log(data);
-        
+        const { id, ...data } = req.body;        
         if (Array.isArray(field) && field.length > 0) {
           const isFieldPresent = field.some((f) => req.body[f]);
 
@@ -199,8 +196,6 @@ const updateByID =
       
           // Save new image with the same filename
           fs.writeFileSync(filePath, imageBuffer);
-          // /uploads/Issue/1739956790890_xc1a10r25.png
-          console.log(`Image updated: ${filePath}`);
       }
         const updateData = {
           ...data,
@@ -269,6 +264,9 @@ const createUsers =
         //   imagePath = uploadedImagePath;
         // }
         if (req.file) {
+          if (req.file==='null'){
+            imagePath=null;
+          }
           const fileExtension = req.file.mimetype.split("/")[1];
           const imageBuffer = req.file.buffer;
           const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExtension}`;
@@ -511,7 +509,6 @@ const getAllByCondition =
       const { page = 1, limit = 10, search } = req.query;
       const { user, site, task, filterData={} } = req.body;
       const {siteData ,...rest}=filterData;
-      console.log(filterData);
       
       try {
         const offset = (page - 1) * limit;
@@ -622,7 +619,7 @@ const getAllByCondition =
     };
 
 const createWODuplicates = (Model, field, Attributes,includeModels) => async (req, res) => {
-  try {
+  try {    
     const { user, ...otherData } = req.body; // Extract fields from the body
     let imagePath = null;
     // Step 1: Check for duplicates
@@ -686,7 +683,7 @@ const createWODuplicates = (Model, field, Attributes,includeModels) => async (re
     const recordData = {
       ...otherData,
       user,
-      ...(imagePath ? { image: imagePath } : {}), // Add the image path if available
+      ...(imagePath ? { image: imagePath } : {image:null}), // Add the image path if available
     };
 
     const record = await Model.create(recordData);
@@ -729,7 +726,6 @@ const getAllDataByCondition =
     const { page = 1, limit = 10, search } = req.query;
     const { user, site, task, filter, filterData={} } = req.body;
     const {siteData ,...rest}=filterData;
-    console.log(req.body)
     try {
       const offset = (page - 1) * limit;
 
@@ -1111,10 +1107,6 @@ const getSiteDetails = async (whereCondition, avgModal) => {
           averagePercentage: parseFloat(data.averagePercentage), // Calculated average
         };
       });
-      
-      console.log(transformedAverages);
-      
-
     return {
       ChartData: transformedAverages ,
       Percentage: averagePercentage || 0,
@@ -1206,9 +1198,7 @@ const getStat =()=> async (req, res) => {
     });
 
   } catch (error) {
-    console.error(`Error fetching records: ${error.message}`);
-    console.log(error);
-    
+    console.error(`Error fetching records: ${error.message}`);    
     return responseHandler(res, {
       data: null,
       status: "error",
@@ -1330,8 +1320,6 @@ const getDashboardData =()=> async (req, res) => {
           group: ["transfer"]
         })
       ]);
-      console.log(equipmentTransferSums);
-      
       const formatTransferData = (data) => {
         return {
           inv: data.find(item => Number(item.dataValues.transfer) === 1)?.dataValues.total_qty || 0,

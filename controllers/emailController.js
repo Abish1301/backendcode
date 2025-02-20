@@ -37,7 +37,6 @@ const sendEmail = async ({ to, subject, text, html }) => {
     };
  
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", info.messageId);
     return info;
   } catch (error) {
     console.error("Email error:", error);
@@ -47,7 +46,6 @@ const sendEmail = async ({ to, subject, text, html }) => {
  
 // Function to send OTP email
 const sendOtpEmail = async (email, otp) => {
-  console.log(`Sending OTP email to ${email} with code: ${otp}`);
   return sendEmail({
     to: email,
     subject: "Your OTP Verification Code",
@@ -70,7 +68,6 @@ const createOTPRecord = (Model, field) => async (req, res) => {
  
     // Create new OTP record
     const record = await Model.create({ ...Data });
-    console.log(`Created a new record in ${Model.name}: ${JSON.stringify(record)}`);
  
     // Send OTP email
     await sendOtpEmail(record.email, record.otp);
@@ -119,7 +116,6 @@ const verifyOTP = (Model, field) => async (req, res) => {
     }
  
     // Optional: Perform logic on successful OTP verification
-    console.log(`OTP verified successfully for ${email}: ${otp}`);
  
     // Delete the OTP record after successful verification
     await Model.destroy({ where: { email, otp } });
@@ -170,10 +166,6 @@ const ChangePassword = (Modal) => async (req, res) => {
     }
 };
 const sendNotifymail = async (data,name) => {
-  const getData =
-  console.log(data);
-  
-  console.log(`Sending notification mail`);
   return sendEmail({
     to: EMAIL_RECEIVE,
     subject: `Notification for ${name}`,

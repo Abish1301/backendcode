@@ -351,9 +351,7 @@ const Inventorylogs = (Model, searchFields = [], Attributes, includeModels = [])
   const siteid = site || null;
   const{ created_at, updated_at,...rest}= filter ||{}
 
-  try {
-    console.log(filter);
-    
+  try {    
     const whereCondition = {
       ...(Model.name === 'material_request' ? createBaseWhereCondition(search, searchFields, user, m_status) : BaseWhereCondition(search, searchFields, user, e_status)),
       transfer: { [Op.ne]: 3 },
@@ -575,8 +573,6 @@ const getAllDataByCondition =
       try {
         const { row, update, user } = req.body;
         let remainingQty = row.qty; 
-        console.log("Incoming row:", row);
-    
         const whereCondition = {
           user: user,
           ...(row.equipment ? { equipment: row.equipment } : { material: row.material }),
@@ -590,7 +586,6 @@ const getAllDataByCondition =
           order: sortOrder
         });
     
-        console.log("Fetched records:", records.length);
     
         for (let record of records) {
           if (remainingQty <= 0) break; 

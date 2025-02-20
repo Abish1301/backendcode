@@ -17,11 +17,6 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use((req, res, next) => {
-  // Uncomment to log headers and body if necessary
-  // Logger.info("Headers:", req.headers);
-  // Logger.info("Body:", req.body);
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
   next();
 });
 
@@ -32,7 +27,6 @@ fs.readdirSync("./routes/").forEach((file) => {
     const routeModule = require("./routes/" + file);
     if (routePath === "/api/auth") {
       app.use(routePath, routeModule);
-      console.log(routePath)
     } else {
       // app.use(routePath, authenticateToken, routeModule);
       app.use(routePath, routeModule);
