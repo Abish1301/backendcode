@@ -18,7 +18,7 @@ const {
   aliasResponseDatainclude,
 } = require("../utils/OtherExports");
 const { Task, equipment_request, material_request, TaskTimeline, Expense,Issue, Site, AuthUser} = require('../models');
-const { sendNotifymail } = require('./emailController');
+const { sendNotifymail, RequestNotifymail } = require('./emailController');
 
 const getAll =
   (Model, searchFields = [], includeModels = []) =>
@@ -963,6 +963,27 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
           error: null,
         };
         results.push(recordResult);
+      }
+      console.log(extra);
+      
+      if (Model.name==="material_request"||Model.name==="equipment_request"){
+        let task;
+        if (extra.task) {
+          task = await Task.findOne({
+            where: {id: extra.task},
+            attributes: ['name']
+        });
+  
+        }
+      const site = await Site.findOne({
+        where: {id: extra.site},
+        attributes: ['name']});
+        const formatDate = (dateString) => {
+          const [year, month, day] = dateString.split("-");
+          return `${day}-${month}-${year}`;
+      };
+      const date=formatDate(extra.e_date)
+      RequestNotifymail({...req.body, site:site?.name || "N/A",task:task?.name || "N/A",date:date},Model.name)
       }
   
       // Step 4: Return the results for all records

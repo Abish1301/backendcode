@@ -67,6 +67,31 @@ notificationTemplateExpense: (data) => `
     </div>
 </div>
 `,
+notificationTemplateRequest:(data,Name)=>`
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #333; text-align: center;">${Name} Request Notification</h2>
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <h1 style="color: #4CAF50; text-align: center; font-size: 14px;">Request from site:${data?.site} , task:${data?.task}</h1>
+        <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Expected delivery date:${data?.date||data?.extra?.e_date||"N/A"}</h1>
+        <h1 style="color: #4CAF50; text-align: center; font-size: 12px;">Type:${data?.extra?.transfer==='2'?'Request from site to Main inventory':"Purchased from outside"}</h1>
+         <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #4CAF50; color: white;">Name</th>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #4CAF50; color: white;">Unit</th>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #4CAF50; color: white;">Quantity</th>
+            </tr>
+            ${data?.records?.map(record => `
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${record.name}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${record.unit}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${record.qty}</td>
+            </tr>`).join('')}
+        </table>
+    </div>
+</div>
+
+`,
+
 };
 module.exports = emailTemplates;
  

@@ -172,5 +172,15 @@ const sendNotifymail = async (data,name) => {
     html: name==="Issue"? emailTemplates.notificationTemplateIssue(data):emailTemplates.notificationTemplateExpense(data),
   });
 };
-module.exports = { sendEmail, sendOtpEmail, createOTPRecord, verifyOTP, ChangePassword,sendNotifymail };
+
+const RequestNotifymail = async (data,name) => {
+  console.log(data);
+  const Name = name==="material_request"?"Material":"Equipment"
+  return sendEmail({
+    to: EMAIL_RECEIVE,
+    subject: `Notification for ${name==="material_request"?"Material Request":"Equipment Request"}`,
+    html: emailTemplates.notificationTemplateRequest(data,Name),
+  });
+};
+module.exports = { sendEmail, sendOtpEmail, createOTPRecord, verifyOTP, ChangePassword,sendNotifymail,RequestNotifymail };
  
