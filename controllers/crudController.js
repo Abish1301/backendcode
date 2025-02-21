@@ -964,7 +964,6 @@ const BulkCreate =(Model,Attributes)=> async (req, res) => {
         };
         results.push(recordResult);
       }
-      console.log(extra);
       
       if (Model.name==="material_request"||Model.name==="equipment_request"){
         let task;

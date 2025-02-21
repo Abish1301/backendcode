@@ -174,7 +174,6 @@ const sendNotifymail = async (data,name) => {
 };
 
 const RequestNotifymail = async (data,name) => {
-  console.log(data);
   const Name = name==="material_request"?"Material":"Equipment"
   return sendEmail({
     to: EMAIL_RECEIVE,
